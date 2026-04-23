@@ -6,8 +6,7 @@ import {
   UserIcon, 
   EnvelopeIcon, 
   PhoneIcon, 
-  MapPinIcon, 
-  IdentificationIcon,
+  MapPinIcon,
   LockClosedIcon,
   BuildingOfficeIcon,
   EyeIcon,
@@ -26,7 +25,6 @@ const Register = () => {
     password_confirmation: "",
     role: "buyer",
     address: "",
-    university_id: "",
   });
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -187,25 +185,6 @@ const Register = () => {
                 </div>
               </div>
 
-              {/* University ID (Conditional) */}
-              {form.role === 'buyer' && (
-                <div className="md:col-span-2 space-y-1 animate-fadeIn">
-                  <label className="text-xs font-semibold text-gray-600 ml-1">{t('register.universityId')}</label>
-                  <div className="relative group">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <IdentificationIcon className="h-5 w-5 text-gray-400" />
-                    </div>
-                    <input
-                      type="text"
-                      name="university_id"
-                      value={form.university_id}
-                      onChange={handleChange}
-                      className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-4 focus:ring-[#5C352C]/10 outline-none transition-all"
-                      placeholder={t('register.universityIdPlaceholder')}
-                    />
-                  </div>
-                </div>
-              )}
 
               {/* Password */}
               <div className="space-y-1">

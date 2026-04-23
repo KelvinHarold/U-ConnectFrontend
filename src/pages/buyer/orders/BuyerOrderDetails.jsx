@@ -23,7 +23,8 @@ import {
   AlertTriangle,
   Shield,
   Eye,
-  Store
+  Store,
+  Star
 } from "lucide-react";
 import ReportModal from "../../../components/ReportModal";
 
@@ -87,6 +88,13 @@ const BuyerOrderDetails = () => {
   const [confirming, setConfirming] = useState(false);
   const [imageErrors, setImageErrors] = useState({});
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
+  
+  // Rating states
+  const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
+  const [ratingValue, setRatingValue] = useState(5);
+  const [ratingComment, setRatingComment] = useState("");
+  const [submittingRating, setSubmittingRating] = useState(false);
+  const [hasRatedSeller, setHasRatedSeller] = useState(false);
 
   useEffect(() => {
     fetchOrder();
@@ -137,6 +145,25 @@ const BuyerOrderDetails = () => {
     }
   };
 
+  const submitSellerRating = async () => {
+    if (!ratingValue) return;
+    setSubmittingRating(true);
+    try {
+      await api.post(`/buyer/sellers/${order.seller.id}/rate`, {
+        order_id: order.id,
+        rating: ratingValue,
+        comment: ratingComment
+      });
+      showToast('Seller rated successfully!', 'success');
+      setHasRatedSeller(true);
+      setIsRatingModalOpen(false);
+    } catch (error) {
+      showToast(error.response?.data?.message || 'Failed to submit rating', 'error');
+    } finally {
+      setSubmittingRating(false);
+    }
+  };
+
   const handleImageError = (itemId) => {
     setImageErrors(prev => ({ ...prev, [itemId]: true }));
   };
@@ -181,6 +208,7 @@ const BuyerOrderDetails = () => {
 
   const canCancel = () => order && ['pending', 'confirmed'].includes(order.status);
   const canConfirmDelivery = () => order && order.status === 'ready_for_delivery';
+  const canRateSeller = () => order && order.status === 'delivered' && !hasRatedSeller;
 
   if (loading) {
     return (
@@ -446,6 +474,14 @@ const BuyerOrderDetails = () => {
                       {confirming ? t('buyer.orderDetails.confirming') : t('buyer.orderDetails.confirmDelivery')}
                     </button>
                   )}
+                  {canRateSeller() && (
+                    <button
+                      onClick={() => setIsRatingModalOpen(true)}
+                      className="w-full py-2 text-sm font-medium text-white bg-amber-500 rounded-lg hover:bg-amber-600 transition-colors focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2"
+                    >
+                      Rate Seller
+                    </button>
+                  )}
                   <button
                     onClick={() => setIsReportModalOpen(true)}
                     className="w-full py-2 text-sm font-medium text-rose-600 bg-white border border-rose-200 rounded-lg hover:bg-rose-50 transition-colors focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-2"
@@ -453,6 +489,11 @@ const BuyerOrderDetails = () => {
                   >
                     {t('buyer.orderDetails.reportIssue')}
                   </button>
+                </div>
+              )}
+              {order && order.status === 'delivered' && hasRatedSeller && (
+                <div className="w-full py-2 text-sm font-medium text-amber-600 bg-amber-50 border border-amber-200 rounded-lg text-center flex justify-center items-center gap-2">
+                  <CheckCircle className="w-4 h-4" /> Rated
                 </div>
               )}
             </div>
@@ -466,6 +507,57 @@ const BuyerOrderDetails = () => {
         initialType="order"
         initialData={{ orderId: order.id }}
       />
+
+      {/* Seller Rating Modal */}
+      {isRatingModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
+          <div className="bg-white rounded-xl shadow-xl w-full max-w-md p-6">
+            <h2 className="text-xl font-bold text-gray-900 mb-4">Rate Your Experience with {order.seller?.name}</h2>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-2">Rating</label>
+              <div className="flex items-center gap-2">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <button
+                    key={star}
+                    type="button"
+                    onClick={() => setRatingValue(star)}
+                    className="focus:outline-none hover:scale-110 transition-transform"
+                  >
+                    <Star className={`w-8 h-8 ${star <= ratingValue ? 'fill-amber-400 text-amber-400' : 'text-gray-300'}`} />
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-gray-700 mb-2">Comment (Optional)</label>
+              <textarea
+                value={ratingComment}
+                onChange={(e) => setRatingComment(e.target.value)}
+                placeholder="Share details of your experience with this seller..."
+                rows="4"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5C352C] focus:border-transparent resize-none text-sm"
+              ></textarea>
+            </div>
+            <div className="flex justify-end gap-3">
+              <button
+                type="button"
+                onClick={() => setIsRatingModalOpen(false)}
+                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={submitSellerRating}
+                disabled={submittingRating}
+                className="px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-[#5C352C] to-[#8B5E4F] rounded-lg hover:shadow-lg disabled:opacity-50 focus:outline-none"
+              >
+                {submittingRating ? 'Submitting...' : 'Submit Rating'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </MainLayout>
   );
 };

@@ -263,7 +263,11 @@ const Sellers = () => {
   };
 
   const getSellerRating = (seller) => {
-    return seller.rating?.toFixed(1) || '4.5';
+    return seller.average_rating ? seller.average_rating.toFixed(1) : '5.0';
+  };
+
+  const getRatingsCount = (seller) => {
+    return seller.ratings_count || 0;
   };
 
   const getMemberSince = (seller) => {
@@ -543,11 +547,12 @@ const Sellers = () => {
                                 {seller.products_count || 0}
                               </span>
                             </div>
-                            <div className="flex items-center gap-1 bg-amber-50 px-2 py-1 rounded-lg">
+                            <div className="flex items-center gap-1 bg-amber-50 px-2 py-1 rounded-lg" title={`${getRatingsCount(seller)} reviews`}>
                               <Star className="w-3 h-3 fill-amber-400 text-amber-400" aria-hidden="true" />
                               <span className="text-xs font-semibold text-amber-700">
                                 {getSellerRating(seller)}
                               </span>
+                              <span className="text-[10px] text-amber-600/70 ml-0.5">({getRatingsCount(seller)})</span>
                             </div>
                           </div>
                           

@@ -166,7 +166,7 @@ const ProductCard = React.memo(({ product, formatPrice, addToCart, addingToCart,
       <div className="flex items-center gap-1.5 mb-2">
         <div className="flex items-center gap-0.5 bg-amber-50 px-1.5 py-0.5 rounded-lg">
           <Star className="w-2.5 h-2.5 fill-amber-400 text-amber-400" aria-hidden="true" />
-          <span className="text-[10px] font-bold text-amber-700">{product.rating || 4.5}</span>
+          <span className="text-[10px] font-bold text-amber-700">{product.average_rating ? product.average_rating.toFixed(1) : '5.0'}</span>
         </div>
         <span className="text-[9px] text-gray-400" aria-hidden="true">•</span>
         <span className="text-[10px] text-gray-500 font-medium">{product.sales_count || 0} {t('buyer.categoryProducts.sold')}</span>
@@ -256,7 +256,7 @@ const ProductListItem = React.memo(({ product, formatPrice, addToCart, addingToC
             <div className="flex flex-wrap items-center gap-2 mt-1.5">
               <div className="flex items-center gap-0.5 bg-amber-50 px-1.5 py-0.5 rounded-lg">
                 <Star className="w-2.5 h-2.5 fill-amber-400 text-amber-400" aria-hidden="true" />
-                <span className="text-[10px] font-bold text-amber-700">{product.rating || 4.5}</span>
+                <span className="text-[10px] font-bold text-amber-700">{product.average_rating ? product.average_rating.toFixed(1) : '5.0'}</span>
               </div>
               <span className="text-[9px] text-gray-400" aria-hidden="true">•</span>
               <span className="text-[10px] text-gray-500 font-medium">{product.sales_count || 0} {t('buyer.categoryProducts.sold')}</span>

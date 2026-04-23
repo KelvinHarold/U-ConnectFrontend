@@ -483,9 +483,10 @@ const LandingPage = () => {
 
         <div className="flex items-center gap-1 mb-2">
           {[1,2,3,4,5].map(i => (
-            <FaStar key={i} className={`w-2.5 h-2.5 ${i <= 4 ? 'text-amber-400' : 'text-stone-200'}`} />
+            <FaStar key={i} className={`w-2.5 h-2.5 ${i <= Math.round(product.average_rating || 5) ? 'text-amber-400' : 'text-stone-200'}`} />
           ))}
-          <span className="text-[9px] text-stone-400 ml-0.5">{product.sales_count || 0} {t('common.results')}</span>
+          <span className="text-[9px] text-stone-500 ml-0.5 font-semibold">{product.average_rating ? product.average_rating.toFixed(1) : '5.0'}</span>
+          <span className="text-[9px] text-stone-400 ml-0.5">({product.sales_count || 0} {t('common.results')})</span>
         </div>
 
         <div className="flex items-center justify-between mt-auto">

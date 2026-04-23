@@ -129,6 +129,7 @@ const ProductDetails = () => {
   const [comments, setComments] = useState([]);
   const [commentsLoading, setCommentsLoading] = useState(false);
   const [newComment, setNewComment] = useState("");
+  const [newRating, setNewRating] = useState(5);
   const [submittingComment, setSubmittingComment] = useState(false);
   const [commentError, setCommentError] = useState(null);
   const [deletingComment, setDeletingComment] = useState(null);
@@ -165,10 +166,12 @@ const ProductDetails = () => {
     setCommentError(null);
     try {
       const response = await api.post(`/products/${id}/comments`, {
-        body: newComment.trim()
+        body: newComment.trim(),
+        rating: newRating
       });
       setComments(prev => [response.data.comment || response.data, ...prev]);
       setNewComment("");
+      setNewRating(5);
       showToast(t('buyer.productDetails.commentPosted'), 'success');
     } catch (err) {
       const errorMsg = err.response?.data?.message || t('buyer.productDetails.failedToPostComment');
@@ -547,9 +550,18 @@ const ProductDetails = () => {
                         <p className="text-gray-900 font-bold text-base">
                           {product.seller?.store_name || product.seller?.name}
                         </p>
-                        <div className="flex items-center gap-1 mt-1">
-                          <BadgeCheck className="w-4 h-4 text-emerald-500" />
-                          <span className="text-xs font-medium text-emerald-600">{t('buyer.productDetails.verifiedSeller')}</span>
+                        <div className="flex items-center gap-3 mt-1">
+                          <div className="flex items-center gap-1">
+                            <BadgeCheck className="w-4 h-4 text-emerald-500" />
+                            <span className="text-xs font-medium text-emerald-600">{t('buyer.productDetails.verifiedSeller')}</span>
+                          </div>
+                          {product.seller?.average_rating && (
+                            <div className="flex items-center gap-1 border-l border-gray-200 pl-3">
+                              <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+                              <span className="text-sm font-bold text-gray-700">{product.seller.average_rating}</span>
+                              <span className="text-xs text-gray-400">({product.seller.ratings_count || 0})</span>
+                            </div>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -726,6 +738,21 @@ const ProductDetails = () => {
                           )}
                         </div>
                         <div className="flex-1">
+                          <div className="mb-3 flex items-center gap-2">
+                            <span className="text-sm font-semibold text-gray-700">Rate this product:</span>
+                            <div className="flex items-center gap-1">
+                              {[1, 2, 3, 4, 5].map((star) => (
+                                <button
+                                  key={star}
+                                  type="button"
+                                  onClick={() => setNewRating(star)}
+                                  className="focus:outline-none hover:scale-110 transition-transform"
+                                >
+                                  <Star className={`w-5 h-5 ${star <= newRating ? 'fill-amber-400 text-amber-400' : 'text-gray-300'}`} />
+                                </button>
+                              ))}
+                            </div>
+                          </div>
                           <textarea
                             value={newComment}
                             onChange={(e) => setNewComment(e.target.value)}
@@ -812,7 +839,12 @@ const ProductDetails = () => {
                                     {t('buyer.productDetails.you')}
                                   </span>
                                 )}
-                                <span className="text-xs text-gray-400 flex items-center gap-1">
+                                <div className="flex items-center gap-0.5 ml-2">
+                                  {[1, 2, 3, 4, 5].map((star) => (
+                                    <Star key={star} className={`w-3 h-3 ${star <= (comment.rating || 5) ? 'fill-amber-400 text-amber-400' : 'text-gray-300'}`} />
+                                  ))}
+                                </div>
+                                <span className="text-xs text-gray-400 flex items-center gap-1 ml-2">
                                   <Clock className="w-3 h-3" />
                                   {formatCommentDate(comment.created_at)}
                                 </span>
