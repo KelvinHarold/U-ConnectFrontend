@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useLanguage } from "../contexts/LanguageContext";
-import LanguageSelector from "../components/common/LanguageSelector";
 import api from "../api/axios";
 import { 
   UserIcon, 
@@ -63,11 +62,6 @@ const Register = () => {
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] flex flex-col items-center justify-center p-6">
-      {/* Language Selector - Top Right */}
-      <div className="absolute top-4 right-4 z-50">
-        <LanguageSelector />
-      </div>
-
       <div className="max-w-lg w-full">
         <div className="bg-white rounded-2xl shadow-xl shadow-blue-900/5 overflow-hidden border border-gray-100">
           
@@ -251,8 +245,8 @@ const Register = () => {
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-[#5C352C]"
-                    aria-label={showPassword ? "Hide password" : "Show password"}
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-[#5C352C] transition-colors"
+                    aria-label={showPassword ? t('register.hidePassword') : t('register.showPassword')}
                   >
                     {showPassword ? <EyeSlashIcon className="h-5 w-5" /> : <EyeIcon className="h-5 w-5" />}
                   </button>
@@ -264,7 +258,7 @@ const Register = () => {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full bg-[#5C352C] hover:bg-[#4a2b24] text-white font-bold py-3 px-4 rounded-xl shadow-lg shadow-[#5C352C]/20 transition-all active:scale-[0.98] disabled:opacity-70"
+                  className="w-full bg-[#5C352C] hover:bg-[#4a2b24] text-white font-bold py-3 px-4 rounded-xl shadow-lg shadow-[#5C352C]/20 transition-all active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed"
                 >
                   {loading ? t('register.creatingAccount') : t('register.joinCommunity')}
                 </button>

@@ -2,7 +2,6 @@ import { useState, useContext } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../contexts/AuthContext";
 import { useLanguage } from "../contexts/LanguageContext";
-import LanguageSelector from "../components/common/LanguageSelector";
 import { EnvelopeIcon, LockClosedIcon, EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
 import '../index.css';
 
@@ -33,11 +32,6 @@ const Login = () => {
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] flex flex-col items-center justify-center p-4">
-      {/* Language Selector - Top Right */}
-      <div className="absolute top-4 right-4 z-50">
-        <LanguageSelector />
-      </div>
-
       <div className="max-w-md w-full">
         <div className="bg-white rounded-2xl shadow-xl shadow-blue-900/5 overflow-hidden border border-gray-100">
           <div className="pt-10 pb-6 text-center px-8">

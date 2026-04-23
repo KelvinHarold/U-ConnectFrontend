@@ -14,7 +14,7 @@ import {
   Minus, 
   CreditCard,
   Truck,
-  MessageCircle,
+  Mail,
   X,
   Package,
   AlertCircle,
@@ -221,18 +221,6 @@ const Cart = () => {
       setCheckoutErrors(prev => ({ ...prev, [name]: '' }));
     }
   };
-
-  const openWhatsApp = (whatsappUrls) => {
-    if (!whatsappUrls) return;
-    
-    const appWindow = window.open(whatsappUrls.app, '_blank');
-    setTimeout(() => {
-      if (!appWindow || appWindow.closed) {
-        window.open(whatsappUrls.web, '_blank');
-      }
-    }, 1000);
-  };
-
   const handleCheckout = async () => {
     if (!checkoutData.delivery_address.trim()) {
       setCheckoutErrors({ delivery_address: t('buyer.cart.deliveryAddressRequired') });
@@ -247,10 +235,6 @@ const Cart = () => {
       const response = await api.post('/buyer/cart/checkout', checkoutData);
       showToast(t('buyer.cart.orderPlacedSuccess'), 'success');
       announceToScreenReader(t('buyer.cart.orderPlacedAria'));
-      
-      if (response.data.whatsapp_urls) {
-        openWhatsApp(response.data.whatsapp_urls);
-      }
       
       setTimeout(() => {
         navigate(`/buyer/orders/${response.data.order.id}`);
@@ -702,15 +686,15 @@ const Cart = () => {
                 </div>
               </div>
               
-              {/* Enhanced WhatsApp Info */}
+              {/* Enhanced Email Notification Info */}
               <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-4 border-2 border-green-100">
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                    <MessageCircle className="w-4 h-4 text-green-600" aria-hidden="true" />
+                    <Mail className="w-4 h-4 text-green-600" aria-hidden="true" />
                   </div>
                   <div>
-                    <span className="text-sm font-bold text-green-800">{t('buyer.cart.whatsappNotification')}</span>
-                    <p className="text-xs text-green-600 mt-0.5">{t('buyer.cart.whatsappDescription')}</p>
+                    <span className="text-sm font-bold text-green-800">Email Notification</span>
+                    <p className="text-xs text-green-600 mt-0.5">The seller will receive your order details securely via email.</p>
                   </div>
                 </div>
               </div>
