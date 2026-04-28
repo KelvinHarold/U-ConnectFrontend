@@ -420,19 +420,11 @@ const SellerCategories = () => {
                         {/* Enhanced Overlay Gradient */}
                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                         
-                        {/* Enhanced Category Badges */}
+                        {/* Enhanced Category Badges - Subcategories Count Only */}
                         <div className="absolute top-2 right-2 flex gap-1 z-10">
                           <div className="px-2 py-1 text-[10px] font-bold rounded-lg bg-white/95 backdrop-blur-sm text-[#5C352C] shadow-md flex items-center gap-1">
                             <Layers className="w-2.5 h-2.5" />
                             {category.subcategories_count || 0} {t('seller.categories.subcategoriesShort')}
-                          </div>
-                        </div>
-                        
-                        {/* Products Count Overlay */}
-                        <div className="absolute bottom-2 left-2 z-10">
-                          <div className="px-2 py-1 text-[10px] font-bold rounded-lg bg-black/70 backdrop-blur-sm text-white shadow-md flex items-center gap-1">
-                            <Package className="w-2.5 h-2.5" />
-                            {category.products_count || 0} {t('seller.categories.productsShort')}
                           </div>
                         </div>
                       </div>
