@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import MainLayout from "../../../layouts/MainLayout";
 import api from "../../../api/axios";
 import { useToast } from "../../../contexts/ToastContext";
+import { useLanguage } from "../../../contexts/LanguageContext";
 import { 
   AlertTriangle, 
   RefreshCw, 
@@ -63,6 +64,7 @@ const SkeletonProductCard = () => (
 
 const LowStockProducts = () => {
   const { showToast } = useToast();
+  const { t } = useLanguage();
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -110,14 +112,14 @@ const LowStockProducts = () => {
       setProducts(response.data || []);
       setFilteredProducts(response.data || []);
     } catch (error) {
-      setError('Failed to load low stock products');
-      showToast('Failed to load low stock products', 'error');
+      setError(t('seller.lowStockProducts.failedToLoad'));
+      showToast(t('seller.lowStockProducts.failedToLoad'), 'error');
     } finally {
       setLoading(false);
     }
   };
 
-  const formatPrice = (price) => `Tsh ${Number(price || 0).toLocaleString()}`;
+  const formatPrice = (price) => `${t('seller.lowStockProducts.currency')} ${Number(price || 0).toLocaleString()}`;
 
   const totalValue = products.reduce((sum, p) => sum + (p.price * p.quantity), 0);
   const totalUnits = products.reduce((sum, p) => sum + p.quantity, 0);
@@ -157,7 +159,12 @@ const LowStockProducts = () => {
           <div className="max-w-md mx-auto bg-white rounded-xl border border-gray-100 p-8 text-center">
             <AlertTriangle className="w-12 h-12 text-red-400 mx-auto mb-3" />
             <p className="text-red-600">{error}</p>
-            <button onClick={fetchLowStockProducts} className="mt-4 px-4 py-2 bg-[#5C352C] text-white rounded-lg text-sm">Try Again</button>
+            <button 
+              onClick={fetchLowStockProducts} 
+              className="mt-4 px-4 py-2 bg-[#5C352C] text-white rounded-lg text-sm"
+            >
+              {t('seller.lowStockProducts.tryAgain')}
+            </button>
           </div>
         </div>
       </MainLayout>
@@ -176,15 +183,20 @@ const LowStockProducts = () => {
                 <div className="p-2 bg-amber-500/10 rounded-xl">
                   <AlertTriangle className="w-5 h-5 text-amber-600" />
                 </div>
-                <h1 className="text-xl font-semibold text-gray-900">Low Stock Products</h1>
+                <h1 className="text-xl font-semibold text-gray-900">{t('seller.lowStockProducts.title')}</h1>
               </div>
-              <p className="text-sm text-gray-500 ml-11">Products that need restocking</p>
+              <p className="text-sm text-gray-500 ml-11">{t('seller.lowStockProducts.subtitle')}</p>
             </div>
             <div className="flex gap-3">
               <Link to="/seller/inventory/bulk-update">
-                <button className="px-3 py-1.5 text-sm text-white bg-[#5C352C] rounded-lg hover:bg-[#4A2A22] transition-colors">Bulk Update</button>
+                <button className="px-3 py-1.5 text-sm text-white bg-[#5C352C] rounded-lg hover:bg-[#4A2A22] transition-colors">
+                  {t('seller.lowStockProducts.bulkUpdate')}
+                </button>
               </Link>
-              <button onClick={fetchLowStockProducts} className="px-3 py-1.5 text-sm text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+              <button 
+                onClick={fetchLowStockProducts} 
+                className="px-3 py-1.5 text-sm text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+              >
                 <RefreshCw className="w-4 h-4" />
               </button>
             </div>
@@ -195,19 +207,19 @@ const LowStockProducts = () => {
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
               <div className="bg-white rounded-xl border border-gray-100 p-3">
                 <p className="text-2xl font-bold text-amber-600">{products.length}</p>
-                <p className="text-xs text-gray-500">Low Stock Items</p>
+                <p className="text-xs text-gray-500">{t('seller.lowStockProducts.lowStockItems')}</p>
               </div>
               <div className="bg-white rounded-xl border border-gray-100 p-3">
                 <p className="text-2xl font-bold text-rose-600">{criticalCount}</p>
-                <p className="text-xs text-gray-500">Critical (0 Stock)</p>
+                <p className="text-xs text-gray-500">{t('seller.lowStockProducts.critical')}</p>
               </div>
               <div className="bg-white rounded-xl border border-gray-100 p-3">
                 <p className="text-2xl font-bold text-blue-600">{totalUnits}</p>
-                <p className="text-xs text-gray-500">Total Units</p>
+                <p className="text-xs text-gray-500">{t('seller.lowStockProducts.totalUnits')}</p>
               </div>
               <div className="bg-white rounded-xl border border-gray-100 p-3">
                 <p className="text-sm font-bold text-gray-900">{formatPrice(totalValue)}</p>
-                <p className="text-xs text-gray-500">Inventory Value</p>
+                <p className="text-xs text-gray-500">{t('seller.lowStockProducts.inventoryValue')}</p>
               </div>
             </div>
           )}
@@ -218,13 +230,20 @@ const LowStockProducts = () => {
               <div className="flex flex-wrap gap-3">
                 <div className="flex-1 min-w-[200px] relative">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                  <input type="text" placeholder="Search products..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-[#5C352C]" />
+                  <input 
+                    type="text" 
+                    placeholder={t('seller.lowStockProducts.searchPlaceholder')} 
+                    value={searchTerm} 
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-[#5C352C]" 
+                  />
                 </div>
-                <button onClick={() => setShowFilters(!showFilters)}
-                  className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm transition-colors ${showFilters ? 'bg-[#5C352C] text-white' : 'bg-gray-100 text-gray-600'}`}>
+                <button 
+                  onClick={() => setShowFilters(!showFilters)}
+                  className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm transition-colors ${showFilters ? 'bg-[#5C352C] text-white' : 'bg-gray-100 text-gray-600'}`}
+                >
                   <Filter className="w-4 h-4" />
-                  Sort
+                  {t('seller.lowStockProducts.sort')}
                   <ChevronDown className={`w-4 h-4 transition-transform ${showFilters ? 'rotate-180' : ''}`} />
                 </button>
               </div>
@@ -232,17 +251,30 @@ const LowStockProducts = () => {
               {showFilters && (
                 <div className="mt-4 pt-4 border-t border-gray-100">
                   <div className="flex flex-wrap gap-2">
-                    {[
-                      { value: "stock_asc", label: "Stock: Low to High" },
-                      { value: "stock_desc", label: "Stock: High to Low" },
-                      { value: "price_asc", label: "Price: Low to High" },
-                      { value: "price_desc", label: "Price: High to Low" }
-                    ].map(option => (
-                      <button key={option.value} onClick={() => setSortBy(option.value)}
-                        className={`px-3 py-1.5 text-xs rounded-lg transition-colors ${sortBy === option.value ? 'bg-[#5C352C] text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>
-                        {option.label}
-                      </button>
-                    ))}
+                    <button 
+                      onClick={() => setSortBy("stock_asc")}
+                      className={`px-3 py-1.5 text-xs rounded-lg transition-colors ${sortBy === "stock_asc" ? 'bg-[#5C352C] text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+                    >
+                      {t('seller.lowStockProducts.stockLowToHigh')}
+                    </button>
+                    <button 
+                      onClick={() => setSortBy("stock_desc")}
+                      className={`px-3 py-1.5 text-xs rounded-lg transition-colors ${sortBy === "stock_desc" ? 'bg-[#5C352C] text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+                    >
+                      {t('seller.lowStockProducts.stockHighToLow')}
+                    </button>
+                    <button 
+                      onClick={() => setSortBy("price_asc")}
+                      className={`px-3 py-1.5 text-xs rounded-lg transition-colors ${sortBy === "price_asc" ? 'bg-[#5C352C] text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+                    >
+                      {t('seller.lowStockProducts.priceLowToHigh')}
+                    </button>
+                    <button 
+                      onClick={() => setSortBy("price_desc")}
+                      className={`px-3 py-1.5 text-xs rounded-lg transition-colors ${sortBy === "price_desc" ? 'bg-[#5C352C] text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+                    >
+                      {t('seller.lowStockProducts.priceHighToLow')}
+                    </button>
                   </div>
                 </div>
               )}
@@ -253,8 +285,8 @@ const LowStockProducts = () => {
           {!loading && !error && products.length === 0 && (
             <div className="bg-white rounded-xl border border-gray-100 p-12 text-center">
               <CheckCircle className="w-12 h-12 text-emerald-400 mx-auto mb-3" />
-              <h3 className="text-base font-medium text-gray-900 mb-1">No Low Stock Products</h3>
-              <p className="text-sm text-gray-500">All products have sufficient stock levels</p>
+              <h3 className="text-base font-medium text-gray-900 mb-1">{t('seller.lowStockProducts.noLowStock')}</h3>
+              <p className="text-sm text-gray-500">{t('seller.lowStockProducts.allProductsSufficient')}</p>
             </div>
           )}
 
@@ -270,33 +302,44 @@ const LowStockProducts = () => {
                           <h3 className="font-medium text-gray-900 text-sm hover:text-[#5C352C]">{product.name}</h3>
                         </Link>
                         <span className={`px-2 py-0.5 text-[10px] font-medium rounded-full ${product.quantity === 0 ? 'bg-rose-50 text-rose-600' : 'bg-amber-50 text-amber-600'}`}>
-                          {product.quantity === 0 ? 'Out of Stock' : 'Low Stock'}
+                          {product.quantity === 0 ? t('seller.lowStockProducts.outOfStock') : t('seller.lowStockProducts.lowStock')}
                         </span>
                       </div>
                       
-                      <p className="text-xs text-gray-500 mb-3 line-clamp-2">{product.description || 'No description'}</p>
+                      <p className="text-xs text-gray-500 mb-3 line-clamp-2">
+                        {product.description || t('seller.lowStockProducts.noDescription')}
+                      </p>
                       
                       <div className="mb-3">
                         <div className="flex justify-between text-xs mb-1">
-                          <span className="text-gray-500">Stock</span>
-                          <span className={`font-medium ${product.quantity === 0 ? 'text-rose-600' : 'text-amber-600'}`}>{product.quantity} units</span>
+                          <span className="text-gray-500">{t('seller.lowStockProducts.stock')}</span>
+                          <span className={`font-medium ${product.quantity === 0 ? 'text-rose-600' : 'text-amber-600'}`}>
+                            {product.quantity} {t('seller.lowStockProducts.units')}
+                          </span>
                         </div>
                         <div className="w-full bg-gray-100 rounded-full h-1.5">
-                          <div className={`h-1.5 rounded-full ${product.quantity === 0 ? 'bg-rose-500' : 'bg-amber-500'}`} style={{ width: `${Math.min(100, (product.quantity / (product.min_stock_alert || 5)) * 100)}%` }} />
+                          <div 
+                            className={`h-1.5 rounded-full ${product.quantity === 0 ? 'bg-rose-500' : 'bg-amber-500'}`} 
+                            style={{ width: `${Math.min(100, (product.quantity / (product.min_stock_alert || 5)) * 100)}%` }} 
+                          />
                         </div>
                       </div>
                       
                       <div className="flex justify-between text-xs mb-3">
-                        <span className="text-gray-500">Alert at</span>
-                        <span className="text-gray-700">{product.min_stock_alert || 5} units</span>
+                        <span className="text-gray-500">{t('seller.lowStockProducts.alertAt')}</span>
+                        <span className="text-gray-700">{product.min_stock_alert || 5} {t('seller.lowStockProducts.units')}</span>
                       </div>
                       
                       <div className="flex gap-2 pt-2">
                         <Link to={`/seller/products/${product.id}`} className="flex-1">
-                          <button className="w-full py-1.5 text-xs text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">View</button>
+                          <button className="w-full py-1.5 text-xs text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                            {t('seller.lowStockProducts.view')}
+                          </button>
                         </Link>
                         <Link to={`/seller/products/${product.id}/edit`} className="flex-1">
-                          <button className="w-full py-1.5 text-xs text-white bg-[#5C352C] rounded-lg hover:bg-[#4A2A22] transition-colors">Restock</button>
+                          <button className="w-full py-1.5 text-xs text-white bg-[#5C352C] rounded-lg hover:bg-[#4A2A22] transition-colors">
+                            {t('seller.lowStockProducts.restock')}
+                          </button>
                         </Link>
                       </div>
                     </div>
@@ -307,8 +350,15 @@ const LowStockProducts = () => {
               {filteredProducts.length === 0 && searchTerm && (
                 <div className="bg-white rounded-xl p-8 text-center">
                   <Search className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-                  <p className="text-sm text-gray-500">No products found matching "{searchTerm}"</p>
-                  <button onClick={() => setSearchTerm("")} className="mt-2 text-sm text-[#5C352C] hover:underline">Clear search</button>
+                  <p className="text-sm text-gray-500">
+                    {t('seller.lowStockProducts.noProductsFound', { searchTerm })}
+                  </p>
+                  <button 
+                    onClick={() => setSearchTerm("")} 
+                    className="mt-2 text-sm text-[#5C352C] hover:underline"
+                  >
+                    {t('seller.lowStockProducts.clearSearch')}
+                  </button>
                 </div>
               )}
 
@@ -317,10 +367,17 @@ const LowStockProducts = () => {
                 <div className="flex items-center justify-between flex-wrap gap-3">
                   <div className="flex items-center gap-2">
                     <TrendingUp className="w-4 h-4 text-amber-600" />
-                    <p className="text-xs text-amber-700">You have {products.length} product(s) with low stock. {criticalCount > 0 && `${criticalCount} product(s) out of stock.`}</p>
+                    <p className="text-xs text-amber-700">
+                      {criticalCount > 0 
+                        ? t('seller.lowStockProducts.recommendationWithCritical', { count: products.length, critical: criticalCount })
+                        : t('seller.lowStockProducts.recommendation', { count: products.length })
+                      }
+                    </p>
                   </div>
                   <Link to="/seller/inventory/bulk-update">
-                    <button className="px-3 py-1 text-xs bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors">Bulk Update →</button>
+                    <button className="px-3 py-1 text-xs bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors">
+                      {t('seller.lowStockProducts.bulkUpdateButton')} →
+                    </button>
                   </Link>
                 </div>
               </div>

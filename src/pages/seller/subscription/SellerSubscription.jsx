@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useToast } from '../../../contexts/ToastContext';
+import { useLanguage } from '../../../contexts/LanguageContext';
 import MainLayout from '../../../layouts/MainLayout';
 import api from '../../../api/axios';
 import { 
@@ -63,6 +64,7 @@ const SkeletonHistoryRow = () => (
 
 const SellerSubscription = () => {
   const { showToast } = useToast();
+  const { t } = useLanguage();
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [data, setData] = useState({
@@ -95,7 +97,7 @@ const SellerSubscription = () => {
       const response = await api.get('/seller/subscription');
       setData(response.data);
     } catch (error) {
-      showToast('Failed to load subscription details', 'error');
+      showToast(t('seller.subscription.loadFailed'), 'error');
     } finally {
       setLoading(false);
     }
@@ -105,7 +107,7 @@ const SellerSubscription = () => {
     const file = e.target.files[0];
     if (file) {
       if (file.size > 2 * 1024 * 1024) {
-        showToast('Image size must be less than 2MB', 'error');
+        showToast(t('seller.subscription.invalidFileSize'), 'error');
         return;
       }
       setPaymentProof(file);
@@ -116,7 +118,7 @@ const SellerSubscription = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!paymentProof) {
-      showToast('Please upload payment proof', 'error');
+      showToast(t('seller.subscription.noFileSelected'), 'error');
       return;
     }
 
@@ -127,12 +129,12 @@ const SellerSubscription = () => {
       await api.post('/seller/subscription', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
-      showToast('Subscription request submitted!', 'success');
+      showToast(t('seller.subscription.uploadSuccess'), 'success');
       setPaymentProof(null);
       setPreviewUrl('');
       fetchSubscriptionData();
     } catch (error) {
-      showToast(error.response?.data?.message || 'Failed to submit request', 'error');
+      showToast(error.response?.data?.message || t('seller.subscription.uploadFailed'), 'error');
     } finally {
       setSubmitting(false);
     }
@@ -141,13 +143,13 @@ const SellerSubscription = () => {
   const getStatusConfig = (status) => {
     switch (status) {
       case 'active':
-        return { color: 'text-emerald-600', bg: 'bg-emerald-50', text: 'Active', icon: <CheckCircle className="w-4 h-4" /> };
+        return { color: 'text-emerald-600', bg: 'bg-emerald-50', text: t('seller.subscription.active'), icon: <CheckCircle className="w-4 h-4" /> };
       case 'pending':
-        return { color: 'text-amber-600', bg: 'bg-amber-50', text: 'Pending', icon: <Clock className="w-4 h-4" /> };
+        return { color: 'text-amber-600', bg: 'bg-amber-50', text: t('seller.subscription.pending'), icon: <Clock className="w-4 h-4" /> };
       case 'rejected':
-        return { color: 'text-rose-600', bg: 'bg-rose-50', text: 'Rejected', icon: <XCircle className="w-4 h-4" /> };
+        return { color: 'text-rose-600', bg: 'bg-rose-50', text: t('seller.subscription.rejected'), icon: <XCircle className="w-4 h-4" /> };
       default:
-        return { color: 'text-gray-500', bg: 'bg-gray-100', text: 'Inactive', icon: <AlertCircle className="w-4 h-4" /> };
+        return { color: 'text-gray-500', bg: 'bg-gray-100', text: t('seller.subscription.inactive'), icon: <AlertCircle className="w-4 h-4" /> };
     }
   };
 
@@ -194,15 +196,15 @@ const SellerSubscription = () => {
           
           {/* Header */}
           <div>
-            <h1 className="text-xl font-semibold text-gray-900">Subscription Plan</h1>
-            <p className="text-sm text-gray-500 mt-1">Manage your seller account subscription</p>
+            <h1 className="text-xl font-semibold text-gray-900">{t('seller.subscription.title')}</h1>
+            <p className="text-sm text-gray-500 mt-1">{t('seller.subscription.subtitle')}</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             
             {/* Status Card */}
             <div className="bg-white rounded-xl border border-gray-100 p-5">
-              <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-4">Current Status</h2>
+              <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-4">{t('seller.subscription.currentStatus')}</h2>
               <div className="flex flex-col items-center p-4 bg-gray-50 rounded-lg">
                 <div className={`w-14 h-14 rounded-full flex items-center justify-center mb-3 ${statusConfig.bg} ${statusConfig.color}`}>
                   {statusConfig.icon}
@@ -210,11 +212,11 @@ const SellerSubscription = () => {
                 <span className={`text-base font-semibold ${statusConfig.color}`}>{statusConfig.text}</span>
                 {currentSub?.status === 'active' && currentSub.ends_at && (
                   <p className="text-xs text-gray-500 mt-3 text-center">
-                    Valid until: <span className="font-medium text-gray-700">{formatDate(currentSub.ends_at)}</span>
+                    {t('seller.subscription.validUntil')} <span className="font-medium text-gray-700">{formatDate(currentSub.ends_at)}</span>
                   </p>
                 )}
                 {currentSub?.status === 'pending' && (
-                  <p className="text-xs text-gray-500 mt-3 text-center">Awaiting admin verification</p>
+                  <p className="text-xs text-gray-500 mt-3 text-center">{t('seller.subscription.awaitingVerification')}</p>
                 )}
               </div>
             </div>
@@ -224,30 +226,30 @@ const SellerSubscription = () => {
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-base font-semibold text-gray-900 flex items-center gap-2">
                   <CreditCard className="w-4 h-4 text-[#5C352C]" />
-                  Activate / Renew
+                  {t('seller.subscription.activateRenew')}
                 </h2>
                 <div className="bg-[#5C352C]/10 text-[#5C352C] px-3 py-1 rounded-full text-xs font-bold">
-                  {formatCurrency(data.price)} / month
+                  {formatCurrency(data.price)} {t('seller.subscription.perMonth')}
                 </div>
               </div>
 
               {/* Payment Info Box */}
               <div className="bg-gradient-to-r from-[#5C352C] to-[#7A4B3E] rounded-lg p-4 text-white mb-5">
-                <p className="text-white/80 text-[10px] mb-1 uppercase tracking-wider">Send payment to:</p>
+                <p className="text-white/80 text-[10px] mb-1 uppercase tracking-wider">{t('seller.subscription.sendPaymentTo')}</p>
                 <p className="text-lg font-mono font-bold mb-2">{data.payment_number}</p>
-                <p className="text-[10px] text-white/70">Upload a screenshot of the payment confirmation</p>
+                <p className="text-[10px] text-white/70">{t('seller.subscription.uploadConfirmation')}</p>
               </div>
 
               {currentSub?.status === 'pending' ? (
                 <div className="bg-amber-50 rounded-lg p-4 text-center">
                   <Clock className="w-8 h-8 text-amber-500 mx-auto mb-2" />
-                  <h3 className="text-sm font-semibold text-amber-700">Request Pending</h3>
-                  <p className="text-xs text-amber-600 mt-1">Your payment is being verified</p>
+                  <h3 className="text-sm font-semibold text-amber-700">{t('seller.subscription.requestPending')}</h3>
+                  <p className="text-xs text-amber-600 mt-1">{t('seller.subscription.paymentBeingVerified')}</p>
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div>
-                    <label className="block text-xs font-medium text-gray-700 mb-2">Payment Proof</label>
+                    <label className="block text-xs font-medium text-gray-700 mb-2">{t('seller.subscription.paymentProof')}</label>
                     <input type="file" accept="image/jpeg,image/png,image/jpg" onChange={handleFileChange} className="hidden" id="proof-upload" />
                     <label htmlFor="proof-upload" className={`flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer transition-colors ${previewUrl ? 'border-[#5C352C] bg-[#5C352C]/5' : 'border-gray-200 bg-gray-50 hover:bg-gray-100'}`}>
                       {previewUrl ? (
@@ -255,8 +257,8 @@ const SellerSubscription = () => {
                       ) : (
                         <div className="flex flex-col items-center">
                           <Upload className="w-6 h-6 text-gray-400 mb-2" />
-                          <p className="text-xs text-gray-500">Click to upload screenshot</p>
-                          <p className="text-[10px] text-gray-400 mt-1">PNG, JPG up to 2MB</p>
+                          <p className="text-xs text-gray-500">{t('seller.subscription.clickToUpload')}</p>
+                          <p className="text-[10px] text-gray-400 mt-1">{t('seller.subscription.uploadHint')}</p>
                         </div>
                       )}
                     </label>
@@ -264,7 +266,7 @@ const SellerSubscription = () => {
 
                   <button type="submit" disabled={submitting || !paymentProof}
                     className="w-full py-2.5 bg-[#5C352C] text-white rounded-lg font-medium text-sm hover:bg-[#4A2A22] transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
-                    {submitting ? <><Loader2 className="w-4 h-4 animate-spin" /> Submitting...</> : <><Send className="w-4 h-4" /> Submit Request</>}
+                    {submitting ? <><Loader2 className="w-4 h-4 animate-spin" /> {t('seller.subscription.submitting')}</> : <><Send className="w-4 h-4" /> {t('seller.subscription.submitRequest')}</>}
                   </button>
                 </form>
               )}
@@ -276,7 +278,7 @@ const SellerSubscription = () => {
             <div className="p-4 border-b border-gray-100 bg-gray-50">
               <h3 className="text-sm font-semibold text-gray-900 flex items-center gap-2">
                 <Calendar className="w-4 h-4 text-gray-400" />
-                Subscription History
+                {t('seller.subscription.subscriptionHistory')}
               </h3>
             </div>
             <div className="overflow-x-auto">
@@ -284,10 +286,10 @@ const SellerSubscription = () => {
                 <table className="w-full">
                   <thead className="bg-gray-50 border-b border-gray-100">
                     <tr>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">Date</th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">Amount</th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">Period</th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">Status</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">{t('seller.subscription.date')}</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">{t('seller.subscription.amount')}</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">{t('seller.subscription.period')}</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">{t('seller.subscription.status')}</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-100">
@@ -307,7 +309,7 @@ const SellerSubscription = () => {
               ) : (
                 <div className="p-8 text-center">
                   <FileText className="w-10 h-10 text-gray-300 mx-auto mb-2" />
-                  <p className="text-sm text-gray-500">No subscription history</p>
+                  <p className="text-sm text-gray-500">{t('seller.subscription.noHistory')}</p>
                 </div>
               )}
             </div>

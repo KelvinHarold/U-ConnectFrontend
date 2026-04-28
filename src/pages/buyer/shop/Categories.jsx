@@ -475,58 +475,6 @@ const Categories = () => {
                           </p>
                         )}
                         
-                        {/* Enhanced Popular Products Preview */}
-                        {category.popular_products && category.popular_products.length > 0 && (
-                          <div className="mt-3">
-                            <div className="flex items-center gap-1 mb-1.5">
-                              <Star className="w-3 h-3 fill-amber-400 text-amber-400" aria-hidden="true" />
-                              <span className="text-[10px] font-semibold text-gray-600">{t('buyer.categories.popularProducts')}</span>
-                            </div>
-                            <div className="flex gap-2" role="list" aria-label={t('buyer.categories.popularProducts')}>
-                              {category.popular_products.slice(0, 3).map((product, idx) => (
-                                <div 
-                                  key={idx} 
-                                  className="relative group/product"
-                                  role="listitem"
-                                >
-                                  <div className="w-10 h-10 rounded-lg overflow-hidden border-2 border-gray-200 hover:border-[#5C352C] transition-all shadow-sm">
-                                    {product.image && !productImageErrors[product.id] ? (
-                                      <img 
-                                        src={product.image} 
-                                        alt={t('buyer.categories.productImageAlt', { name: product.name })}
-                                        className="w-full h-full object-cover cursor-pointer"
-                                        onError={() => handleProductImageError(product.id)}
-                                        onClick={(e) => {
-                                          e.preventDefault();
-                                          navigate(`/buyer/shop/products/${product.id}`);
-                                        }}
-                                        loading="lazy"
-                                      />
-                                    ) : (
-                                      <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
-                                        <ShoppingBag className="w-4 h-4 text-gray-400" aria-hidden="true" />
-                                      </div>
-                                    )}
-                                  </div>
-                                  {/* Tooltip */}
-                                  <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 hidden group-hover/product:block z-10">
-                                    <div className="bg-gray-900 text-white text-[10px] rounded-lg px-2 py-1 whitespace-nowrap shadow-lg">
-                                      {product.name.length > 20 ? product.name.substring(0, 20) + '...' : product.name}
-                                    </div>
-                                  </div>
-                                </div>
-                              ))}
-                              {category.popular_products.length > 3 && (
-                                <div className="w-10 h-10 bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg flex items-center justify-center border-2 border-gray-200">
-                                  <span className="text-[10px] font-bold text-gray-500">
-                                    +{category.popular_products.length - 3}
-                                  </span>
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                        )}
-                        
                         {/* Highlight search match */}
                         {searchTerm && (
                           <div className="mt-2 text-[10px] text-[#5C352C] font-semibold flex items-center gap-1">

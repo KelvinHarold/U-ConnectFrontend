@@ -3,6 +3,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import MainLayout from '../../../layouts/MainLayout';
 import { announcementService } from '../../../services/announcementService';
 import { useToast } from '../../../contexts/ToastContext';
+import { useLanguage } from '../../../contexts/LanguageContext';
 import { 
   Bell, 
   Calendar, 
@@ -48,6 +49,7 @@ const SkeletonAnnouncement = () => (
 
 const SellerAnnouncements = () => {
   const { showToast } = useToast();
+  const { t } = useLanguage();
   const [announcements, setAnnouncements] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -73,7 +75,7 @@ const SellerAnnouncements = () => {
       const response = await announcementService.getPublishedAnnouncements();
       setAnnouncements(response.data.data || []);
     } catch (error) {
-      const errorMsg = error.response?.data?.message || 'Failed to load announcements';
+      const errorMsg = error.response?.data?.message || t('seller.announcements.failedToLoad');
       showToast(errorMsg, 'error');
       setAnnouncements([]);
     } finally {
@@ -84,12 +86,12 @@ const SellerAnnouncements = () => {
 
   const handleRefresh = () => {
     fetchAnnouncements();
-    showToast('Announcements refreshed', 'info');
+    showToast(t('seller.announcements.refreshed'), 'info');
   };
 
   const formatDateTime = (date) => {
-    if (!date) return 'Date not available';
-    return new Date(date).toLocaleDateString('en-US', {
+    if (!date) return t('seller.announcements.dateNotAvailable');
+    return new Date(date).toLocaleDateString(t('seller.announcements.locale') === 'sw' ? 'sw-TZ' : 'en-US', {
       year: 'numeric',
       month: 'short',
       day: 'numeric'
@@ -105,10 +107,10 @@ const SellerAnnouncements = () => {
     const diffHours = Math.floor(diffMs / 3600000);
     const diffDays = Math.floor(diffMs / 86400000);
 
-    if (diffMins < 1) return 'Just now';
-    if (diffMins < 60) return `${diffMins}m ago`;
-    if (diffHours < 24) return `${diffHours}h ago`;
-    if (diffDays < 7) return `${diffDays}d ago`;
+    if (diffMins < 1) return t('seller.announcements.justNow');
+    if (diffMins < 60) return t('seller.announcements.minutesAgo', { count: diffMins });
+    if (diffHours < 24) return t('seller.announcements.hoursAgo', { count: diffHours });
+    if (diffDays < 7) return t('seller.announcements.daysAgo', { count: diffDays });
     return null;
   };
 
@@ -168,7 +170,7 @@ const SellerAnnouncements = () => {
                 <div className="p-2 bg-[#5C352C]/10 rounded-xl">
                   <Megaphone className="w-5 h-5 text-[#5C352C]" />
                 </div>
-                <h1 className="text-xl font-semibold text-gray-900">Announcements</h1>
+                <h1 className="text-xl font-semibold text-gray-900">{t('seller.announcements.title')}</h1>
               </div>
               <button 
                 onClick={handleRefresh}
@@ -176,10 +178,10 @@ const SellerAnnouncements = () => {
                 className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
               >
                 <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
-                Refresh
+                {t('seller.announcements.refresh')}
               </button>
             </div>
-            <p className="text-sm text-gray-500 mt-1 ml-11">Stay updated with the latest news</p>
+            <p className="text-sm text-gray-500 mt-1 ml-11">{t('seller.announcements.subtitle')}</p>
           </div>
 
           {/* Stats Row */}
@@ -187,7 +189,7 @@ const SellerAnnouncements = () => {
             <div className="grid grid-cols-2 gap-4 mb-6">
               <div className="bg-white rounded-xl border border-gray-100 p-3">
                 <p className="text-2xl font-bold text-gray-900">{announcements.length}</p>
-                <p className="text-xs text-gray-500">Total Updates</p>
+                <p className="text-xs text-gray-500">{t('seller.announcements.totalUpdates')}</p>
               </div>
               <div className="bg-white rounded-xl border border-gray-100 p-3">
                 <p className="text-2xl font-bold text-emerald-600">
@@ -196,7 +198,7 @@ const SellerAnnouncements = () => {
                     return daysOld <= 7;
                   }).length}
                 </p>
-                <p className="text-xs text-gray-500">Recent (7d)</p>
+                <p className="text-xs text-gray-500">{t('seller.announcements.recentUpdates')}</p>
               </div>
             </div>
           )}
@@ -209,7 +211,7 @@ const SellerAnnouncements = () => {
                   <Sparkles className="w-4 h-4 text-yellow-300" />
                 </div>
                 <div className="flex-1">
-                  <p className="text-[10px] font-medium text-yellow-200 uppercase tracking-wide">Latest</p>
+                  <p className="text-[10px] font-medium text-yellow-200 uppercase tracking-wide">{t('seller.announcements.latest')}</p>
                   <p className="text-sm font-medium text-white mt-0.5">{announcements[0]?.title}</p>
                   <p className="text-xs text-white/70 mt-1 line-clamp-1">{announcements[0]?.content}</p>
                 </div>
@@ -226,16 +228,16 @@ const SellerAnnouncements = () => {
               <div className="p-3 bg-gray-100 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-3">
                 <Bell className="w-6 h-6 text-gray-400" />
               </div>
-              <h3 className="text-base font-medium text-gray-900 mb-1">No Announcements</h3>
-              <p className="text-sm text-gray-500">Check back later for updates</p>
+              <h3 className="text-base font-medium text-gray-900 mb-1">{t('seller.announcements.noAnnouncements')}</h3>
+              <p className="text-sm text-gray-500">{t('seller.announcements.checkBackLater')}</p>
             </div>
           ) : (
             <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
               <div className="p-4 border-b border-gray-100 bg-gray-50">
                 <div className="flex items-center gap-2">
                   <Bell className="w-4 h-4 text-[#5C352C]" />
-                  <h3 className="text-sm font-semibold text-gray-900">Recent Announcements</h3>
-                  <span className="ml-auto text-xs text-gray-400">{announcements.length} items</span>
+                  <h3 className="text-sm font-semibold text-gray-900">{t('seller.announcements.recentAnnouncements')}</h3>
+                  <span className="ml-auto text-xs text-gray-400">{announcements.length} {t('seller.announcements.items')}</span>
                 </div>
               </div>
               <div className="divide-y divide-gray-100">
@@ -253,6 +255,7 @@ const SellerAnnouncements = () => {
                       <button
                         onClick={() => setExpandedId(isExpanded ? null : announcement.id)}
                         className="w-full text-left p-4 focus:outline-none"
+                        aria-label={isExpanded ? t('seller.announcements.collapse') : t('seller.announcements.expand')}
                       >
                         <div className="flex items-start justify-between gap-3">
                           <div className="flex-1 min-w-0">
@@ -263,7 +266,7 @@ const SellerAnnouncements = () => {
                               </h3>
                               {isLatest && (
                                 <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[9px] font-medium bg-emerald-50 text-emerald-600">
-                                  New
+                                  {t('seller.announcements.new')}
                                 </span>
                               )}
                             </div>
@@ -279,7 +282,7 @@ const SellerAnnouncements = () => {
                               )}
                               <span className="flex items-center gap-1">
                                 <User className="w-3 h-3" />
-                                {announcement.creator?.name || 'Admin'}
+                                {announcement.creator?.name || t('seller.announcements.admin')}
                               </span>
                             </div>
                             
@@ -310,7 +313,7 @@ const SellerAnnouncements = () => {
                             <div className="flex items-center justify-end gap-2 mt-2">
                               <span className="text-[10px] text-gray-400 flex items-center gap-1">
                                 <CheckCircle className="w-3 h-3" />
-                                Official
+                                {t('seller.announcements.official')}
                               </span>
                             </div>
                           </div>
@@ -328,7 +331,7 @@ const SellerAnnouncements = () => {
             <div className="mt-6 text-center">
               <p className="text-[10px] text-gray-400 flex items-center justify-center gap-1">
                 <AlertCircle className="w-3 h-3" />
-                Announcements are official communications from system administrators
+                {t('seller.announcements.footerNote')}
               </p>
             </div>
           )}

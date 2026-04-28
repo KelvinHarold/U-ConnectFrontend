@@ -39,8 +39,8 @@ export const commonTranslations = {
     },
     footer: {
       copyright: "© {year} U-Connect. All rights reserved.",
-      madeBy: "Made with ",
-      forBetterCommerce: " by PinCodes for better commerce"
+      madeBy: "Made by PinCodes",
+   
     },
   },
   sw: {
@@ -83,8 +83,8 @@ export const commonTranslations = {
     },
      footer: {
       copyright: "© {year} U-Connect. Haki zote zimehifadhiwa.",
-      madeBy: "Imetengenezwa kwa ",
-      forBetterCommerce: " na PinCodes kwa biashara bora"
+      madeBy: "Imetengenezwa na PinCodes",
+    
     },
   }
 };

@@ -571,166 +571,177 @@ const Cart = () => {
         </div>
       </div>
 
-      {/* Enhanced Checkout Modal */}
-      {showCheckoutModal && (
-        <div 
-          className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn"
-          role="dialog"
-          aria-modal="true"
-          aria-label={t('buyer.cart.completeCheckout')}
-          onClick={(e) => {
-            if (e.target === e.currentTarget) setShowCheckoutModal(false);
-          }}
-        >
-          <div 
-            ref={checkoutModalRef}
-            className="bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto animate-slideUp"
+    {/* Professional Checkout Modal - Matching Dashboard Style */}
+{showCheckoutModal && (
+  <div 
+    className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+    role="dialog"
+    aria-modal="true"
+    aria-label={t('buyer.cart.completeCheckout')}
+    onClick={(e) => {
+      if (e.target === e.currentTarget) setShowCheckoutModal(false);
+    }}
+  >
+    <div 
+      ref={checkoutModalRef}
+      className="bg-white rounded-2xl shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto"
+    >
+      {/* Modal Header - Matching Dashboard banner style */}
+      <div className="bg-gradient-to-r from-[#5C352C] to-[#7A4B3E] px-6 py-5 rounded-t-2xl">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
+            <ShoppingCart className="w-5 h-5 text-white" />
+          </div>
+          <div className="flex-1">
+            <h3 className="text-lg font-semibold text-white">{t('buyer.cart.completeCheckout')}</h3>
+            <p className="text-white/60 text-xs mt-0.5">Review and confirm your order</p>
+          </div>
+          <button 
+            onClick={() => setShowCheckoutModal(false)}
+            className="text-white/60 hover:text-white transition-colors p-1.5 rounded-lg hover:bg-white/10"
+            aria-label={t('common.close')}
           >
-            {/* Enhanced Modal Header */}
-            <div className="bg-gradient-to-r from-[#5C352C] to-[#8B5E4F] px-6 py-5 rounded-t-2xl flex justify-between items-center sticky top-0">
-              <div className="flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-white" aria-hidden="true" />
-                <h3 className="text-xl font-bold text-white">{t('buyer.cart.completeCheckout')}</h3>
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+      </div>
+      
+      <div className="p-6 space-y-6">
+        {/* Order Items Preview - Like dashboard stat cards */}
+        <div className="bg-gray-50 rounded-xl p-4 border border-gray-100">
+          <div className="flex items-center gap-2 mb-3">
+            <Package className="w-4 h-4 text-[#5C352C]" />
+            <span className="text-sm font-semibold text-gray-900">{t('buyer.cart.itemsInOrder')}</span>
+            <span className="text-xs text-gray-400 ml-auto">{cart.length} items</span>
+          </div>
+          <div className="space-y-2 max-h-48 overflow-y-auto">
+            {cart.slice(0, 5).map((item) => (
+              <div key={item.id} className="flex justify-between items-center py-2 border-b border-gray-100 last:border-0">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-medium text-gray-500 w-6">{item.quantity}x</span>
+                  <span className="text-sm text-gray-700 truncate max-w-[180px]">{item.product?.name}</span>
+                </div>
+                <span className="text-sm font-semibold text-gray-900">{formatPrice(item.product?.discounted_price * item.quantity)}</span>
               </div>
-              <button 
-                onClick={() => setShowCheckoutModal(false)}
-                className="text-white/70 hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-white rounded-full p-1.5 bg-white/10 hover:bg-white/20"
-                aria-label={t('common.close')}
-              >
-                <X className="w-5 h-5" aria-hidden="true" />
-              </button>
+            ))}
+            {cart.length > 5 && (
+              <p className="text-xs text-gray-400 pt-1">+{cart.length - 5} more items</p>
+            )}
+          </div>
+          <div className="border-t border-gray-200 mt-3 pt-3 flex justify-between">
+            <span className="text-sm font-semibold text-gray-900">{t('buyer.cart.total')}</span>
+            <span className="text-lg font-bold text-[#5C352C]">{formatPrice(summary.subtotal)}</span>
+          </div>
+        </div>
+        
+        {/* Delivery Address - Clean form like dashboard inputs */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2" id="delivery-address-label">
+            <div className="flex items-center gap-2">
+              <MapPin className="w-4 h-4 text-gray-400" />
+              <span>{t('buyer.cart.deliveryAddress')} <span className="text-rose-500">*</span></span>
             </div>
-            
-            <div className="p-6 space-y-6">
-              {/* Enhanced Order Items Preview */}
-              <div className="bg-gradient-to-br from-gray-50 to-white rounded-xl p-5 shadow-inner">
-                <p className="text-sm font-bold text-gray-700 mb-3 flex items-center gap-2">
-                  <Package className="w-4 h-4 text-[#5C352C]" aria-hidden="true" />
-                  {t('buyer.cart.itemsInOrder')}
-                </p>
-                <div className="space-y-2.5 max-h-52 overflow-y-auto">
-                  {cart.slice(0, 5).map((item) => (
-                    <div key={item.id} className="flex justify-between text-sm py-1">
-                      <span className="text-gray-600 truncate max-w-[200px] font-medium">
-                        {item.quantity}x {item.product?.name}
-                      </span>
-                      <span className="font-bold text-gray-900">{formatPrice(item.product?.discounted_price * item.quantity)}</span>
-                    </div>
-                  ))}
-                  {cart.length > 5 && (
-                    <p className="text-xs text-gray-400 font-medium">{t('buyer.cart.moreItems', { count: cart.length - 5 })}</p>
-                  )}
-                </div>
-                <div className="border-t-2 border-gray-200 mt-4 pt-4 flex justify-between font-bold">
-                  <span>{t('buyer.cart.total')}:</span>
-                  <span className="text-xl text-[#5C352C]">{formatPrice(summary.subtotal)}</span>
-                </div>
-              </div>
-              
-              {/* Enhanced Delivery Address */}
-              <div>
-                <label className="block text-sm font-bold text-gray-700 mb-2" id="delivery-address-label">
-                  <div className="flex items-center gap-2">
-                    <MapPin className="w-4 h-4 text-[#5C352C]" aria-hidden="true" />
-                    <span>{t('buyer.cart.deliveryAddress')} <span className="text-rose-500">*</span></span>
-                  </div>
-                </label>
-                <textarea
-                  ref={addressInputRef}
-                  name="delivery_address"
-                  value={checkoutData.delivery_address}
-                  onChange={handleCheckoutInputChange}
-                  rows={isMobile ? 2 : 3}
-                  className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:border-[#5C352C] focus:ring-2 focus:ring-[#5C352C]/20 text-sm transition-colors ${
-                    checkoutErrors.delivery_address ? 'border-rose-500 bg-rose-50' : 'border-gray-200'
-                  }`}
-                  placeholder={t('buyer.cart.deliveryAddressPlaceholder')}
-                  aria-labelledby="delivery-address-label"
-                  aria-required="true"
-                  aria-invalid={!!checkoutErrors.delivery_address}
-                />
-                {checkoutErrors.delivery_address && (
-                  <p className="mt-1.5 text-xs text-rose-500 flex items-center gap-1 font-medium" role="alert">
-                    <AlertCircle className="w-3 h-3" aria-hidden="true" />
-                    {checkoutErrors.delivery_address}
-                  </p>
-                )}
-              </div>
-              
-              {/* Enhanced Order Notes */}
-              <div>
-                <label className="block text-sm font-bold text-gray-700 mb-2" id="order-notes-label">
-                  {t('buyer.cart.orderNotes')}
-                </label>
-                <textarea
-                  name="notes"
-                  value={checkoutData.notes}
-                  onChange={handleCheckoutInputChange}
-                  rows={isMobile ? 2 : 2}
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-[#5C352C] focus:ring-2 focus:ring-[#5C352C]/20 text-sm transition-colors"
-                  placeholder={t('buyer.cart.orderNotesPlaceholder')}
-                  aria-labelledby="order-notes-label"
-                />
-              </div>
-              
-              {/* Enhanced Payment Method Info */}
-              <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-4 border-2 border-blue-100">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                    <CreditCard className="w-4 h-4 text-blue-600" aria-hidden="true" />
-                  </div>
-                  <div>
-                    <span className="text-sm font-bold text-blue-800">{t('buyer.cart.paymentMethod')}</span>
-                    <p className="text-xs text-blue-600 mt-0.5">{t('buyer.cart.paymentDescription')}</p>
-                  </div>
-                </div>
-              </div>
-              
-              {/* Enhanced Email Notification Info */}
-              <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-4 border-2 border-green-100">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                    <Mail className="w-4 h-4 text-green-600" aria-hidden="true" />
-                  </div>
-                  <div>
-                    <span className="text-sm font-bold text-green-800">Email Notification</span>
-                    <p className="text-xs text-green-600 mt-0.5">The seller will receive your order details securely via email.</p>
-                  </div>
-                </div>
-              </div>
-              
-              {/* Enhanced Action Buttons */}
-              <div className="flex flex-col sm:flex-row gap-3 pt-2">
-                <button
-                  onClick={handleCheckout}
-                  disabled={checkoutLoading}
-                  className="flex-1 px-4 py-3 bg-gradient-to-r from-[#5C352C] to-[#8B5E4F] text-white rounded-xl hover:shadow-lg transition-all disabled:opacity-50 flex items-center justify-center gap-2 font-bold focus:outline-none focus:ring-2 focus:ring-[#5C352C] focus:ring-offset-2"
-                  aria-label={t('buyer.cart.placeOrder')}
-                >
-                  {checkoutLoading ? (
-                    <>
-                      <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent" aria-hidden="true"></div>
-                      {t('buyer.cart.processing')}
-                    </>
-                  ) : (
-                    <>
-                      <CheckCircle className="w-4 h-4" aria-hidden="true" />
-                      {t('buyer.cart.placeOrder')}
-                    </>
-                  )}
-                </button>
-                <button
-                  onClick={() => setShowCheckoutModal(false)}
-                  className="flex-1 px-4 py-3 border-2 border-gray-200 text-gray-700 rounded-xl hover:bg-gray-50 hover:border-gray-300 transition-all font-bold focus:outline-none focus:ring-2 focus:ring-gray-400"
-                  aria-label={t('buyer.cart.cancel')}
-                >
-                  {t('buyer.cart.cancel')}
-                </button>
-              </div>
+          </label>
+          <textarea
+            ref={addressInputRef}
+            name="delivery_address"
+            value={checkoutData.delivery_address}
+            onChange={handleCheckoutInputChange}
+            rows={isMobile ? 2 : 3}
+            className={`w-full px-4 py-2.5 border rounded-xl focus:outline-none focus:border-[#5C352C] focus:ring-1 focus:ring-[#5C352C] text-sm transition-colors bg-gray-50 ${
+              checkoutErrors.delivery_address ? 'border-rose-400 bg-rose-50' : 'border-gray-200'
+            }`}
+            placeholder={t('buyer.cart.deliveryAddressPlaceholder')}
+            aria-labelledby="delivery-address-label"
+            aria-required="true"
+            aria-invalid={!!checkoutErrors.delivery_address}
+          />
+          {checkoutErrors.delivery_address && (
+            <p className="mt-1.5 text-xs text-rose-500 flex items-center gap-1" role="alert">
+              <AlertCircle className="w-3 h-3" />
+              {checkoutErrors.delivery_address}
+            </p>
+          )}
+        </div>
+        
+        {/* Order Notes */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2" id="order-notes-label">
+            <div className="flex items-center gap-2">
+              <Clock className="w-4 h-4 text-gray-400" />
+              <span>{t('buyer.cart.orderNotes')}</span>
+              <span className="text-xs text-gray-400 font-normal">(Optional)</span>
+            </div>
+          </label>
+          <textarea
+            name="notes"
+            value={checkoutData.notes}
+            onChange={handleCheckoutInputChange}
+            rows={isMobile ? 2 : 2}
+            className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:border-[#5C352C] focus:ring-1 focus:ring-[#5C352C] text-sm transition-colors bg-gray-50"
+            placeholder={t('buyer.cart.orderNotesPlaceholder')}
+            aria-labelledby="order-notes-label"
+          />
+        </div>
+        
+        {/* Payment Method Info - Like dashboard stat card style */}
+        <div className="bg-blue-50 rounded-xl p-4 border border-blue-100">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+              <CreditCard className="w-4 h-4 text-blue-600" />
+            </div>
+            <div className="flex-1">
+              <span className="text-sm font-semibold text-blue-800">{t('buyer.cart.paymentMethod')}</span>
+              <p className="text-xs text-blue-600 mt-0.5">{t('buyer.cart.paymentDescription')}</p>
             </div>
           </div>
         </div>
-      )}
+        
+        {/* Email Notification Info */}
+        <div className="bg-emerald-50 rounded-xl p-4 border border-emerald-100">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center">
+              <Mail className="w-4 h-4 text-emerald-600" />
+            </div>
+            <div className="flex-1">
+              <span className="text-sm font-semibold text-emerald-800">Email Notification</span>
+              <p className="text-xs text-emerald-600 mt-0.5">Seller receives order details via email</p>
+            </div>
+          </div>
+        </div>
+        
+        {/* Action Buttons - Matching dashboard button style */}
+        <div className="flex flex-col sm:flex-row gap-3 pt-2">
+          <button
+            onClick={handleCheckout}
+            disabled={checkoutLoading}
+            className="flex-1 px-4 py-2.5 bg-gradient-to-r from-[#5C352C] to-[#7A4B3E] text-white rounded-xl hover:shadow-md transition-all disabled:opacity-50 flex items-center justify-center gap-2 font-medium focus:outline-none focus:ring-2 focus:ring-[#5C352C] focus:ring-offset-2"
+            aria-label={t('buyer.cart.placeOrder')}
+          >
+            {checkoutLoading ? (
+              <>
+                <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
+                {t('buyer.cart.processing')}
+              </>
+            ) : (
+              <>
+                <CheckCircle className="w-4 h-4" />
+                {t('buyer.cart.placeOrder')}
+              </>
+            )}
+          </button>
+          <button
+            onClick={() => setShowCheckoutModal(false)}
+            className="flex-1 px-4 py-2.5 border border-gray-200 text-gray-700 rounded-xl hover:bg-gray-50 hover:border-gray-300 transition-all font-medium focus:outline-none focus:ring-2 focus:ring-gray-400"
+            aria-label={t('buyer.cart.cancel')}
+          >
+            {t('buyer.cart.cancel')}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
 
       <InactiveSellerPopup 
         isOpen={showInactiveSellerPopup} 

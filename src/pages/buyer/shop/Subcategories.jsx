@@ -484,53 +484,6 @@ const Subcategories = () => {
                           </p>
                         )}
                         
-                        {/* Enhanced Popular Products Preview */}
-                        {subcategory.popular_products && subcategory.popular_products.length > 0 && (
-                          <div className="mt-3 pt-2 border-t-2 border-gray-100">
-                            <div className="flex items-center gap-1 mb-2">
-                              <Star className="w-3 h-3 fill-amber-400 text-amber-400" aria-hidden="true" />
-                              <span className="text-[10px] font-semibold text-gray-600">{t('buyer.subcategories.popularProducts')}</span>
-                            </div>
-                            <div className="flex items-center gap-2" role="list" aria-label={t('buyer.subcategories.popularProducts')}>
-                              {subcategory.popular_products.slice(0, 3).map((product, idx) => (
-                                <div 
-                                  key={idx} 
-                                  className="relative group/product w-8 h-8 rounded-lg overflow-hidden border border-gray-200 hover:border-[#5C352C] transition-all shadow-sm"
-                                  role="listitem"
-                                >
-                                  <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200">
-                                    {product.image ? (
-                                      <img 
-                                        src={product.image} 
-                                        alt={t('buyer.subcategories.productImageAlt', { name: product.name })} 
-                                        className="w-full h-full object-cover" 
-                                        loading="lazy" 
-                                      />
-                                    ) : (
-                                      <div className="w-full h-full flex items-center justify-center">
-                                        <Package className="w-3 h-3 text-gray-400" aria-hidden="true" />
-                                      </div>
-                                    )}
-                                  </div>
-                                  {/* Tooltip */}
-                                  <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 hidden group-hover/product:block z-10">
-                                    <div className="bg-gray-900 text-white text-[9px] rounded-lg px-1.5 py-0.5 whitespace-nowrap shadow-lg">
-                                      {product.name.length > 15 ? product.name.substring(0, 15) + '...' : product.name}
-                                    </div>
-                                  </div>
-                                </div>
-                              ))}
-                              {subcategory.popular_products.length > 3 && (
-                                <div className="w-8 h-8 bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg flex items-center justify-center border border-gray-200">
-                                  <span className="text-[9px] font-bold text-gray-500">
-                                    +{subcategory.popular_products.length - 3}
-                                  </span>
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                        )}
-                        
                         {/* Highlight search match */}
                         {searchTerm && (
                           <div className="mt-2 text-[10px] text-[#5C352C] font-semibold flex items-center gap-1">

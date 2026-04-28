@@ -4,12 +4,12 @@ import MainLayout from "../../../layouts/MainLayout";
 import api from "../../../api/axios";
 import { useToast } from "../../../contexts/ToastContext";
 import { useLanguage } from "../../../contexts/LanguageContext";
-import { 
-  Store, 
-  Package, 
-  Star, 
-  Search, 
-  RefreshCw, 
+import {
+  Store,
+  Package,
+  Star,
+  Search,
+  RefreshCw,
   ChevronRight,
   TrendingUp,
   Award,
@@ -68,7 +68,7 @@ const Sellers = () => {
   const [showSearch, setShowSearch] = useState(false);
   const [imageErrors, setImageErrors] = useState({});
   const [logoErrors, setLogoErrors] = useState({});
-  
+
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const [lastPage, setLastPage] = useState(1);
@@ -102,11 +102,11 @@ const Sellers = () => {
           search: search || undefined
         }
       });
-      
+
       console.log('Sellers API Response:', response.data);
-      
+
       const sellersData = response.data.data || response.data;
-      
+
       // Log first seller to see available fields
       if (sellersData && sellersData.length > 0) {
         console.log('First seller data:', sellersData[0]);
@@ -114,20 +114,20 @@ const Sellers = () => {
         console.log('profile_photo_url:', sellersData[0].profile_photo_url);
         console.log('cover_image:', sellersData[0].cover_image);
       }
-      
+
       setSellers(sellersData);
       setCurrentPage(response.data.current_page || 1);
       setLastPage(response.data.last_page || 1);
       setTotal(response.data.total || 0);
       setPerPage(response.data.per_page || 6);
-      
+
       if (response.data.total) {
         setStats({
           total_sellers: response.data.total,
           total_products: sellersData.reduce((sum, seller) => sum + (seller.products_count || 0), 0)
         });
       }
-      
+
       setImageErrors({});
       setLogoErrors({});
       announceToScreenReader(t('buyer.sellers.foundSellers', { count: response.data.total || 0, s: response.data.total !== 1 ? 's' : '' }));
@@ -189,7 +189,7 @@ const Sellers = () => {
   const getSellerInitials = (seller) => {
     const displayName = seller.store_name || seller.name;
     if (!displayName) return 'S';
-    
+
     // Get first character
     const firstChar = displayName.trim().charAt(0).toUpperCase();
     return /[A-Z]/i.test(firstChar) ? firstChar : 'S';
@@ -221,21 +221,21 @@ const Sellers = () => {
     if (seller.store_logo_url && !logoErrors[seller.id]) {
       return seller.store_logo_url;
     }
-    
+
     // Try profile_photo_url second (from backend)
     if (seller.profile_photo_url && !logoErrors[seller.id]) {
       return seller.profile_photo_url;
     }
-    
+
     // Try legacy fields if they exist
     if (seller.store_logo && !logoErrors[seller.id]) {
       return seller.store_logo;
     }
-    
+
     if (seller.profile_photo && !logoErrors[seller.id]) {
       return seller.profile_photo;
     }
-    
+
     return null;
   };
 
@@ -288,11 +288,11 @@ const Sellers = () => {
     const maxVisible = 5;
     let startPage = Math.max(1, currentPage - Math.floor(maxVisible / 2));
     let endPage = Math.min(lastPage, startPage + maxVisible - 1);
-    
+
     if (endPage - startPage + 1 < maxVisible) {
       startPage = Math.max(1, endPage - maxVisible + 1);
     }
-    
+
     for (let i = startPage; i <= endPage; i++) {
       pages.push(i);
     }
@@ -303,7 +303,7 @@ const Sellers = () => {
     <MainLayout>
       <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50">
         <div className="p-4 md:p-8">
-          
+
           {/* Enhanced Header with Stats */}
           <div className="mb-8">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -319,7 +319,7 @@ const Sellers = () => {
                 <p className="text-gray-500 text-sm ml-11">{t('buyer.sellers.subtitle')}</p>
               </div>
               <div className="flex items-center gap-3">
-                <div 
+                <div
                   className="bg-white px-4 py-2 rounded-xl shadow-md border border-gray-100"
                   role="status"
                   aria-label={t('buyer.sellers.statsAria', { sellers: stats.total_sellers, products: stats.total_products })}
@@ -379,7 +379,7 @@ const Sellers = () => {
                 )}
               </div>
             )}
-            
+
             {isMobile && !showSearch && (
               <button
                 onClick={() => {
@@ -393,14 +393,14 @@ const Sellers = () => {
                 {t('buyer.sellers.searchSellers')}
               </button>
             )}
-            
+
             {search && (
-              <div 
+              <div
                 className="mt-2 text-sm text-gray-500 bg-white px-4 py-2 rounded-lg inline-block shadow-sm"
                 role="status"
                 aria-live="polite"
               >
-                {total === 1 
+                {total === 1
                   ? t('buyer.sellers.foundSellers', { count: total, s: '' })
                   : t('buyer.sellers.foundSellers', { count: total, s: 's' })
                 } "<span className="font-semibold">{search}</span>"
@@ -412,7 +412,7 @@ const Sellers = () => {
           {loading ? (
             <SkeletonSellersGrid count={12} />
           ) : error ? (
-            <div 
+            <div
               className="bg-rose-50 border-2 border-rose-200 rounded-2xl p-8 text-center shadow-lg"
               role="alert"
               aria-live="polite"
@@ -420,11 +420,11 @@ const Sellers = () => {
               <AlertTriangle className="w-16 h-16 text-rose-500 mx-auto mb-3" aria-hidden="true" />
               <h3 className="text-lg font-bold text-rose-800 mb-2">{t('buyer.sellers.errorLoading')}</h3>
               <p className="text-rose-600 text-sm mb-4">{error}</p>
-              <button 
+              <button
                 onClick={() => {
                   setCurrentPage(1);
                   fetchSellers();
-                }} 
+                }}
                 className="px-6 py-2 bg-rose-600 text-white rounded-xl hover:bg-rose-700 transition-colors text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-2"
                 aria-label={t('buyer.sellers.tryAgain')}
               >
@@ -438,7 +438,7 @@ const Sellers = () => {
                   <Search className="w-20 h-20 mx-auto mb-4 text-gray-300" aria-hidden="true" />
                   <h3 className="text-xl font-bold text-gray-700 mb-2">{t('buyer.sellers.noSellersFound')}</h3>
                   <p className="text-gray-500 text-sm mb-4">{t('buyer.sellers.noSellersMatch')} "{search}"</p>
-                  <button 
+                  <button
                     onClick={clearSearch}
                     className="px-6 py-2 bg-gradient-to-r from-[#5C352C] to-[#8B5E4F] text-white rounded-xl hover:shadow-lg transition-all text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-[#5C352C] focus:ring-offset-2"
                     aria-label={t('buyer.sellers.clearSearchButton')}
@@ -457,7 +457,7 @@ const Sellers = () => {
           ) : (
             <>
               {/* Enhanced Sellers Grid */}
-              <div 
+              <div
                 className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-5"
                 role="list"
                 aria-label={t('buyer.sellers.sellers')}
@@ -470,24 +470,24 @@ const Sellers = () => {
                   const coverUrl = getCoverImageUrl(seller);
                   const hasAvatar = !!avatarUrl;
                   const hasCover = !!coverUrl;
-                  
+
                   console.log(`Seller ${seller.id} - Avatar URL:`, avatarUrl, 'Has Avatar:', hasAvatar);
-                  
+
                   return (
-                    <Link 
-                      key={seller.id} 
+                    <Link
+                      key={seller.id}
                       to={`/buyer/shop/sellers/${seller.id}/products`}
                       className="group block focus:outline-none focus:ring-2 focus:ring-[#5C352C] focus:ring-offset-2 rounded-xl transform transition-all duration-300 hover:scale-105"
                       aria-label={t('buyer.sellers.viewProducts', { name: displayName })}
                     >
                       <div className="bg-white rounded-xl shadow-lg border-2 border-gray-100 overflow-hidden hover:shadow-2xl transition-all duration-300 h-full group-hover:border-[#5C352C]/20">
-                        
+
                         {/* Seller Cover/Banner */}
                         <div className="relative w-full pt-[28%] bg-gradient-to-r from-[#5C352C] to-[#8B5E4F] overflow-hidden">
                           <div className="absolute inset-0">
                             {hasCover ? (
-                              <img 
-                                src={coverUrl} 
+                              <img
+                                src={coverUrl}
                                 alt={t('buyer.sellers.storeCover', { name: displayName })}
                                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                                 onError={() => handleCoverImageError(seller.id)}
@@ -500,20 +500,20 @@ const Sellers = () => {
                             )}
                           </div>
                           <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" aria-hidden="true"></div>
-                          
+
                           {/* Verified Badge */}
                           <div className="absolute top-2 right-2 bg-emerald-500 rounded-full p-1 shadow-lg z-10">
                             <BadgeCheck className="w-3 h-3 text-white" aria-hidden="true" />
                           </div>
                         </div>
-                        
+
                         {/* Seller Avatar/Logo - Circular */}
                         <div className="relative px-3">
                           <div className="absolute -top-8 left-3">
                             <div className="w-14 h-14 rounded-full bg-gradient-to-br from-[#5C352C] to-[#956959] flex items-center justify-center text-white font-bold text-lg shadow-xl border-3 border-white overflow-hidden">
                               {hasAvatar ? (
-                                <img 
-                                  src={avatarUrl} 
+                                <img
+                                  src={avatarUrl}
                                   alt={seller.store_logo_url ? t('buyer.sellers.storeLogo', { name: displayName }) : t('buyer.sellers.profileImage', { name: displayName })}
                                   className="w-full h-full object-cover"
                                   onError={() => handleLogoError(seller.id)}
@@ -527,7 +527,7 @@ const Sellers = () => {
                             </div>
                           </div>
                         </div>
-                        
+
                         {/* Seller Info */}
                         <div className="p-3 pt-9">
                           <div className="mb-2">
@@ -538,7 +538,7 @@ const Sellers = () => {
                               <p className="text-xs text-gray-500 mt-0.5 line-clamp-1">{subtitle}</p>
                             )}
                           </div>
-                          
+
                           {/* Stats Row */}
                           <div className="flex items-center gap-3 mb-2">
                             <div className="flex items-center gap-1 bg-gray-50 px-2 py-1 rounded-lg">
@@ -555,7 +555,7 @@ const Sellers = () => {
                               <span className="text-[10px] text-amber-600/70 ml-0.5">({getRatingsCount(seller)})</span>
                             </div>
                           </div>
-                          
+
                           {/* Location */}
                           {seller.location && (
                             <div className="flex items-center gap-1 text-xs text-gray-600 mb-2 bg-gray-50 px-2 py-1 rounded-lg">
@@ -563,7 +563,7 @@ const Sellers = () => {
                               <span className="text-xs line-clamp-1">{seller.location}</span>
                             </div>
                           )}
-                          
+
                           {/* Footer */}
                           <div className="flex items-center justify-between pt-2 border-t-2 border-gray-100">
                             <div className="flex items-center gap-1">
@@ -586,7 +586,7 @@ const Sellers = () => {
 
               {/* Pagination Component */}
               {lastPage > 1 && (
-                <nav 
+                <nav
                   className="mt-10 flex justify-center items-center gap-3"
                   role="navigation"
                   aria-label={t('buyer.sellers.goToPage', { page: '' })}
@@ -594,27 +594,25 @@ const Sellers = () => {
                   <button
                     onClick={() => handlePageChange(currentPage - 1)}
                     disabled={currentPage === 1}
-                    className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all focus:outline-none focus:ring-2 focus:ring-[#5C352C] ${
-                      currentPage === 1
+                    className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all focus:outline-none focus:ring-2 focus:ring-[#5C352C] ${currentPage === 1
                         ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
                         : 'bg-white border-2 border-gray-200 text-gray-700 hover:bg-gray-50 hover:border-[#5C352C] shadow-md'
-                    }`}
+                      }`}
                     aria-label={t('buyer.sellers.goToPreviousPage')}
                     aria-disabled={currentPage === 1}
                   >
                     <ChevronLeft className="w-4 h-4" aria-hidden="true" />
                   </button>
-                  
+
                   <div className="flex items-center gap-2">
                     {getPaginationPages().map(page => (
                       <button
                         key={page}
                         onClick={() => handlePageChange(page)}
-                        className={`w-10 h-10 rounded-xl text-sm font-semibold transition-all focus:outline-none focus:ring-2 focus:ring-[#5C352C] ${
-                          currentPage === page
+                        className={`w-10 h-10 rounded-xl text-sm font-semibold transition-all focus:outline-none focus:ring-2 focus:ring-[#5C352C] ${currentPage === page
                             ? 'bg-gradient-to-r from-[#5C352C] to-[#8B5E4F] text-white shadow-lg'
                             : 'bg-white border-2 border-gray-200 text-gray-700 hover:bg-gray-50 hover:border-[#5C352C]'
-                        }`}
+                          }`}
                         aria-label={t('buyer.sellers.goToPage', { page })}
                         aria-current={currentPage === page ? 'page' : undefined}
                       >
@@ -622,15 +620,14 @@ const Sellers = () => {
                       </button>
                     ))}
                   </div>
-                  
+
                   <button
                     onClick={() => handlePageChange(currentPage + 1)}
                     disabled={currentPage === lastPage}
-                    className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all focus:outline-none focus:ring-2 focus:ring-[#5C352C] ${
-                      currentPage === lastPage
+                    className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all focus:outline-none focus:ring-2 focus:ring-[#5C352C] ${currentPage === lastPage
                         ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
                         : 'bg-white border-2 border-gray-200 text-gray-700 hover:bg-gray-50 hover:border-[#5C352C] shadow-md'
-                    }`}
+                      }`}
                     aria-label={t('buyer.sellers.goToNextPage')}
                     aria-disabled={currentPage === lastPage}
                   >
@@ -640,7 +637,7 @@ const Sellers = () => {
               )}
 
               {/* Showing results info */}
-              <div 
+              <div
                 className="mt-4 text-center text-sm text-gray-500 bg-white px-4 py-2 rounded-lg inline-block mx-auto shadow-sm"
                 role="status"
                 aria-live="polite"

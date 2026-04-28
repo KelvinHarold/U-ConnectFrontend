@@ -5,10 +5,10 @@ import MainLayout from "../../../layouts/MainLayout";
 import api from "../../../api/axios";
 import { useToast } from "../../../contexts/ToastContext";
 import { useLanguage } from "../../../contexts/LanguageContext";
-import { 
-  ArrowLeft, 
-  ShoppingBag, 
-  User, 
+import {
+  ArrowLeft,
+  ShoppingBag,
+  User,
   Calendar,
   Package,
   Truck,
@@ -88,7 +88,7 @@ const BuyerOrderDetails = () => {
   const [confirming, setConfirming] = useState(false);
   const [imageErrors, setImageErrors] = useState({});
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
-  
+
   // Rating states
   const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
   const [ratingValue, setRatingValue] = useState(5);
@@ -105,6 +105,9 @@ const BuyerOrderDetails = () => {
     try {
       const response = await api.get(`/buyer/orders/${id}`);
       setOrder(response.data);
+      if (response.data.has_rated_seller) {
+        setHasRatedSeller(true);
+      }
       setError(null);
     } catch (error) {
       const errorMsg = error.response?.data?.message || t('buyer.orderDetails.unableToLoadOrder');
@@ -172,35 +175,35 @@ const BuyerOrderDetails = () => {
 
   const getStatusConfig = (status) => {
     const configs = {
-      pending: { 
-        label: t('buyer.orderDetails.statusPending'), 
-        color: 'bg-amber-50 text-amber-700', 
-        icon: Clock 
+      pending: {
+        label: t('buyer.orderDetails.statusPending'),
+        color: 'bg-amber-50 text-amber-700',
+        icon: Clock
       },
-      confirmed: { 
-        label: t('buyer.orderDetails.statusConfirmed'), 
-        color: 'bg-blue-50 text-blue-700', 
-        icon: CheckCircle 
+      confirmed: {
+        label: t('buyer.orderDetails.statusConfirmed'),
+        color: 'bg-blue-50 text-blue-700',
+        icon: CheckCircle
       },
-      preparing: { 
-        label: t('buyer.orderDetails.statusPreparing'), 
-        color: 'bg-indigo-50 text-indigo-700', 
-        icon: Package 
+      preparing: {
+        label: t('buyer.orderDetails.statusPreparing'),
+        color: 'bg-indigo-50 text-indigo-700',
+        icon: Package
       },
-      ready_for_delivery: { 
-        label: t('buyer.orderDetails.statusReadyForDelivery'), 
-        color: 'bg-purple-50 text-purple-700', 
-        icon: Truck 
+      ready_for_delivery: {
+        label: t('buyer.orderDetails.statusReadyForDelivery'),
+        color: 'bg-purple-50 text-purple-700',
+        icon: Truck
       },
-      delivered: { 
-        label: t('buyer.orderDetails.statusDelivered'), 
-        color: 'bg-emerald-50 text-emerald-700', 
-        icon: CheckCircle 
+      delivered: {
+        label: t('buyer.orderDetails.statusDelivered'),
+        color: 'bg-emerald-50 text-emerald-700',
+        icon: CheckCircle
       },
-      cancelled: { 
-        label: t('buyer.orderDetails.statusCancelled'), 
-        color: 'bg-rose-50 text-rose-700', 
-        icon: XCircle 
+      cancelled: {
+        label: t('buyer.orderDetails.statusCancelled'),
+        color: 'bg-rose-50 text-rose-700',
+        icon: XCircle
       }
     };
     return configs[status] || configs.pending;
@@ -257,7 +260,7 @@ const BuyerOrderDetails = () => {
     <MainLayout>
       <div className="p-6 bg-gray-50 min-h-screen">
         <div className="max-w-5xl mx-auto">
-          
+
           {/* Back Button */}
           <div className="mb-5">
             <Link to="/buyer/orders" className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-[#5C352C] transition-colors">
@@ -297,7 +300,7 @@ const BuyerOrderDetails = () => {
 
           {/* Main Content */}
           <div className="grid lg:grid-cols-3 gap-5">
-            
+
             {/* Left Column - Items */}
             <div className="lg:col-span-2">
               <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
@@ -307,15 +310,15 @@ const BuyerOrderDetails = () => {
                     {t('buyer.orderDetails.orderItems')}
                   </h3>
                 </div>
-                
+
                 <div className="divide-y divide-gray-100">
                   {order.items?.map((item, index) => (
                     <div key={index} className="p-4 hover:bg-gray-50 transition-colors">
                       <div className="flex gap-4">
                         <div className="w-16 h-16 bg-gray-100 rounded-lg flex-shrink-0 overflow-hidden">
                           {item.product?.image && !imageErrors[item.id] ? (
-                            <img 
-                              src={item.product.image} 
+                            <img
+                              src={item.product.image}
                               alt={item.product_name}
                               className="w-full h-full object-cover"
                               onError={() => handleImageError(item.id)}
@@ -327,9 +330,9 @@ const BuyerOrderDetails = () => {
                             </div>
                           )}
                         </div>
-                        
+
                         <div className="flex-1">
-                          <Link 
+                          <Link
                             to={`/buyer/shop/products/${item.product_id}`}
                             className="font-medium text-gray-900 hover:text-[#5C352C] text-sm transition-colors"
                           >
@@ -340,7 +343,7 @@ const BuyerOrderDetails = () => {
                             <span>{formatPrice(item.product_price || item.price)} {t('buyer.orderDetails.each')}</span>
                           </div>
                         </div>
-                        
+
                         <div className="text-right">
                           <p className="font-semibold text-[#5C352C] text-sm">
                             {formatPrice(item.subtotal || (item.price * item.quantity))}
@@ -350,7 +353,7 @@ const BuyerOrderDetails = () => {
                     </div>
                   ))}
                 </div>
-                
+
                 {/* Order Summary */}
                 <div className="border-t border-gray-100 px-5 py-3 bg-gray-50">
                   <div className="space-y-1">
@@ -381,7 +384,7 @@ const BuyerOrderDetails = () => {
 
             {/* Right Column - Info Sidebar */}
             <div className="space-y-4">
-              
+
               {/* Seller Card */}
               <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
                 <div className="px-5 py-3 border-b border-gray-100 bg-gray-50">
@@ -392,17 +395,35 @@ const BuyerOrderDetails = () => {
                 </div>
                 <div className="p-4">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-[#5C352C]/10 rounded-full flex items-center justify-center">
-                      <User className="w-5 h-5 text-[#5C352C]" />
+                    {/* Seller Image - Updated to show actual photo */}
+                    <div className="w-10 h-10 bg-[#5C352C]/10 rounded-full flex items-center justify-center overflow-hidden flex-shrink-0">
+                      {order.seller?.profile_photo ? (
+                        <img
+                          src={order.seller.profile_photo}
+                          alt={order.seller.name}
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.style.display = 'none';
+                            e.target.parentElement.innerHTML = '<svg class="w-5 h-5 text-[#5C352C]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>';
+                          }}
+                        />
+                      ) : (
+                        <User className="w-5 h-5 text-[#5C352C]" />
+                      )}
                     </div>
                     <div>
                       <p className="font-medium text-gray-900 text-sm">{order.seller?.name || 'N/A'}</p>
                       <div className="flex items-center gap-1 mt-0.5">
                         <Shield className="w-3 h-3 text-emerald-500" />
-                        <span className="text-xs text-gray-500">{t('buyer.orderDetails.verifiedSeller')}</span>
+                        <span className="text-xs text-gray-500">
+                          {order.seller?.is_active == 1 ? 'Verified Seller' : 'Seller'}
+                        </span>
                       </div>
                     </div>
                   </div>
+
+                  {/* Email */}
                   {order.seller?.email && (
                     <div className="flex items-center gap-2 mt-3 text-xs">
                       <Mail className="w-3.5 h-3.5 text-gray-400" />
@@ -411,6 +432,35 @@ const BuyerOrderDetails = () => {
                       </a>
                     </div>
                   )}
+
+                  {/* Phone Number - Add this */}
+                  {order.seller?.phone && (
+                    <div className="flex items-center gap-2 mt-2 text-xs">
+                      <Phone className="w-3.5 h-3.5 text-gray-400" />
+                      <a href={`tel:${order.seller.phone}`} className="text-gray-600 hover:text-[#5C352C]">
+                        {order.seller.phone}
+                      </a>
+                    </div>
+                  )}
+
+                  {/* Location/Address - Add this */}
+                  {order.seller?.address && (
+                    <div className="flex items-center gap-2 mt-2 text-xs">
+                      <MapPin className="w-3.5 h-3.5 text-gray-400" />
+                      <span className="text-gray-600">{order.seller.address}</span>
+                    </div>
+                  )}
+
+                  {/* Contact Button */}
+                  <button
+                    onClick={() => {
+                      window.location.href = `/buyer/messages?user=${order.seller?.id}`;
+                    }}
+                    className="w-full mt-4 py-2 text-xs font-medium text-[#5C352C] bg-[#5C352C]/10 rounded-lg hover:bg-[#5C352C]/20 transition-colors flex items-center justify-center gap-1"
+                  >
+                    <MessageCircle className="w-3.5 h-3.5" />
+                    Contact Seller
+                  </button>
                 </div>
               </div>
 
@@ -501,7 +551,7 @@ const BuyerOrderDetails = () => {
         </div>
       </div>
 
-      <ReportModal 
+      <ReportModal
         isOpen={isReportModalOpen}
         onClose={() => setIsReportModalOpen(false)}
         initialType="order"

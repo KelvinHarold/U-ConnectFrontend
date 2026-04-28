@@ -4,6 +4,7 @@ import { useNavigate, Link } from "react-router-dom";
 import MainLayout from "../../../layouts/MainLayout";
 import api from "../../../api/axios";
 import { useToast } from "../../../contexts/ToastContext";
+import { useLanguage } from "../../../contexts/LanguageContext";
 import { 
   ArrowLeft, 
   Save, 
@@ -33,6 +34,7 @@ const shimmerStyle = `
 const BulkStockUpdate = () => {
   const navigate = useNavigate();
   const { showToast } = useToast();
+  const { t } = useLanguage();
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(true);
   const [products, setProducts] = useState([]);
@@ -69,8 +71,8 @@ const BulkStockUpdate = () => {
         image: p.image
       })));
     } catch (error) {
-      setError('Failed to load products');
-      showToast('Failed to load products', 'error');
+      setError(t('seller.bulkStock.failedToLoad'));
+      showToast(t('seller.bulkStock.failedToLoad'), 'error');
     } finally {
       setFetching(false);
     }
@@ -95,23 +97,23 @@ const BulkStockUpdate = () => {
       .map(u => ({
         product_id: u.id,
         quantity: u.new_stock,
-        reason: 'Bulk stock update'
+        reason: t('seller.bulkStock.bulkUpdateReason')
       }));
     
     if (stockUpdates.length === 0) {
-      showToast('No changes to update', 'info');
+      showToast(t('seller.bulkStock.noChanges'), 'info');
       setLoading(false);
       return;
     }
     
-    if (window.confirm(`Update stock for ${stockUpdates.length} product(s)?`)) {
+    if (window.confirm(t('seller.bulkStock.confirmUpdate', { count: stockUpdates.length }))) {
       try {
         await api.post('/seller/inventory/bulk-update', { updates: stockUpdates });
-        showToast(`Updated ${stockUpdates.length} product(s)!`, 'success');
-        setSuccess(`Successfully updated stock for ${stockUpdates.length} product(s)!`);
+        showToast(t('seller.bulkStock.updateSuccess', { count: stockUpdates.length }), 'success');
+        setSuccess(t('seller.bulkStock.updateSuccessMessage', { count: stockUpdates.length }));
         setTimeout(() => navigate('/seller/inventory/summary'), 2000);
       } catch (error) {
-        const errorMsg = error.response?.data?.message || 'Error updating stock';
+        const errorMsg = error.response?.data?.message || t('seller.bulkStock.updateError');
         setError(errorMsg);
         showToast(errorMsg, 'error');
       } finally {
@@ -124,7 +126,7 @@ const BulkStockUpdate = () => {
 
   const resetToCurrent = () => {
     setUpdates(updates.map(u => ({ ...u, new_stock: u.current_stock })));
-    showToast('All changes reset', 'info');
+    showToast(t('seller.bulkStock.resetSuccess'), 'info');
   };
 
   const changedCount = updates.filter(u => u.new_stock !== u.current_stock).length;
@@ -173,7 +175,7 @@ const BulkStockUpdate = () => {
           <div className="mb-6">
             <Link to="/seller/inventory/summary" className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-[#5C352C] transition-colors">
               <ArrowLeft className="w-4 h-4" />
-              Back to Inventory
+              {t('seller.bulkStock.backToInventory')}
             </Link>
           </div>
 
@@ -186,8 +188,8 @@ const BulkStockUpdate = () => {
                   <Upload className="w-5 h-5 text-[#5C352C]" />
                 </div>
                 <div>
-                  <h1 className="text-lg font-semibold text-gray-900">Bulk Stock Update</h1>
-                  <p className="text-xs text-gray-500 mt-0.5">Update stock quantities for multiple products at once</p>
+                  <h1 className="text-lg font-semibold text-gray-900">{t('seller.bulkStock.title')}</h1>
+                  <p className="text-xs text-gray-500 mt-0.5">{t('seller.bulkStock.subtitle')}</p>
                 </div>
               </div>
             </div>
@@ -215,11 +217,11 @@ const BulkStockUpdate = () => {
             {/* Stats Summary */}
             <div className="grid grid-cols-3 gap-4 p-5 pb-0">
               <div className="bg-gray-50 rounded-lg p-3">
-                <p className="text-[10px] text-gray-500">Products</p>
+                <p className="text-[10px] text-gray-500">{t('seller.bulkStock.products')}</p>
                 <p className="text-xl font-bold text-gray-900">{updates.length}</p>
               </div>
               <div className="bg-amber-50 rounded-lg p-3">
-                <p className="text-[10px] text-amber-600">Changes</p>
+                <p className="text-[10px] text-amber-600">{t('seller.bulkStock.changes')}</p>
                 <p className="text-xl font-bold text-amber-700">{changedCount}</p>
               </div>
               <button
@@ -227,7 +229,7 @@ const BulkStockUpdate = () => {
                 className="bg-gray-100 rounded-lg p-3 text-center hover:bg-gray-200 transition-colors"
               >
                 <RefreshCw className="w-4 h-4 text-gray-600 mx-auto mb-1" />
-                <p className="text-[10px] text-gray-600">Reset All</p>
+                <p className="text-[10px] text-gray-600">{t('seller.bulkStock.resetAll')}</p>
               </button>
             </div>
 
@@ -237,7 +239,7 @@ const BulkStockUpdate = () => {
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                 <input
                   type="text"
-                  placeholder="Search products..."
+                  placeholder={t('seller.bulkStock.searchPlaceholder')}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-[#5C352C]"
@@ -250,12 +252,12 @@ const BulkStockUpdate = () => {
               {fetching ? (
                 <div className="text-center py-12">
                   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#5C352C] mx-auto mb-3"></div>
-                  <p className="text-sm text-gray-500">Loading products...</p>
+                  <p className="text-sm text-gray-500">{t('seller.bulkStock.loadingProducts')}</p>
                 </div>
               ) : filteredUpdates.length === 0 ? (
                 <div className="text-center py-12">
                   <Package className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-                  <p className="text-sm text-gray-500">No products found</p>
+                  <p className="text-sm text-gray-500">{t('seller.bulkStock.noProductsFound')}</p>
                 </div>
               ) : (
                 <>
@@ -264,10 +266,10 @@ const BulkStockUpdate = () => {
                     <table className="w-full">
                       <thead className="bg-gray-50 border-b border-gray-100">
                         <tr>
-                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">Product</th>
-                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">Current</th>
-                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">New Stock</th>
-                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">Change</th>
+                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">{t('seller.bulkStock.product')}</th>
+                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">{t('seller.bulkStock.current')}</th>
+                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">{t('seller.bulkStock.newStock')}</th>
+                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">{t('seller.bulkStock.change')}</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-gray-100">
@@ -328,7 +330,7 @@ const BulkStockUpdate = () => {
                             </div>
                             <div className="flex-1">
                               <p className="font-medium text-gray-900 text-sm">{product.name}</p>
-                              <p className="text-xs text-gray-500">Current: {product.current_stock}</p>
+                              <p className="text-xs text-gray-500">{t('seller.bulkStock.currentLabel')}: {product.current_stock}</p>
                             </div>
                             {change !== 0 && (
                               <span className={`text-xs font-medium ${change > 0 ? 'text-emerald-600' : 'text-rose-600'}`}>
@@ -342,7 +344,7 @@ const BulkStockUpdate = () => {
                             onChange={(e) => handleStockChange(product.id, e.target.value)}
                             min="0"
                             className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-[#5C352C]"
-                            placeholder="New stock"
+                            placeholder={t('seller.bulkStock.newStockPlaceholder')}
                           />
                         </div>
                       );
@@ -359,10 +361,10 @@ const BulkStockUpdate = () => {
                       {loading ? (
                         <div className="flex items-center justify-center gap-2">
                           <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                          Updating {changedCount} product(s)...
+                          {t('seller.bulkStock.updating', { count: changedCount })}
                         </div>
                       ) : (
-                        `Update ${changedCount} product${changedCount !== 1 ? 's' : ''}`
+                        t('seller.bulkStock.updateButton', { count: changedCount })
                       )}
                     </button>
                   </div>
@@ -376,8 +378,8 @@ const BulkStockUpdate = () => {
             <div className="flex items-start gap-2">
               <AlertCircle className="w-4 h-4 text-blue-500 mt-0.5" />
               <div>
-                <p className="text-xs font-medium text-blue-800">Bulk Update Guidelines</p>
-                <p className="text-[10px] text-blue-700 mt-0.5">Changes will be logged with "Bulk stock update" as the reason. Stock cannot go below 0.</p>
+                <p className="text-xs font-medium text-blue-800">{t('seller.bulkStock.guidelinesTitle')}</p>
+                <p className="text-[10px] text-blue-700 mt-0.5">{t('seller.bulkStock.guidelinesText')}</p>
               </div>
             </div>
           </div>

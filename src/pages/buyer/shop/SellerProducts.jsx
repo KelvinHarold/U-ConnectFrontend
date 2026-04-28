@@ -5,10 +5,10 @@ import api from "../../../api/axios";
 import { useToast } from "../../../contexts/ToastContext";
 import { useLanguage } from "../../../contexts/LanguageContext";
 import DiscountBadge from "../../../components/common/DiscountBadge";
-import { 
-  ArrowLeft, 
-  ShoppingCart, 
-  DollarSign, 
+import {
+  ArrowLeft,
+  ShoppingCart,
+  DollarSign,
   Package,
   Store,
   Search,
@@ -82,7 +82,7 @@ const SkeletonProductListItem = () => (
 // ==================== PRODUCT CARD COMPONENT ====================
 const ProductCard = React.memo(({ product, formatPrice, addToCart, addingToCart, handleImageError, imageErrors, t }) => (
   <div className="group bg-white rounded-xl shadow-lg border-2 border-gray-100 overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
-    <Link 
+    <Link
       to={`/buyer/shop/products/${product.id}`}
       className="block focus:outline-none focus:ring-2 focus:ring-[#5C352C] focus:ring-offset-2 rounded-t-xl"
       aria-label={`${t('buyer.sellerProducts.viewDetails')} ${product.name}`}
@@ -90,9 +90,9 @@ const ProductCard = React.memo(({ product, formatPrice, addToCart, addingToCart,
       <div className="relative w-full pt-[100%] bg-gradient-to-br from-gray-50 to-gray-100 overflow-hidden">
         <div className="absolute inset-0">
           {product.image && !imageErrors[product.id] ? (
-            <img 
-              src={product.image} 
-              alt={product.name} 
+            <img
+              src={product.image}
+              alt={product.name}
               className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
               onError={() => handleImageError(product.id)}
               loading="lazy"
@@ -103,7 +103,7 @@ const ProductCard = React.memo(({ product, formatPrice, addToCart, addingToCart,
             </div>
           )}
         </div>
-        
+
         <div className="absolute top-2 left-2 flex flex-col gap-1 z-10">
           {product.is_featured && (
             <span className="px-2 py-0.5 text-[10px] font-bold rounded-lg bg-gradient-to-r from-amber-400 to-amber-500 text-white shadow-md flex items-center gap-1">
@@ -121,7 +121,7 @@ const ProductCard = React.memo(({ product, formatPrice, addToCart, addingToCart,
             </span>
           )}
         </div>
-        
+
         {product.quantity === 0 && (
           <div className="absolute inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-10">
             <span className="px-3 py-1 text-[10px] font-bold rounded-full bg-gray-900 text-white shadow-lg">
@@ -131,9 +131,9 @@ const ProductCard = React.memo(({ product, formatPrice, addToCart, addingToCart,
         )}
       </div>
     </Link>
-    
+
     <div className="p-3">
-      <Link 
+      <Link
         to={`/buyer/shop/products/${product.id}`}
         className="block focus:outline-none focus:ring-2 focus:ring-[#5C352C] focus:ring-offset-2 rounded"
       >
@@ -141,7 +141,7 @@ const ProductCard = React.memo(({ product, formatPrice, addToCart, addingToCart,
           {product.name}
         </h3>
       </Link>
-      
+
       <div className="flex items-center gap-1.5 mt-1">
         <div className="flex items-center gap-0.5 bg-amber-50 px-1.5 py-0.5 rounded-lg">
           <Star className="w-2.5 h-2.5 fill-amber-400 text-amber-400" />
@@ -150,7 +150,7 @@ const ProductCard = React.memo(({ product, formatPrice, addToCart, addingToCart,
         <span className="text-[9px] text-gray-400">•</span>
         <span className="text-[10px] text-gray-500 font-medium">{product.sales_count || 0} {t('buyer.sellerProducts.sold')}</span>
       </div>
-      
+
       <div className="mt-2">
         <span className="font-bold text-[#5C352C] text-base">
           {formatPrice(product.price)}
@@ -159,15 +159,14 @@ const ProductCard = React.memo(({ product, formatPrice, addToCart, addingToCart,
           <span className="text-[10px] text-gray-400 line-through ml-1.5">{formatPrice(product.original_price)}</span>
         )}
       </div>
-      
+
       <button
         onClick={() => addToCart(product.id)}
         disabled={product.quantity === 0 || addingToCart[product.id]}
-        className={`mt-3 w-full py-2 rounded-xl transition-all flex items-center justify-center gap-2 text-xs font-bold focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#5C352C] ${
-          product.quantity === 0 
-            ? 'bg-gray-100 cursor-not-allowed text-gray-400' 
+        className={`mt-3 w-full py-2 rounded-xl transition-all flex items-center justify-center gap-2 text-xs font-bold focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#5C352C] ${product.quantity === 0
+            ? 'bg-gray-100 cursor-not-allowed text-gray-400'
             : 'bg-gradient-to-r from-[#5C352C] to-[#8B5E4F] text-white hover:shadow-lg transform hover:scale-105'
-        }`}
+          }`}
         aria-label={product.quantity === 0 ? t('buyer.sellerProducts.outOfStock') : `${t('buyer.sellerProducts.addToCart')} ${product.name}`}
       >
         {addingToCart[product.id] ? (
@@ -189,16 +188,16 @@ ProductCard.displayName = 'ProductCard';
 const ProductListItem = React.memo(({ product, formatPrice, addToCart, addingToCart, handleImageError, imageErrors, t }) => (
   <div className="group bg-white rounded-xl shadow-lg border-2 border-gray-100 overflow-hidden hover:shadow-2xl transition-all duration-300 hover:border-[#5C352C]/20">
     <div className="flex flex-row">
-      <Link 
-        to={`/buyer/shop/products/${product.id}`} 
+      <Link
+        to={`/buyer/shop/products/${product.id}`}
         className="w-24 h-24 flex-shrink-0 focus:outline-none focus:ring-2 focus:ring-[#5C352C] focus:ring-offset-2"
         aria-label={`${t('buyer.sellerProducts.viewDetails')} ${product.name}`}
       >
         <div className="relative w-full h-full bg-gradient-to-br from-gray-50 to-gray-100 overflow-hidden">
           {product.image && !imageErrors[product.id] ? (
-            <img 
-              src={product.image} 
-              alt={product.name} 
+            <img
+              src={product.image}
+              alt={product.name}
               className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
               onError={() => handleImageError(product.id)}
               loading="lazy"
@@ -208,7 +207,7 @@ const ProductListItem = React.memo(({ product, formatPrice, addToCart, addingToC
               <ImageIcon className="w-8 h-8 text-gray-300" />
             </div>
           )}
-          
+
           {product.quantity === 0 && (
             <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
               <span className="px-2 py-0.5 text-[9px] font-bold rounded-full bg-gray-900 text-white">
@@ -218,11 +217,11 @@ const ProductListItem = React.memo(({ product, formatPrice, addToCart, addingToC
           )}
         </div>
       </Link>
-      
+
       <div className="flex-1 p-3">
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3">
           <div className="flex-1 min-w-0">
-            <Link 
+            <Link
               to={`/buyer/shop/products/${product.id}`}
               className="focus:outline-none focus:ring-2 focus:ring-[#5C352C] focus:ring-offset-2 rounded"
             >
@@ -230,7 +229,7 @@ const ProductListItem = React.memo(({ product, formatPrice, addToCart, addingToC
                 {product.name}
               </h3>
             </Link>
-            
+
             <div className="flex flex-wrap items-center gap-2 mt-1.5">
               <div className="flex items-center gap-0.5 bg-amber-50 px-1.5 py-0.5 rounded-lg">
                 <Star className="w-2.5 h-2.5 fill-amber-400 text-amber-400" />
@@ -244,10 +243,10 @@ const ProductListItem = React.memo(({ product, formatPrice, addToCart, addingToC
                 <span className="text-[10px] text-gray-500">{t('buyer.sellerProducts.stock')}: {product.quantity}</span>
               </div>
             </div>
-            
+
             <p className="text-[10px] text-gray-400 mt-1 line-clamp-1">{product.description}</p>
           </div>
-          
+
           <div className="flex items-center gap-2">
             <div className="text-right">
               <span className="font-bold text-[#5C352C] text-base">
@@ -260,15 +259,14 @@ const ProductListItem = React.memo(({ product, formatPrice, addToCart, addingToC
                 </div>
               )}
             </div>
-            
+
             <button
               onClick={() => addToCart(product.id)}
               disabled={product.quantity === 0 || addingToCart[product.id]}
-              className={`px-3 py-1.5 rounded-xl transition-all flex items-center justify-center gap-1.5 text-xs font-bold focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#5C352C] ${
-                product.quantity === 0 
-                  ? 'bg-gray-100 cursor-not-allowed text-gray-400' 
+              className={`px-3 py-1.5 rounded-xl transition-all flex items-center justify-center gap-1.5 text-xs font-bold focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#5C352C] ${product.quantity === 0
+                  ? 'bg-gray-100 cursor-not-allowed text-gray-400'
                   : 'bg-gradient-to-r from-[#5C352C] to-[#8B5E4F] text-white hover:shadow-lg'
-              }`}
+                }`}
               aria-label={product.quantity === 0 ? t('buyer.sellerProducts.outOfStock') : `${t('buyer.sellerProducts.addToCart')} ${product.name}`}
             >
               {addingToCart[product.id] ? (
@@ -277,7 +275,7 @@ const ProductListItem = React.memo(({ product, formatPrice, addToCart, addingToC
                 <ShoppingCart className="w-3.5 h-3.5" />
               )}
             </button>
-            
+
             <Link
               to={`/buyer/shop/products/${product.id}`}
               className="p-2 rounded-xl border-2 border-gray-200 hover:border-[#5C352C] hover:bg-[#5C352C]/5 transition-all focus:outline-none focus:ring-2 focus:ring-[#5C352C] focus:ring-offset-2"
@@ -348,7 +346,7 @@ const SellerProducts = () => {
       if (sortBy) params.sort_by = sortBy;
       if (minPrice) params.min_price = minPrice;
       if (maxPrice) params.max_price = maxPrice;
-      
+
       const response = await api.get(`/buyer/shop/sellers/${id}/products`, { params });
       setSeller(response.data.seller);
       setProducts(response.data.products.data);
@@ -415,11 +413,11 @@ const SellerProducts = () => {
     const maxVisible = 5;
     let startPage = Math.max(1, currentPage - Math.floor(maxVisible / 2));
     let endPage = Math.min(lastPage, startPage + maxVisible - 1);
-    
+
     if (endPage - startPage + 1 < maxVisible) {
       startPage = Math.max(1, endPage - maxVisible + 1);
     }
-    
+
     for (let i = startPage; i <= endPage; i++) pages.push(i);
     return pages;
   };
@@ -484,7 +482,7 @@ const SellerProducts = () => {
       <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50">
         <div className="p-4 md:p-8">
           <div className="max-w-7xl mx-auto">
-            
+
             {/* Breadcrumb */}
             <nav className="flex items-center gap-2 text-sm mb-4 flex-wrap">
               <Link to="/" className="text-gray-500 hover:text-[#5C352C] transition-colors">{t('buyer.sellerProducts.home')}</Link>
@@ -495,8 +493,8 @@ const SellerProducts = () => {
             </nav>
 
             {/* Back Button */}
-            <Link 
-              to="/buyer/shop/sellers" 
+            <Link
+              to="/buyer/shop/sellers"
               className="inline-flex items-center gap-2 text-[#5C352C] hover:text-[#4A2A22] mb-6 group font-medium"
             >
               <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
@@ -509,8 +507,8 @@ const SellerProducts = () => {
                 <div className="flex flex-col md:flex-row items-start md:items-center gap-5">
                   <div className="w-16 h-16 bg-white/10 rounded-xl flex items-center justify-center shadow-lg">
                     {seller.store_logo && !logoError ? (
-                      <img 
-                        src={seller.store_logo} 
+                      <img
+                        src={seller.store_logo}
                         alt={seller.name}
                         className="w-full h-full object-cover rounded-xl"
                         onError={handleLogoError}
@@ -578,7 +576,7 @@ const SellerProducts = () => {
                     )}
                   </div>
                 </div>
-                
+
                 <select
                   value={sortBy}
                   onChange={(e) => {
@@ -591,21 +589,20 @@ const SellerProducts = () => {
                     <option key={option.value} value={option.value}>{option.label}</option>
                   ))}
                 </select>
-                
+
                 <button
                   onClick={() => setShowFilters(!showFilters)}
-                  className={`flex items-center gap-2 px-4 py-2.5 rounded-xl transition-all text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-[#5C352C] ${
-                    showFilters || hasActiveFilters
+                  className={`flex items-center gap-2 px-4 py-2.5 rounded-xl transition-all text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-[#5C352C] ${showFilters || hasActiveFilters
                       ? 'bg-gradient-to-r from-[#5C352C] to-[#8B5E4F] text-white shadow-lg'
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  }`}
+                    }`}
                 >
                   <Filter className="w-4 h-4" />
                   {t('buyer.sellerProducts.filters')}
                   {hasActiveFilters && <span className="ml-1 w-2 h-2 bg-white rounded-full" />}
                   <ChevronDown className={`w-4 h-4 transition-transform ${showFilters ? 'rotate-180' : ''}`} />
                 </button>
-                
+
                 <button
                   onClick={handleRefresh}
                   disabled={refreshing}
@@ -614,22 +611,20 @@ const SellerProducts = () => {
                 >
                   <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
                 </button>
-                
+
                 {/* View Toggle */}
                 <div className="flex border-2 border-gray-200 rounded-xl overflow-hidden bg-white">
                   <button
                     onClick={() => setViewMode("grid")}
-                    className={`p-2 px-4 transition-all ${
-                      viewMode === "grid" ? "bg-gradient-to-r from-[#5C352C] to-[#8B5E4F] text-white" : "text-gray-600 hover:bg-gray-50"
-                    }`}
+                    className={`p-2 px-4 transition-all ${viewMode === "grid" ? "bg-gradient-to-r from-[#5C352C] to-[#8B5E4F] text-white" : "text-gray-600 hover:bg-gray-50"
+                      }`}
                   >
                     <Grid className="w-4 h-4" />
                   </button>
                   <button
                     onClick={() => setViewMode("list")}
-                    className={`p-2 px-4 transition-all ${
-                      viewMode === "list" ? "bg-gradient-to-r from-[#5C352C] to-[#8B5E4F] text-white" : "text-gray-600 hover:bg-gray-50"
-                    }`}
+                    className={`p-2 px-4 transition-all ${viewMode === "list" ? "bg-gradient-to-r from-[#5C352C] to-[#8B5E4F] text-white" : "text-gray-600 hover:bg-gray-50"
+                      }`}
                   >
                     <List className="w-4 h-4" />
                   </button>
@@ -696,11 +691,11 @@ const SellerProducts = () => {
 
             {/* Products Display */}
             {loading ? (
-              <div className={viewMode === "grid" 
+              <div className={viewMode === "grid"
                 ? "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4"
                 : "space-y-3"
               }>
-                {[...Array(10)].map((_, i) => 
+                {[...Array(10)].map((_, i) =>
                   viewMode === "grid" ? <SkeletonProductCard key={i} /> : <SkeletonProductListItem key={i} />
                 )}
               </div>
@@ -719,13 +714,13 @@ const SellerProducts = () => {
               </div>
             ) : (
               <>
-                <div className={viewMode === "grid" 
+                <div className={viewMode === "grid"
                   ? "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4"
                   : "space-y-3"
                 }>
                   {products.map((product) => (
                     viewMode === "grid" ? (
-                      <ProductCard 
+                      <ProductCard
                         key={product.id}
                         product={product}
                         formatPrice={formatPrice}
@@ -736,7 +731,7 @@ const SellerProducts = () => {
                         t={t}
                       />
                     ) : (
-                      <ProductListItem 
+                      <ProductListItem
                         key={product.id}
                         product={product}
                         formatPrice={formatPrice}
@@ -762,23 +757,22 @@ const SellerProducts = () => {
                       >
                         <ChevronLeft className="w-4 h-4" />
                       </button>
-                      
+
                       {getPaginationPages().map(page => (
                         <button
                           key={page}
                           onClick={() => handlePageChange(page)}
-                          className={`w-10 h-10 rounded-xl text-sm font-bold transition-all ${
-                            currentPage === page
+                          className={`w-10 h-10 rounded-xl text-sm font-bold transition-all ${currentPage === page
                               ? 'bg-gradient-to-r from-[#5C352C] to-[#8B5E4F] text-white shadow-lg'
                               : 'bg-white border-2 border-gray-200 text-gray-700 hover:bg-gray-50 hover:border-[#5C352C]'
-                          }`}
+                            }`}
                           aria-label={t('buyer.sellerProducts.goToPage', { page })}
                           aria-current={currentPage === page ? 'page' : undefined}
                         >
                           {page}
                         </button>
                       ))}
-                      
+
                       <button
                         onClick={() => handlePageChange(currentPage + 1)}
                         disabled={currentPage === lastPage}

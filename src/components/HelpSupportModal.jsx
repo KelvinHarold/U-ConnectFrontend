@@ -10,13 +10,10 @@ import {
   FileText, 
   AlertCircle,
   CheckCircle,
-  Globe,
   Headphones,
-  Sparkles,
-  Shield,
-  Zap,
-  Award,
-  ChevronDown
+  ChevronDown,
+  MapPin,
+  ThumbsUp
 } from 'lucide-react';
 
 const HelpSupportModal = ({ isOpen, onClose }) => {
@@ -51,8 +48,6 @@ const HelpSupportModal = ({ isOpen, onClose }) => {
       icon: Mail,
       contact: "support@uconnect.com",
       action: "mailto:support@uconnect.com",
-      gradient: "from-blue-500 to-blue-600",
-      bg: "bg-blue-50"
     },
     {
       title: t('helpSupport.phoneSupport.title'),
@@ -60,8 +55,6 @@ const HelpSupportModal = ({ isOpen, onClose }) => {
       icon: Phone,
       contact: "+255 123 456 789",
       action: "tel:+255123456789",
-      gradient: "from-emerald-500 to-emerald-600",
-      bg: "bg-emerald-50"
     },
     {
       title: t('helpSupport.liveChat.title'),
@@ -69,8 +62,6 @@ const HelpSupportModal = ({ isOpen, onClose }) => {
       icon: MessageCircle,
       contact: t('helpSupport.liveChat.contact'),
       action: "#",
-      gradient: "from-purple-500 to-purple-600",
-      bg: "bg-purple-50"
     }
   ];
 
@@ -129,7 +120,7 @@ const HelpSupportModal = ({ isOpen, onClose }) => {
 
   return (
     <div 
-      className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-3 sm:p-4"
+      className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4"
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
@@ -139,49 +130,44 @@ const HelpSupportModal = ({ isOpen, onClose }) => {
     >
       <div 
         ref={modalRef}
-        className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[95vh] sm:max-h-[90vh] overflow-hidden focus:outline-none animate-modal-in"
+        className="bg-white rounded-2xl shadow-xl w-full max-w-4xl max-h-[90vh] overflow-hidden focus:outline-none"
         tabIndex="-1"
       >
-        {/* Header */}
-        <div className="bg-gradient-to-r from-[#2A1713] to-[#5C352C] px-4 sm:px-6 py-4 sm:py-5">
+        {/* Header - Matching Dashboard */}
+        <div className="bg-gradient-to-r from-[#5C352C] to-[#7A4B3E] px-6 py-5">
           <div className="flex justify-between items-start">
-            <div className="flex items-center gap-2 sm:gap-3">
-              <div className="p-1.5 sm:p-2 bg-white/10 rounded-xl backdrop-blur-sm">
-                <Headphones className="w-5 h-5 sm:w-6 sm:h-6 text-white" aria-hidden="true" />
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-white/10 rounded-xl backdrop-blur-sm">
+                <Headphones className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h2 id="help-modal-title" className="text-base sm:text-lg font-bold text-white">
+                <h2 id="help-modal-title" className="text-lg font-semibold text-white">
                   {t('helpSupport.title')}
                 </h2>
-                <p className="text-amber-200/80 text-[10px] sm:text-xs mt-0.5">
+                <p className="text-white/60 text-xs mt-0.5">
                   {t('helpSupport.subtitle')}
                 </p>
               </div>
             </div>
             <button 
               onClick={onClose} 
-              className="text-white/70 hover:text-white hover:bg-white/10 rounded-xl p-1.5 sm:p-2 transition-all duration-200"
+              className="text-white/60 hover:text-white hover:bg-white/10 rounded-lg p-1.5 transition-all"
               aria-label={t('helpSupport.closeModal')}
             >
-              <X className="w-4 h-4 sm:w-5 sm:h-5" aria-hidden="true" />
+              <X className="w-5 h-5" />
             </button>
           </div>
         </div>
         
-        <div className="overflow-y-auto p-4 sm:p-6" style={{ maxHeight: 'calc(95vh - 80px)' }}>
-          <div className="space-y-5 sm:space-y-6">
+        <div className="overflow-y-auto p-6" style={{ maxHeight: 'calc(90vh - 80px)' }}>
+          <div className="space-y-6">
             
-            {/* Support Options */}
+            {/* Support Options - Clean Cards */}
             <div>
-              <div className="flex items-center gap-2 mb-3 sm:mb-4">
-                <div className="p-1.5 bg-[#5C352C]/10 rounded-lg">
-                  <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-[#5C352C]" aria-hidden="true" />
-                </div>
-                <h3 className="text-sm sm:text-base font-bold text-gray-900">
-                  {t('helpSupport.contactSupport')}
-                </h3>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+              <h3 className="text-sm font-semibold text-gray-900 mb-4">
+                {t('helpSupport.contactSupport')}
+              </h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {supportOptions.map((option, index) => {
                   const Icon = option.icon;
                   return (
@@ -190,16 +176,16 @@ const HelpSupportModal = ({ isOpen, onClose }) => {
                       href={option.action}
                       target={option.action.startsWith('http') ? '_blank' : '_self'}
                       rel="noopener noreferrer"
-                      className={`group block p-3 sm:p-4 rounded-xl border-2 border-gray-100 bg-white hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5 ${option.bg}`}
+                      className="group block p-4 rounded-xl border border-gray-100 bg-white hover:shadow-md hover:border-gray-200 transition-all duration-200"
                     >
                       <div className="flex items-start gap-3">
-                        <div className={`p-2 rounded-xl bg-gradient-to-r ${option.gradient} shadow-md group-hover:scale-110 transition-transform`}>
-                          <Icon className="w-4 h-4 sm:w-5 sm:h-5 text-white" aria-hidden="true" />
+                        <div className="p-2 bg-gray-50 rounded-lg group-hover:bg-[#5C352C]/10 transition-colors">
+                          <Icon className="w-4 h-4 text-gray-500 group-hover:text-[#5C352C] transition-colors" />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <h4 className="font-bold text-gray-900 text-xs sm:text-sm">{option.title}</h4>
-                          <p className="text-[10px] sm:text-xs text-gray-500 mt-0.5">{option.description}</p>
-                          <p className="text-[10px] sm:text-xs font-semibold text-[#5C352C] mt-1.5 group-hover:underline truncate">
+                          <h4 className="font-semibold text-gray-900 text-sm">{option.title}</h4>
+                          <p className="text-xs text-gray-500 mt-0.5">{option.description}</p>
+                          <p className="text-xs font-medium text-[#5C352C] mt-2 group-hover:underline truncate">
                             {option.contact}
                           </p>
                         </div>
@@ -210,46 +196,21 @@ const HelpSupportModal = ({ isOpen, onClose }) => {
               </div>
             </div>
 
-            {/* Business Hours */}
-            <div className="bg-gradient-to-br from-gray-50 to-white rounded-xl border-2 border-gray-100 p-4 sm:p-5 shadow-sm">
-              <div className="flex flex-col sm:flex-row sm:items-start gap-3">
-                <div className="p-2 bg-gradient-to-r from-[#5C352C] to-[#8B5E4F] rounded-xl shadow-md w-fit">
-                  <Clock className="w-4 h-4 sm:w-5 sm:h-5 text-white" aria-hidden="true" />
-                </div>
-                <div className="flex-1">
-                  <h4 className="font-bold text-gray-900 text-sm sm:text-base">{t('helpSupport.businessHours.title')}</h4>
-                  <div className="grid grid-cols-1 xs:grid-cols-2 gap-2 sm:gap-3 mt-3">
-                    {businessHours.map((item, idx) => (
-                      <div key={idx} className="bg-white rounded-lg p-2 sm:p-2.5 border border-gray-100">
-                        <p className="text-[10px] sm:text-xs font-semibold text-gray-600">{item.day}</p>
-                        <p className={`text-xs sm:text-sm font-bold ${item.isOpen ? 'text-gray-800' : 'text-gray-400'}`}>
-                          {item.hours}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
+      
 
-            {/* FAQ Section */}
+            {/* FAQ Section - Clean Accordion */}
             <div>
-              <div className="flex items-center gap-2 mb-3 sm:mb-4">
-                <div className="p-1.5 bg-[#5C352C]/10 rounded-lg">
-                  <FileText className="w-4 h-4 sm:w-5 sm:h-5 text-[#5C352C]" aria-hidden="true" />
-                </div>
-                <h3 className="text-sm sm:text-base font-bold text-gray-900">
-                  {t('helpSupport.faqs.title')}
-                </h3>
-              </div>
+              <h3 className="text-sm font-semibold text-gray-900 mb-4">
+                {t('helpSupport.faqs.title')}
+              </h3>
               <div className="space-y-3">
                 {faqs.map((faq, index) => (
-                  <details key={index} className="group">
-                    <summary className="flex items-center justify-between cursor-pointer p-3 sm:p-4 rounded-xl bg-gray-50 hover:bg-gray-100 transition-all duration-200 border border-gray-100">
-                      <span className="text-xs sm:text-sm font-semibold text-gray-800 pr-2">{faq.question}</span>
-                      <ChevronDown className="w-4 h-4 text-gray-500 group-open:rotate-180 transition-transform duration-200 flex-shrink-0" aria-hidden="true" />
+                  <details key={index} className="group border border-gray-100 rounded-xl overflow-hidden">
+                    <summary className="flex items-center justify-between cursor-pointer p-4 bg-white hover:bg-gray-50 transition-colors">
+                      <span className="text-sm font-medium text-gray-800 pr-2">{faq.question}</span>
+                      <ChevronDown className="w-4 h-4 text-gray-400 group-open:rotate-180 transition-transform duration-200 flex-shrink-0" />
                     </summary>
-                    <div className="p-3 sm:p-4 text-xs sm:text-sm text-gray-600 border-l-2 border-[#5C352C] bg-white mt-1 rounded-r-xl shadow-sm">
+                    <div className="p-4 text-sm text-gray-600 border-t border-gray-100 bg-gray-50">
                       {faq.answer}
                     </div>
                   </details>
@@ -257,18 +218,18 @@ const HelpSupportModal = ({ isOpen, onClose }) => {
               </div>
             </div>
 
-            {/* Quick Tips */}
-            <div className="bg-gradient-to-r from-amber-50 to-orange-50 rounded-xl border-2 border-amber-100 p-4 sm:p-5 shadow-sm">
-              <div className="flex flex-col sm:flex-row sm:items-start gap-3">
-                <div className="p-2 bg-gradient-to-r from-amber-500 to-orange-500 rounded-xl shadow-md w-fit">
-                  <Award className="w-4 h-4 sm:w-5 sm:h-5 text-white" aria-hidden="true" />
+            {/* Quick Tips - Minimalist */}
+            <div className="bg-gray-50 rounded-xl border border-gray-100 p-5">
+              <div className="flex items-start gap-3">
+                <div className="p-2 bg-white rounded-lg shadow-sm">
+                  <ThumbsUp className="w-4 h-4 text-gray-600" />
                 </div>
                 <div className="flex-1">
-                  <h4 className="font-bold text-amber-800 text-sm sm:text-base">{t('helpSupport.quickTips.title')}</h4>
-                  <ul className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 sm:gap-2 mt-3">
+                  <h4 className="font-semibold text-gray-900 text-sm">{t('helpSupport.quickTips.title')}</h4>
+                  <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-3">
                     {quickTips.map((tip, idx) => (
-                      <li key={idx} className="flex items-start gap-2 text-xs sm:text-sm text-amber-700">
-                        <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4 text-amber-500 mt-0.5 flex-shrink-0" aria-hidden="true" />
+                      <li key={idx} className="flex items-start gap-2 text-sm text-gray-600">
+                        <CheckCircle className="w-3.5 h-3.5 text-[#5C352C] mt-0.5 flex-shrink-0" />
                         <span>{tip}</span>
                       </li>
                     ))}
@@ -277,52 +238,55 @@ const HelpSupportModal = ({ isOpen, onClose }) => {
               </div>
             </div>
 
-            {/* Social Media Links */}
-            <div className="border-t-2 border-gray-100 pt-4 sm:pt-5">
-              <p className="text-center text-[10px] sm:text-xs text-gray-500 mb-3 sm:mb-4 font-medium">
+            {/* Social Media Links - Minimal */}
+            <div className="border-t border-gray-100 pt-5">
+              <p className="text-center text-xs text-gray-400 mb-3">
                 {t('helpSupport.social.followUs')}
               </p>
-              <div className="flex flex-wrap justify-center gap-2 sm:gap-3">
+              <div className="flex flex-wrap justify-center gap-2">
                 <button
                   onClick={() => handleSocialShare('facebook')}
-                  className="px-4 sm:px-5 py-1.5 sm:py-2 bg-[#1877F2] text-white rounded-xl hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5 text-xs sm:text-sm font-semibold"
+                  className="px-4 py-1.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-all text-sm font-medium"
                   aria-label={t('helpSupport.social.shareOnFacebook')}
                 >
-                  📘 Facebook
+                  Facebook
                 </button>
                 <button
                   onClick={() => handleSocialShare('twitter')}
-                  className="px-4 sm:px-5 py-1.5 sm:py-2 bg-[#1DA1F2] text-white rounded-xl hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5 text-xs sm:text-sm font-semibold"
+                  className="px-4 py-1.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-all text-sm font-medium"
                   aria-label={t('helpSupport.social.shareOnTwitter')}
                 >
-                  🐦 Twitter
+                  Twitter
                 </button>
                 <button
                   onClick={() => handleSocialShare('linkedin')}
-                  className="px-4 sm:px-5 py-1.5 sm:py-2 bg-[#0A66C2] text-white rounded-xl hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5 text-xs sm:text-sm font-semibold"
+                  className="px-4 py-1.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-all text-sm font-medium"
                   aria-label={t('helpSupport.social.shareOnLinkedIn')}
                 >
-                  🔗 LinkedIn
+                  LinkedIn
                 </button>
               </div>
             </div>
 
-            {/* Trust Badge */}
-            <div className="text-center pt-2">
-              <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-gray-50 rounded-full">
-                <Shield className="w-3 h-3 sm:w-4 sm:h-4 text-emerald-500" aria-hidden="true" />
-                <span className="text-[9px] sm:text-[10px] text-gray-500 font-medium">{t('helpSupport.trust.secureSupport')}</span>
-                <Zap className="w-3 h-3 sm:w-4 sm:h-4 text-amber-500" aria-hidden="true" />
-                <span className="text-[9px] sm:text-[10px] text-gray-500 font-medium">{t('helpSupport.trust.fastResponse')}</span>
+            {/* Trust Badge - Minimal */}
+            <div className="flex justify-center items-center gap-3 pt-2">
+              <div className="flex items-center gap-1.5">
+                <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></div>
+                <span className="text-xs text-gray-400">{t('helpSupport.trust.secureSupport')}</span>
+              </div>
+              <div className="w-px h-3 bg-gray-200"></div>
+              <div className="flex items-center gap-1.5">
+                <div className="w-1.5 h-1.5 bg-amber-500 rounded-full"></div>
+                <span className="text-xs text-gray-400">{t('helpSupport.trust.fastResponse')}</span>
               </div>
             </div>
           </div>
 
           {/* Footer Actions */}
-          <div className="border-t-2 border-gray-100 mt-5 sm:mt-6 pt-4 sm:pt-5 flex justify-end">
+          <div className="border-t border-gray-100 mt-6 pt-5 flex justify-end">
             <button
               onClick={onClose}
-              className="px-4 sm:px-6 py-2 sm:py-2.5 bg-gradient-to-r from-[#5C352C] to-[#8B5E4F] text-white rounded-xl hover:shadow-lg transition-all duration-300 text-sm font-bold hover:-translate-y-0.5"
+              className="px-5 py-2 bg-gradient-to-r from-[#5C352C] to-[#7A4B3E] text-white rounded-lg hover:shadow-md transition-all text-sm font-medium"
               aria-label={t('helpSupport.closeModal')}
             >
               {t('helpSupport.close')}
@@ -330,28 +294,6 @@ const HelpSupportModal = ({ isOpen, onClose }) => {
           </div>
         </div>
       </div>
-
-      <style jsx>{`
-        @keyframes modal-in {
-          from {
-            opacity: 0;
-            transform: scale(0.95) translateY(20px);
-          }
-          to {
-            opacity: 1;
-            transform: scale(1) translateY(0);
-          }
-        }
-        .animate-modal-in {
-          animation: modal-in 0.3s ease-out forwards;
-        }
-        
-        @media (max-width: 640px) {
-          .animate-modal-in {
-            animation-duration: 0.25s;
-          }
-        }
-      `}</style>
     </div>
   );
 };

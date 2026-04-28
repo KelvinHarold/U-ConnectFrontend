@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import MainLayout from "../../../layouts/MainLayout";
 import api from "../../../api/axios";
 import { useToast } from "../../../contexts/ToastContext";
+import { useLanguage } from "../../../contexts/LanguageContext";
 import { 
   History, 
   RefreshCw, 
@@ -70,6 +71,7 @@ const SkeletonLogRow = () => (
 
 const InventoryLogs = () => {
   const { showToast } = useToast();
+  const { t } = useLanguage();
   const [logs, setLogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -121,8 +123,8 @@ const InventoryLogs = () => {
         setLogs([]);
       }
     } catch (error) {
-      setError('Failed to load inventory logs');
-      showToast('Failed to load logs', 'error');
+      setError(t('seller.inventoryLogs.failedToLoad'));
+      showToast(t('seller.inventoryLogs.failedToLoadLogs'), 'error');
     } finally {
       setLoading(false);
     }
@@ -147,13 +149,23 @@ const InventoryLogs = () => {
 
   const getTypeLabel = (type) => {
     const labels = {
-      add: 'Added',
-      remove: 'Removed',
-      sale: 'Sale',
-      restock: 'Restocked',
-      adjustment: 'Adjusted'
+      add: t('seller.inventoryLogs.typeAdded'),
+      remove: t('seller.inventoryLogs.typeRemoved'),
+      sale: t('seller.inventoryLogs.typeSale'),
+      restock: t('seller.inventoryLogs.typeRestocked'),
+      adjustment: t('seller.inventoryLogs.typeAdjusted')
     };
     return labels[type] || type;
+  };
+
+  const formatDate = (dateStr) => {
+    if (!dateStr) return 'N/A';
+    return new Date(dateStr).toLocaleDateString();
+  };
+
+  const formatTime = (dateStr) => {
+    if (!dateStr) return 'N/A';
+    return new Date(dateStr).toLocaleTimeString();
   };
 
   if (loading && logs.length === 0) {
@@ -209,13 +221,16 @@ const InventoryLogs = () => {
                 <div className="p-2 bg-[#5C352C]/10 rounded-xl">
                   <History className="w-5 h-5 text-[#5C352C]" />
                 </div>
-                <h1 className="text-xl font-semibold text-gray-900">Inventory Logs</h1>
+                <h1 className="text-xl font-semibold text-gray-900">{t('seller.inventoryLogs.title')}</h1>
               </div>
-              <p className="text-sm text-gray-500 ml-11">Track all inventory changes</p>
+              <p className="text-sm text-gray-500 ml-11">{t('seller.inventoryLogs.subtitle')}</p>
             </div>
-            <button onClick={() => fetchLogs(pagination.current_page)} className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+            <button 
+              onClick={() => fetchLogs(pagination.current_page)} 
+              className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+            >
               <RefreshCw className="w-4 h-4" />
-              Refresh
+              {t('seller.inventoryLogs.refresh')}
             </button>
           </div>
 
@@ -224,19 +239,19 @@ const InventoryLogs = () => {
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
               <div className="bg-white rounded-xl border border-gray-100 p-3">
                 <p className="text-2xl font-bold text-gray-900">{pagination.total}</p>
-                <p className="text-xs text-gray-500">Total Logs</p>
+                <p className="text-xs text-gray-500">{t('seller.inventoryLogs.totalLogs')}</p>
               </div>
               <div className="bg-white rounded-xl border border-gray-100 p-3">
                 <p className="text-2xl font-bold text-emerald-600">{totalAdditions}</p>
-                <p className="text-xs text-gray-500">Added</p>
+                <p className="text-xs text-gray-500">{t('seller.inventoryLogs.added')}</p>
               </div>
               <div className="bg-white rounded-xl border border-gray-100 p-3">
                 <p className="text-2xl font-bold text-rose-600">{totalRemovals}</p>
-                <p className="text-xs text-gray-500">Removed</p>
+                <p className="text-xs text-gray-500">{t('seller.inventoryLogs.removed')}</p>
               </div>
               <div className="bg-white rounded-xl border border-gray-100 p-3">
                 <p className="text-2xl font-bold text-blue-600">{uniqueProducts}</p>
-                <p className="text-xs text-gray-500">Products</p>
+                <p className="text-xs text-gray-500">{t('seller.inventoryLogs.products')}</p>
               </div>
             </div>
           )}
@@ -248,29 +263,34 @@ const InventoryLogs = () => {
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                 <input
                   type="text"
-                  placeholder="Search by product..."
+                  placeholder={t('seller.inventoryLogs.searchPlaceholder')}
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   className="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-[#5C352C]"
                 />
               </div>
-              <button onClick={() => setShowFilters(!showFilters)}
-                className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm transition-colors ${showFilters ? 'bg-[#5C352C] text-white' : 'bg-gray-100 text-gray-600'}`}>
+              <button 
+                onClick={() => setShowFilters(!showFilters)}
+                className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm transition-colors ${showFilters ? 'bg-[#5C352C] text-white' : 'bg-gray-100 text-gray-600'}`}
+              >
                 <Filter className="w-4 h-4" />
-                Filters
+                {t('seller.inventoryLogs.filters')}
                 <ChevronDown className={`w-4 h-4 transition-transform ${showFilters ? 'rotate-180' : ''}`} />
               </button>
             </div>
 
             {showFilters && (
               <div className="mt-4 pt-4 border-t border-gray-100">
-                <select value={typeFilter} onChange={(e) => setTypeFilter(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm bg-white focus:outline-none focus:border-[#5C352C]">
-                  <option value="all">All Types</option>
-                  <option value="add">Add / Restock</option>
-                  <option value="remove">Remove</option>
-                  <option value="sale">Sale</option>
-                  <option value="adjustment">Adjustment</option>
+                <select 
+                  value={typeFilter} 
+                  onChange={(e) => setTypeFilter(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm bg-white focus:outline-none focus:border-[#5C352C]"
+                >
+                  <option value="all">{t('seller.inventoryLogs.allTypes')}</option>
+                  <option value="add">{t('seller.inventoryLogs.addRestock')}</option>
+                  <option value="remove">{t('seller.inventoryLogs.remove')}</option>
+                  <option value="sale">{t('seller.inventoryLogs.sale')}</option>
+                  <option value="adjustment">{t('seller.inventoryLogs.adjustment')}</option>
                 </select>
               </div>
             )}
@@ -281,13 +301,18 @@ const InventoryLogs = () => {
             <div className="bg-white rounded-xl border border-gray-100 p-8 text-center">
               <AlertCircle className="w-12 h-12 text-red-400 mx-auto mb-3" />
               <p className="text-red-600">{error}</p>
-              <button onClick={() => fetchLogs(1)} className="mt-3 text-sm text-[#5C352C] hover:underline">Try again</button>
+              <button 
+                onClick={() => fetchLogs(1)} 
+                className="mt-3 text-sm text-[#5C352C] hover:underline"
+              >
+                {t('seller.inventoryLogs.tryAgain')}
+              </button>
             </div>
           ) : logs.length === 0 ? (
             <div className="bg-white rounded-xl border border-gray-100 p-12 text-center">
               <History className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-              <h3 className="text-base font-medium text-gray-900 mb-1">No Logs Found</h3>
-              <p className="text-sm text-gray-500">No inventory changes recorded yet</p>
+              <h3 className="text-base font-medium text-gray-900 mb-1">{t('seller.inventoryLogs.noLogsFound')}</h3>
+              <p className="text-sm text-gray-500">{t('seller.inventoryLogs.noLogsMessage')}</p>
             </div>
           ) : (
             /* Logs Table */
@@ -296,12 +321,12 @@ const InventoryLogs = () => {
                 <table className="w-full">
                   <thead className="bg-gray-50 border-b border-gray-100">
                     <tr>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">Date & Time</th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">Product</th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">Type</th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">Change</th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">Stock</th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">Reason</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">{t('seller.inventoryLogs.dateTime')}</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">{t('seller.inventoryLogs.product')}</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">{t('seller.inventoryLogs.type')}</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">{t('seller.inventoryLogs.change')}</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">{t('seller.inventoryLogs.stock')}</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">{t('seller.inventoryLogs.reason')}</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-100">
@@ -309,13 +334,16 @@ const InventoryLogs = () => {
                       <tr key={log.id} className="hover:bg-gray-50 transition-colors">
                         <td className="px-4 py-3">
                           <div className="flex flex-col">
-                            <span className="text-xs text-gray-700">{new Date(log.created_at).toLocaleDateString()}</span>
-                            <span className="text-[10px] text-gray-400">{new Date(log.created_at).toLocaleTimeString()}</span>
+                            <span className="text-xs text-gray-700">{formatDate(log.created_at)}</span>
+                            <span className="text-[10px] text-gray-400">{formatTime(log.created_at)}</span>
                           </div>
                         </td>
                         <td className="px-4 py-3">
-                          <Link to={`/seller/products/${log.product_id}`} className="text-sm text-gray-900 hover:text-[#5C352C] font-medium">
-                            {log.product?.name || `Product #${log.product_id}`}
+                          <Link 
+                            to={`/seller/products/${log.product_id}`} 
+                            className="text-sm text-gray-900 hover:text-[#5C352C] font-medium"
+                          >
+                            {log.product?.name || `${t('seller.inventoryLogs.productLabel')} #${log.product_id}`}
                           </Link>
                         </td>
                         <td className="px-4 py-3">
@@ -334,7 +362,10 @@ const InventoryLogs = () => {
                           <span className="text-xs font-medium text-gray-900">{log.new_quantity}</span>
                         </td>
                         <td className="px-4 py-3">
-                          <span className="text-xs text-gray-500 block truncate max-w-[200px]" title={log.reason}>
+                          <span 
+                            className="text-xs text-gray-500 block truncate max-w-[200px]" 
+                            title={log.reason}
+                          >
                             {log.reason || '—'}
                           </span>
                         </td>
@@ -348,18 +379,24 @@ const InventoryLogs = () => {
               {pagination.last_page > 1 && (
                 <div className="px-4 py-3 border-t border-gray-100 bg-gray-50 flex justify-between items-center flex-wrap gap-2">
                   <div className="text-xs text-gray-500">
-                    Showing {pagination.from || 0} to {pagination.to || 0} of {pagination.total} logs
+                    {t('seller.inventoryLogs.showing')} {pagination.from || 0} {t('seller.inventoryLogs.to')} {pagination.to || 0} {t('seller.inventoryLogs.of')} {pagination.total} {t('seller.inventoryLogs.logs')}
                   </div>
                   <div className="flex gap-1">
-                    <button onClick={() => fetchLogs(pagination.current_page - 1)} disabled={pagination.current_page === 1}
-                      className="p-1.5 rounded-lg border border-gray-200 disabled:opacity-40 hover:border-[#5C352C] transition-colors">
+                    <button 
+                      onClick={() => fetchLogs(pagination.current_page - 1)} 
+                      disabled={pagination.current_page === 1}
+                      className="p-1.5 rounded-lg border border-gray-200 disabled:opacity-40 hover:border-[#5C352C] transition-colors"
+                    >
                       <ChevronLeft className="w-4 h-4" />
                     </button>
                     <span className="px-3 py-1.5 text-sm font-medium text-white bg-[#5C352C] rounded-lg">
                       {pagination.current_page} / {pagination.last_page}
                     </span>
-                    <button onClick={() => fetchLogs(pagination.current_page + 1)} disabled={pagination.current_page === pagination.last_page}
-                      className="p-1.5 rounded-lg border border-gray-200 disabled:opacity-40 hover:border-[#5C352C] transition-colors">
+                    <button 
+                      onClick={() => fetchLogs(pagination.current_page + 1)} 
+                      disabled={pagination.current_page === pagination.last_page}
+                      className="p-1.5 rounded-lg border border-gray-200 disabled:opacity-40 hover:border-[#5C352C] transition-colors"
+                    >
                       <ChevronRight className="w-4 h-4" />
                     </button>
                   </div>

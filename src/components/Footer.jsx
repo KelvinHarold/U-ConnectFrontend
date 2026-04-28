@@ -16,8 +16,7 @@ const Footer = () => {
           </p>
           <p className="text-xs text-gray-400 flex items-center gap-1">
             {t('footer.madeBy')}
-            <Heart className="w-3 h-3 text-rose-500 fill-rose-500" aria-hidden="true" />
-            {t('footer.forBetterCommerce')}
+           <span>PinCodes</span>
           </p>
         </div>
       </div>

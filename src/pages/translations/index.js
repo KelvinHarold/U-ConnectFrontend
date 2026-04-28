@@ -35,6 +35,13 @@ import { sellerCategoryProductsTranslations } from './sellers/sellerCategoryProd
 import { sellerSubcategoriesTranslations } from './sellers/sellerSubcategories';
 import { sellerOrderDetailsTranslations } from './sellers/sellerOrderDetails';
 import { sellerOrdersTranslations } from './sellers/sellerOrders';
+import { sellerSubscriptionTranslations } from './sellers/sellerSubscription';
+import { sellerAnnouncementsTranslations } from './sellers/sellerAnnouncements';
+import { sellerBulkStockTranslations } from './sellers/sellerBulkStock';
+import { sellerInventoryLogsTranslations } from './sellers/sellerInventoryLogs';
+import { sellerInventorySummaryTranslations } from './sellers/sellerInventorySummary';
+import { sellerLowStockProductsTranslations } from './sellers/sellerLowStockProducts';
+import { sellerOutOfStockProductsTranslations } from './sellers/sellerOutOfStockProducts';
 
 export const translations = {
   en: {
@@ -62,18 +69,25 @@ export const translations = {
       announcements: announcementsTranslations.en,
       issueReports: issueReportsTranslations.en,
     },
-seller: {
-  dashboard: sellerDashboardTranslations.en,
-  products: sellerProductsTranslations.en,
-  productDetails: sellerProductDetailsTranslations.en,
-  editProduct: sellerEditProductTranslations.en,
-  addProduct: sellerAddProductTranslations.en,
-  categories: sellerCategoriesTranslations.en,
-  categoryProducts: sellerCategoryProductsTranslations.en,
-  subcategories: sellerSubcategoriesTranslations.en,
-  orders: sellerOrdersTranslations.en,
-  orderDetails: sellerOrderDetailsTranslations.en,
-}
+    seller: {
+      dashboard: sellerDashboardTranslations.en,
+      products: sellerProductsTranslations.en,
+      productDetails: sellerProductDetailsTranslations.en,
+      editProduct: sellerEditProductTranslations.en,
+      addProduct: sellerAddProductTranslations.en,
+      categories: sellerCategoriesTranslations.en,
+      categoryProducts: sellerCategoryProductsTranslations.en,
+      subcategories: sellerSubcategoriesTranslations.en,
+      orders: sellerOrdersTranslations.en,
+      orderDetails: sellerOrderDetailsTranslations.en,
+      subscription: sellerSubscriptionTranslations.en,
+      announcements: sellerAnnouncementsTranslations.en,
+      bulkStock: sellerBulkStockTranslations.en,
+      inventoryLogs: sellerInventoryLogsTranslations.en,
+      inventorySummary: sellerInventorySummaryTranslations.en,
+      lowStockProducts: sellerLowStockProductsTranslations.en,
+      outOfStockProducts: sellerOutOfStockProductsTranslations.en,
+    }
   },
 
   sw: {
@@ -101,25 +115,32 @@ seller: {
       announcements: announcementsTranslations.sw,
       issueReports: issueReportsTranslations.sw,
     },
-seller: {
-  dashboard: sellerDashboardTranslations.sw,
-  products: sellerProductsTranslations.sw,
-  productDetails: sellerProductDetailsTranslations.sw,
-  editProduct: sellerEditProductTranslations.sw,
-  addProduct: sellerAddProductTranslations.sw,
-  categories: sellerCategoriesTranslations.sw,
-  categoryProducts: sellerCategoryProductsTranslations.sw,
-  subcategories: sellerSubcategoriesTranslations.sw,
-  orders: sellerOrdersTranslations.sw,
-  orderDetails: sellerOrderDetailsTranslations.sw,
-}
+    seller: {
+      dashboard: sellerDashboardTranslations.sw,
+      products: sellerProductsTranslations.sw,
+      productDetails: sellerProductDetailsTranslations.sw,
+      editProduct: sellerEditProductTranslations.sw,
+      addProduct: sellerAddProductTranslations.sw,
+      categories: sellerCategoriesTranslations.sw,
+      categoryProducts: sellerCategoryProductsTranslations.sw,
+      subcategories: sellerSubcategoriesTranslations.sw,
+      orders: sellerOrdersTranslations.sw,
+      orderDetails: sellerOrderDetailsTranslations.sw,
+      subscription: sellerSubscriptionTranslations.sw,
+      announcements: sellerAnnouncementsTranslations.sw,
+      bulkStock: sellerBulkStockTranslations.sw,
+      inventoryLogs: sellerInventoryLogsTranslations.sw,
+      inventorySummary: sellerInventorySummaryTranslations.sw,
+      lowStockProducts: sellerLowStockProductsTranslations.sw,
+      outOfStockProducts: sellerOutOfStockProductsTranslations.sw,
+    }
   }
 };
 
 export const getTranslation = (lang, path) => {
   const keys = path.split('.');
   let result = translations[lang];
-  
+
   for (const key of keys) {
     if (result && result[key] !== undefined) {
       result = result[key];
@@ -128,7 +149,7 @@ export const getTranslation = (lang, path) => {
       return path;
     }
   }
-  
+
   return result;
 };
 

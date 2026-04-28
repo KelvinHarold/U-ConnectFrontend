@@ -4,13 +4,12 @@ import { useParams, Link } from "react-router-dom";
 import { AuthContext } from "../../../contexts/AuthContext";
 import { useLanguage } from "../../../contexts/LanguageContext";
 import MainLayout from "../../../layouts/MainLayout";
-import InactiveSellerPopup from "../../../components/InactiveSellerPopup";
 import api from "../../../api/axios";
 import { useToast } from "../../../contexts/ToastContext";
 import DiscountBadge from "../../../components/common/DiscountBadge";
-import { 
-  ArrowLeft, 
-  ShoppingCart, 
+import {
+  ArrowLeft,
+  ShoppingCart,
   Package,
   Store,
   Star,
@@ -51,11 +50,6 @@ const SkeletonProductDetails = () => (
       <div className="grid lg:grid-cols-2 gap-8 p-6 md:p-8">
         <div>
           <div className="relative w-full pt-[100%] bg-gradient-to-br from-gray-200 to-gray-300 rounded-2xl"></div>
-          <div className="flex gap-3 mt-4">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="w-20 h-20 bg-gradient-to-br from-gray-200 to-gray-300 rounded-xl"></div>
-            ))}
-          </div>
         </div>
         <div className="space-y-5">
           <div className="h-9 bg-gray-200 rounded w-3/4"></div>
@@ -116,13 +110,9 @@ const ProductDetails = () => {
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
   const [addingToCart, setAddingToCart] = useState(false);
-  const [showInactiveSellerPopup, setShowInactiveSellerPopup] = useState(false);
   const [error, setError] = useState(null);
   const [mainImageError, setMainImageError] = useState(false);
-  const [thumbnailErrors, setThumbnailErrors] = useState({});
   const [relatedImageErrors, setRelatedImageErrors] = useState({});
-  const [activeImage, setActiveImage] = useState(0);
-  const [isMobile, setIsMobile] = useState(false);
   const [logoError, setLogoError] = useState(false);
 
   // Comments state
@@ -133,13 +123,6 @@ const ProductDetails = () => {
   const [submittingComment, setSubmittingComment] = useState(false);
   const [commentError, setCommentError] = useState(null);
   const [deletingComment, setDeletingComment] = useState(null);
-
-  useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 768);
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
 
   useEffect(() => {
     fetchProduct();
@@ -208,7 +191,7 @@ const ProductDetails = () => {
     const diffMins = Math.floor((now - date) / 60000);
     const diffHours = Math.floor(diffMins / 60);
     const diffDays = Math.floor(diffHours / 24);
-    
+
     if (diffMins < 1) return t('buyer.productDetails.justNow');
     if (diffMins < 60) return t('buyer.productDetails.minutesAgo', { minutes: diffMins });
     if (diffHours < 24) return t('buyer.productDetails.hoursAgo', { hours: diffHours });
@@ -223,9 +206,7 @@ const ProductDetails = () => {
       setRelatedProducts(response.data.related_products);
       setError(null);
       setMainImageError(false);
-      setThumbnailErrors({});
       setRelatedImageErrors({});
-      setActiveImage(0);
       setLogoError(false);
     } catch (error) {
       console.error("Error fetching product:", error);
@@ -240,15 +221,15 @@ const ProductDetails = () => {
   const addToCart = async () => {
     setAddingToCart(true);
     try {
-      await api.post('/buyer/cart/add', { 
-        product_id: product.id, 
-        quantity: quantity 
+      await api.post('/buyer/cart/add', {
+        product_id: product.id,
+        quantity: quantity
       });
       const productName = product.name.length > 30 ? product.name.substring(0, 30) + '...' : product.name;
       showToast(t('buyer.productDetails.productAddedToCart', { quantity, product: productName }), 'success');
     } catch (error) {
       if (error.response?.data?.error_code === 'SELLER_INACTIVE') {
-        setShowInactiveSellerPopup(true);
+        showToast(t('buyer.productDetails.sellerInactive'), 'error');
       } else {
         showToast(error.response?.data?.message || t('buyer.productDetails.errorAddingToCart'), 'error');
       }
@@ -277,10 +258,6 @@ const ProductDetails = () => {
     setMainImageError(true);
   };
 
-  const handleThumbnailError = (index) => {
-    setThumbnailErrors(prev => ({ ...prev, [index]: true }));
-  };
-
   const handleRelatedImageError = (productId) => {
     setRelatedImageErrors(prev => ({ ...prev, [productId]: true }));
   };
@@ -289,8 +266,8 @@ const ProductDetails = () => {
     setLogoError(true);
   };
 
-  const productImages = product?.images || (product?.image ? [product.image] : []);
-  const averageRating = comments.length > 0 
+  const productImage = product?.image || (product?.images?.[0] || null);
+  const averageRating = comments.length > 0
     ? (comments.reduce((sum, c) => sum + (c.rating || 0), 0) / comments.length).toFixed(1)
     : 5.0;
 
@@ -349,7 +326,7 @@ const ProductDetails = () => {
       <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50">
         <div className="p-4 md:p-8">
           <div className="max-w-7xl mx-auto">
-            
+
             {/* Enhanced Breadcrumb */}
             <nav className="flex items-center gap-2 text-sm mb-6 flex-wrap">
               <Link to="/" className="text-gray-500 hover:text-[#5C352C] transition-colors">{t('buyer.productDetails.home')}</Link>
@@ -360,8 +337,8 @@ const ProductDetails = () => {
             </nav>
 
             {/* Enhanced Back Button */}
-            <Link 
-              to="/buyer/shop/products" 
+            <Link
+              to="/buyer/shop/products"
               className="inline-flex items-center gap-2 text-[#5C352C] hover:text-[#4A2A22] mb-6 group font-medium"
             >
               <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
@@ -371,15 +348,15 @@ const ProductDetails = () => {
             {/* Enhanced Main Product Card */}
             <div className="bg-white rounded-2xl shadow-xl border-2 border-gray-100 overflow-hidden">
               <div className="grid lg:grid-cols-2 gap-8 p-6 md:p-8">
-                
-                {/* Left Column - Images */}
+
+                {/* Left Column - Single Main Image */}
                 <div>
                   <div className="relative w-full pt-[100%] bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl overflow-hidden shadow-inner">
                     <div className="absolute inset-0">
-                      {productImages[activeImage] && !mainImageError ? (
-                        <img 
-                          src={productImages[activeImage]} 
-                          alt={product.name} 
+                      {productImage && !mainImageError ? (
+                        <img
+                          src={productImage}
+                          alt={product.name}
                           className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
                           onError={handleMainImageError}
                         />
@@ -390,7 +367,7 @@ const ProductDetails = () => {
                         </div>
                       )}
                     </div>
-                    
+
                     {/* Enhanced Badges */}
                     <div className="absolute top-4 left-4 flex flex-col gap-2 z-10">
                       {product.is_featured && (
@@ -409,7 +386,7 @@ const ProductDetails = () => {
                         </span>
                       )}
                     </div>
-                    
+
                     {/* Enhanced Stock Overlay */}
                     {product.quantity === 0 && (
                       <div className="absolute inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-10">
@@ -419,36 +396,6 @@ const ProductDetails = () => {
                       </div>
                     )}
                   </div>
-                  
-                  {/* Enhanced Thumbnail Gallery */}
-                  {productImages.length > 1 && (
-                    <div className="flex gap-3 mt-4 overflow-x-auto pb-2">
-                      {productImages.map((img, idx) => (
-                        <button
-                          key={idx}
-                          onClick={() => setActiveImage(idx)}
-                          className={`relative w-20 h-20 rounded-xl overflow-hidden border-2 transition-all flex-shrink-0 ${
-                            activeImage === idx ? 'border-[#5C352C] shadow-lg scale-105' : 'border-gray-200 hover:border-gray-300'
-                          }`}
-                        >
-                          <div className="w-full h-full">
-                            {!thumbnailErrors[idx] ? (
-                              <img 
-                                src={img} 
-                                alt={t('buyer.productDetails.view', { number: idx + 1 })} 
-                                className="w-full h-full object-cover"
-                                onError={() => handleThumbnailError(idx)}
-                              />
-                            ) : (
-                              <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200">
-                                <ImageIcon className="w-6 h-6 text-gray-400" />
-                              </div>
-                            )}
-                          </div>
-                        </button>
-                      ))}
-                    </div>
-                  )}
                 </div>
 
                 {/* Right Column - Product Info */}
@@ -456,7 +403,7 @@ const ProductDetails = () => {
                   <div className="mb-4">
                     <h1 className="text-2xl md:text-3xl font-bold text-gray-900 leading-tight">{product.name}</h1>
                   </div>
-                  
+
                   <div className="flex flex-wrap items-center gap-4 mb-5">
                     <div className="flex items-baseline gap-3">
                       <span className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-[#5C352C] to-[#8B5E4F] bg-clip-text text-transparent">
@@ -483,11 +430,10 @@ const ProductDetails = () => {
                   </div>
 
                   <div className="flex flex-wrap items-center gap-3 mb-5">
-                    <div className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold ${
-                      product.quantity === 0 ? 'bg-rose-100 text-rose-700' :
-                      product.quantity <= 5 ? 'bg-orange-100 text-orange-700' :
-                      'bg-emerald-100 text-emerald-700'
-                    }`}>
+                    <div className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold ${product.quantity === 0 ? 'bg-rose-100 text-rose-700' :
+                        product.quantity <= 5 ? 'bg-orange-100 text-orange-700' :
+                          'bg-emerald-100 text-emerald-700'
+                      }`}>
                       <Package className="w-3.5 h-3.5" />
                       {getStockStatusText()}
                     </div>
@@ -532,12 +478,12 @@ const ProductDetails = () => {
                       <Store className="w-5 h-5 text-[#5C352C]" />
                       {t('buyer.productDetails.sellerInformation')}
                     </h2>
-                    
+
                     <div className="flex items-center gap-4 mb-4">
                       <div className="w-14 h-14 bg-gradient-to-br from-[#5C352C] to-[#8B5E4F] rounded-full overflow-hidden flex items-center justify-center shadow-lg flex-shrink-0">
                         {product.seller?.store_logo && !logoError ? (
-                          <img 
-                            src={product.seller.store_logo} 
+                          <img
+                            src={product.seller.store_logo}
                             alt={product.seller.store_name}
                             className="w-full h-full object-cover"
                             onError={handleLogoError}
@@ -646,8 +592,8 @@ const ProductDetails = () => {
                 </div>
                 <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                   {relatedProducts.slice(0, 4).map((related) => (
-                    <Link 
-                      key={related.id} 
+                    <Link
+                      key={related.id}
                       to={`/buyer/shop/products/${related.id}`}
                       className="group"
                     >
@@ -655,9 +601,9 @@ const ProductDetails = () => {
                         <div className="relative w-full pt-[100%] bg-gradient-to-br from-gray-50 to-gray-100 overflow-hidden">
                           <div className="absolute inset-0">
                             {related.image && !relatedImageErrors[related.id] ? (
-                              <img 
-                                src={related.image} 
-                                alt={related.name} 
+                              <img
+                                src={related.image}
+                                alt={related.name}
                                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                                 onError={() => handleRelatedImageError(related.id)}
                               />
@@ -869,11 +815,6 @@ const ProductDetails = () => {
             </div>
           </div>
         </div>
-
-        <InactiveSellerPopup 
-          isOpen={showInactiveSellerPopup} 
-          onClose={() => setShowInactiveSellerPopup(false)} 
-        />
       </div>
 
       <style jsx>{`

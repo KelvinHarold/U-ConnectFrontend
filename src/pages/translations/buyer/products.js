@@ -1,6 +1,6 @@
 export const productsTranslations = {
   en: {
-    shop: "Shop",
+    shop: "Products",
     subtitle: "Discover amazing products from our trusted sellers",
     products: "Products",
     searchPlaceholder: "Search products by name, description, or category...",
@@ -42,7 +42,7 @@ export const productsTranslations = {
     seller: "Seller",
   },
   sw: {
-    shop: "Duka",
+    shop: "Bidhaa",
     subtitle: "Gundua bidhaa za kuvutia kutoka kwa wauzaji wetu wa kuaminika",
     products: "Bidhaa",
     searchPlaceholder: "Tafuta bidhaa kwa jina, maelezo, au kategoria...",
