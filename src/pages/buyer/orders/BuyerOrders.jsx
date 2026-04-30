@@ -276,7 +276,14 @@ const BuyerOrders = () => {
               <div className="p-4 border-b border-gray-100">
                 <div className="h-10 bg-gray-200 rounded-lg animate-pulse"></div>
               </div>
-              {[1, 2, 3, 4].map(i => <SkeletonOrderRow key={i} />)}
+              {/* Desktop skeleton */}
+              <div className="hidden lg:block">
+                {[1, 2, 3, 4].map(i => <SkeletonOrderRow key={i} />)}
+              </div>
+              {/* Mobile skeleton */}
+              <div className="lg:hidden space-y-3 p-4">
+                {[1, 2, 3, 4].map(i => <SkeletonOrderCard key={i} />)}
+              </div>
             </div>
           </div>
         </div>
@@ -289,40 +296,40 @@ const BuyerOrders = () => {
       <div className="p-6 bg-gray-50 min-h-screen">
         <div className="max-w-7xl mx-auto">
           
-          {/* Header */}
-          <div className="mb-6">
+          {/* Header - responsive padding */}
+          <div className="mb-4 md:mb-6">
             <div className="flex items-center gap-3 mb-1">
               <div className="p-2 bg-[#5C352C]/10 rounded-xl">
                 <ShoppingBag className="w-5 h-5 text-[#5C352C]" />
               </div>
-              <h1 className="text-xl font-semibold text-gray-900">{t('buyer.orders.myOrders')}</h1>
+              <h1 className="text-lg md:text-xl font-semibold text-gray-900">{t('buyer.orders.myOrders')}</h1>
             </div>
-            <p className="text-sm text-gray-500 ml-11">{t('buyer.orders.ordersSubtitle')}</p>
+            <p className="text-xs md:text-sm text-gray-500 ml-11">{t('buyer.orders.ordersSubtitle')}</p>
           </div>
 
-          {/* Stats Row */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+          {/* Stats Row - responsive grid */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4 mb-4 md:mb-6">
             <div className="bg-white rounded-xl border border-gray-100 p-3">
-              <p className="text-2xl font-bold text-gray-900">{statusCounts.total}</p>
+              <p className="text-xl md:text-2xl font-bold text-gray-900">{statusCounts.total}</p>
               <p className="text-xs text-gray-500">{t('buyer.orders.totalOrders')}</p>
             </div>
             <div className="bg-white rounded-xl border border-gray-100 p-3">
-              <p className="text-2xl font-bold text-amber-600">{statusCounts.pending}</p>
+              <p className="text-xl md:text-2xl font-bold text-amber-600">{statusCounts.pending}</p>
               <p className="text-xs text-gray-500">{t('buyer.orders.pending')}</p>
             </div>
             <div className="bg-white rounded-xl border border-gray-100 p-3">
-              <p className="text-2xl font-bold text-blue-600">{statusCounts.processing}</p>
+              <p className="text-xl md:text-2xl font-bold text-blue-600">{statusCounts.processing}</p>
               <p className="text-xs text-gray-500">{t('buyer.orders.processing')}</p>
             </div>
             <div className="bg-white rounded-xl border border-gray-100 p-3">
-              <p className="text-2xl font-bold text-emerald-600">{statusCounts.delivered}</p>
+              <p className="text-xl md:text-2xl font-bold text-emerald-600">{statusCounts.delivered}</p>
               <p className="text-xs text-gray-500">{t('buyer.orders.delivered')}</p>
             </div>
           </div>
 
-          {/* Search Bar */}
-          <div className="bg-white rounded-xl border border-gray-100 p-4 mb-6">
-            <div className="flex flex-wrap gap-3">
+          {/* Search Bar - responsive layout */}
+          <div className="bg-white rounded-xl border border-gray-100 p-3 md:p-4 mb-4 md:mb-6">
+            <div className="flex flex-col sm:flex-row gap-3">
               <div className="flex-1 min-w-[200px]">
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -337,46 +344,48 @@ const BuyerOrders = () => {
                 </div>
               </div>
               
-              <select
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
-                className="px-3 py-2 border border-gray-200 rounded-lg text-sm bg-white focus:outline-none focus:border-[#5C352C]"
-                aria-label={t('buyer.orders.status')}
-              >
-                <option value="all">{t('buyer.orders.allStatus')}</option>
-                <option value="pending">{t('buyer.orders.statusPending')}</option>
-                <option value="confirmed">{t('buyer.orders.statusConfirmed')}</option>
-                <option value="preparing">{t('buyer.orders.statusPreparing')}</option>
-                <option value="ready_for_delivery">{t('buyer.orders.statusReadyForDelivery')}</option>
-                <option value="delivered">{t('buyer.orders.statusDelivered')}</option>
-                <option value="cancelled">{t('buyer.orders.statusCancelled')}</option>
-              </select>
-              
-              <button
-                onClick={() => setShowFilters(!showFilters)}
-                className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-[#5C352C] ${
-                  showFilters || hasActiveFilters
-                    ? 'bg-[#5C352C] text-white'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
-                aria-label={t('buyer.orders.filters')}
-              >
-                <Filter className="w-4 h-4" />
-                {t('buyer.orders.filters')}
-                {hasActiveFilters && <span className="w-1.5 h-1.5 bg-white rounded-full" aria-hidden="true" />}
-              </button>
-              
-              <button
-                onClick={handleRefresh}
-                disabled={refreshing}
-                className="p-2 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-[#5C352C]"
-                aria-label={t('common.refresh')}
-              >
-                <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} aria-hidden="true" />
-              </button>
+              <div className="flex gap-2">
+                <select
+                  value={statusFilter}
+                  onChange={(e) => setStatusFilter(e.target.value)}
+                  className="px-3 py-2 border border-gray-200 rounded-lg text-sm bg-white focus:outline-none focus:border-[#5C352C]"
+                  aria-label={t('buyer.orders.status')}
+                >
+                  <option value="all">{t('buyer.orders.allStatus')}</option>
+                  <option value="pending">{t('buyer.orders.statusPending')}</option>
+                  <option value="confirmed">{t('buyer.orders.statusConfirmed')}</option>
+                  <option value="preparing">{t('buyer.orders.statusPreparing')}</option>
+                  <option value="ready_for_delivery">{t('buyer.orders.statusReadyForDelivery')}</option>
+                  <option value="delivered">{t('buyer.orders.statusDelivered')}</option>
+                  <option value="cancelled">{t('buyer.orders.statusCancelled')}</option>
+                </select>
+                
+                <button
+                  onClick={() => setShowFilters(!showFilters)}
+                  className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-[#5C352C] ${
+                    showFilters || hasActiveFilters
+                      ? 'bg-[#5C352C] text-white'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+                  aria-label={t('buyer.orders.filters')}
+                >
+                  <Filter className="w-4 h-4" />
+                  {t('buyer.orders.filters')}
+                  {hasActiveFilters && <span className="w-1.5 h-1.5 bg-white rounded-full" aria-hidden="true" />}
+                </button>
+                
+                <button
+                  onClick={handleRefresh}
+                  disabled={refreshing}
+                  className="p-2 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-[#5C352C]"
+                  aria-label={t('common.refresh')}
+                >
+                  <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} aria-hidden="true" />
+                </button>
+              </div>
             </div>
 
-            {/* Filter Panel */}
+            {/* Filter Panel - responsive */}
             {showFilters && hasActiveFilters && (
               <div className="mt-4 pt-4 border-t border-gray-100 flex justify-end">
                 <button
@@ -389,7 +398,7 @@ const BuyerOrders = () => {
             )}
           </div>
 
-          {/* Results Count */}
+          {/* Results Count - responsive text */}
           <div className="mb-4">
             <p className="text-xs text-gray-500" aria-live="polite">
               {t('buyer.orders.showing')} <span className="font-medium text-gray-700">{orders.length}</span> {t('buyer.orders.of')}{' '}
@@ -429,90 +438,92 @@ const BuyerOrders = () => {
             </div>
           ) : (
             <>
-              {/* Desktop Table */}
+              {/* Desktop Table - hidden on mobile, visible on large screens */}
               <div className="hidden lg:block bg-white rounded-xl border border-gray-100 overflow-hidden">
-                <table className="w-full">
-                  <thead className="bg-gray-50 border-b border-gray-100">
-                    <tr>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">{t('buyer.orders.orderNumber')}</th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">{t('buyer.orders.date')}</th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">{t('buyer.orders.seller')}</th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">{t('buyer.orders.items')}</th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">{t('buyer.orders.total')}</th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">{t('buyer.orders.status')}</th>
-                      <th className="px-4 py-3 text-center text-xs font-medium text-gray-500">{t('buyer.orders.actions')}</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-100">
-                    {orders.map((order) => (
-                      <tr key={order.id} className="hover:bg-gray-50 transition-colors">
-                        <td className="px-4 py-3">
-                          <span className="font-mono text-sm font-medium text-gray-900">
-                            #{order.order_number || order.id}
-                          </span>
-                        </td>
-                        <td className="px-4 py-3 text-sm text-gray-500">
-                          {new Date(order.created_at).toLocaleDateString()}
-                        </td>
-                        <td className="px-4 py-3 text-sm text-gray-900 max-w-[200px] truncate">
-                          {order.seller?.name || 'N/A'}
-                        </td>
-                        <td className="px-4 py-3 text-sm text-gray-500">
-                          {order.items?.length || 0}
-                        </td>
-                        <td className="px-4 py-3">
-                          <span className="font-semibold text-[#5C352C] text-sm">{formatPrice(order.total)}</span>
-                        </td>
-                        <td className="px-4 py-3">
-                          {getStatusBadge(order.status)}
-                        </td>
-                        <td className="px-4 py-3">
-                          <div className="flex items-center justify-center gap-1">
-                            <Link 
-                              to={`/buyer/orders/${order.id}`}
-                              aria-label={t('buyer.orders.viewOrderDetails', { number: order.order_number || order.id })}
-                            >
-                              <button className="p-1.5 text-gray-500 hover:text-[#5C352C] hover:bg-gray-100 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-[#5C352C]">
-                                <Eye className="w-4 h-4" aria-hidden="true" />
-                              </button>
-                            </Link>
-                            {canCancel(order.status) && (
-                              <button
-                                onClick={() => cancelOrder(order.id, order.order_number || order.id)}
-                                disabled={cancellingOrder === order.id}
-                                className="p-1.5 text-gray-500 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-rose-500 disabled:opacity-50"
-                                aria-label={t('buyer.orders.cancelOrderAria', { number: order.order_number || order.id })}
-                              >
-                                {cancellingOrder === order.id ? (
-                                  <div className="w-4 h-4 border-2 border-rose-500 border-t-transparent rounded-full animate-spin" aria-hidden="true" />
-                                ) : (
-                                  <XCircle className="w-4 h-4" aria-hidden="true" />
-                                )}
-                              </button>
-                            )}
-                            {canConfirmDelivery(order.status) && (
-                              <button
-                                onClick={() => confirmDelivery(order.id, order.order_number || order.id)}
-                                disabled={confirmingOrder === order.id}
-                                className="p-1.5 text-gray-500 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-emerald-500 disabled:opacity-50"
-                                aria-label={t('buyer.orders.confirmDeliveryAria', { number: order.order_number || order.id })}
-                              >
-                                {confirmingOrder === order.id ? (
-                                  <div className="w-4 h-4 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" aria-hidden="true" />
-                                ) : (
-                                  <CheckCircle className="w-4 h-4" aria-hidden="true" />
-                                )}
-                              </button>
-                            )}
-                          </div>
-                        </td>
+                <div className="overflow-x-auto">
+                  <table className="w-full min-w-[800px]">
+                    <thead className="bg-gray-50 border-b border-gray-100">
+                      <tr>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">{t('buyer.orders.orderNumber')}</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">{t('buyer.orders.date')}</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">{t('buyer.orders.seller')}</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">{t('buyer.orders.items')}</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">{t('buyer.orders.total')}</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">{t('buyer.orders.status')}</th>
+                        <th className="px-4 py-3 text-center text-xs font-medium text-gray-500">{t('buyer.orders.actions')}</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody className="divide-y divide-gray-100">
+                      {orders.map((order) => (
+                        <tr key={order.id} className="hover:bg-gray-50 transition-colors">
+                          <td className="px-4 py-3">
+                            <span className="font-mono text-sm font-medium text-gray-900">
+                              #{order.order_number || order.id}
+                            </span>
+                          </td>
+                          <td className="px-4 py-3 text-sm text-gray-500">
+                            {new Date(order.created_at).toLocaleDateString()}
+                          </td>
+                          <td className="px-4 py-3 text-sm text-gray-900 max-w-[200px] truncate">
+                            {order.seller?.name || 'N/A'}
+                          </td>
+                          <td className="px-4 py-3 text-sm text-gray-500">
+                            {order.items?.length || 0}
+                          </td>
+                          <td className="px-4 py-3">
+                            <span className="font-semibold text-[#5C352C] text-sm">{formatPrice(order.total)}</span>
+                          </td>
+                          <td className="px-4 py-3">
+                            {getStatusBadge(order.status)}
+                          </td>
+                          <td className="px-4 py-3">
+                            <div className="flex items-center justify-center gap-1">
+                              <Link 
+                                to={`/buyer/orders/${order.id}`}
+                                aria-label={t('buyer.orders.viewOrderDetails', { number: order.order_number || order.id })}
+                              >
+                                <button className="p-1.5 text-gray-500 hover:text-[#5C352C] hover:bg-gray-100 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-[#5C352C]">
+                                  <Eye className="w-4 h-4" aria-hidden="true" />
+                                </button>
+                              </Link>
+                              {canCancel(order.status) && (
+                                <button
+                                  onClick={() => cancelOrder(order.id, order.order_number || order.id)}
+                                  disabled={cancellingOrder === order.id}
+                                  className="p-1.5 text-gray-500 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-rose-500 disabled:opacity-50"
+                                  aria-label={t('buyer.orders.cancelOrderAria', { number: order.order_number || order.id })}
+                                >
+                                  {cancellingOrder === order.id ? (
+                                    <div className="w-4 h-4 border-2 border-rose-500 border-t-transparent rounded-full animate-spin" aria-hidden="true" />
+                                  ) : (
+                                    <XCircle className="w-4 h-4" aria-hidden="true" />
+                                  )}
+                                </button>
+                              )}
+                              {canConfirmDelivery(order.status) && (
+                                <button
+                                  onClick={() => confirmDelivery(order.id, order.order_number || order.id)}
+                                  disabled={confirmingOrder === order.id}
+                                  className="p-1.5 text-gray-500 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-emerald-500 disabled:opacity-50"
+                                  aria-label={t('buyer.orders.confirmDeliveryAria', { number: order.order_number || order.id })}
+                                >
+                                  {confirmingOrder === order.id ? (
+                                    <div className="w-4 h-4 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" aria-hidden="true" />
+                                  ) : (
+                                    <CheckCircle className="w-4 h-4" aria-hidden="true" />
+                                  )}
+                                </button>
+                              )}
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
 
-              {/* Mobile Cards */}
+              {/* Mobile Cards - visible on mobile, hidden on large screens */}
               <div className="lg:hidden space-y-3">
                 {orders.map((order) => (
                   <div key={order.id} className="bg-white rounded-xl border border-gray-100 p-4">
@@ -574,7 +585,7 @@ const BuyerOrders = () => {
                 ))}
               </div>
 
-              {/* Pagination */}
+              {/* Pagination - responsive */}
               {pagination.last_page > 1 && (
                 <nav className="mt-6 flex justify-center" aria-label="Pagination">
                   <div className="flex gap-1.5">
@@ -587,21 +598,23 @@ const BuyerOrders = () => {
                       <ChevronLeft className="w-4 h-4" aria-hidden="true" />
                     </button>
                     
-                    {getPaginationPages().map(page => (
-                      <button
-                        key={page}
-                        onClick={() => fetchOrders(page)}
-                        className={`w-8 h-8 rounded-lg text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-[#5C352C] ${
-                          pagination.current_page === page
-                            ? 'bg-[#5C352C] text-white'
-                            : 'hover:bg-gray-100'
-                        }`}
-                        aria-label={t('common.goToPage', { page })}
-                        aria-current={pagination.current_page === page ? 'page' : undefined}
-                      >
-                        {page}
-                      </button>
-                    ))}
+                    <div className="flex gap-1.5">
+                      {getPaginationPages().map(page => (
+                        <button
+                          key={page}
+                          onClick={() => fetchOrders(page)}
+                          className={`w-8 h-8 rounded-lg text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-[#5C352C] ${
+                            pagination.current_page === page
+                              ? 'bg-[#5C352C] text-white'
+                              : 'hover:bg-gray-100'
+                          }`}
+                          aria-label={t('common.goToPage', { page })}
+                          aria-current={pagination.current_page === page ? 'page' : undefined}
+                        >
+                          {page}
+                        </button>
+                      ))}
+                    </div>
                     
                     <button
                       onClick={() => fetchOrders(pagination.current_page + 1)}

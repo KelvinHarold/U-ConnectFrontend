@@ -29,11 +29,11 @@ const SkeletonCategoryCard = () => (
   <div className="animate-pulse">
     <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
       <div className="relative w-full pt-[100%] bg-gradient-to-br from-gray-200 to-gray-300"></div>
-      <div className="p-3 space-y-2">
-        <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-        <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+      <div className="p-2 sm:p-3 space-y-2">
+        <div className="h-3 sm:h-4 bg-gray-200 rounded w-3/4"></div>
+        <div className="h-2 sm:h-3 bg-gray-200 rounded w-1/2"></div>
         <div className="flex gap-2">
-          <div className="w-8 h-8 bg-gray-200 rounded-lg"></div>
+          <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gray-200 rounded-lg"></div>
         </div>
       </div>
     </div>
@@ -41,7 +41,7 @@ const SkeletonCategoryCard = () => (
 );
 
 const SkeletonCategoriesGrid = ({ count = 12 }) => (
-  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+  <div className="grid grid-cols-2 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-2 sm:gap-3 md:gap-4">
     {[...Array(count)].map((_, i) => (
       <SkeletonCategoryCard key={i} />
     ))}
@@ -57,6 +57,7 @@ const SellerCategories = () => {
   const [error, setError] = useState(null);
   const [imageErrors, setImageErrors] = useState({});
   const [isMobile, setIsMobile] = useState(false);
+  const [isSmallMobile, setIsSmallMobile] = useState(false);
   const [stats, setStats] = useState({ total_categories: 0, total_products: 0 });
   const [searchTerm, setSearchTerm] = useState("");
   const [showSearch, setShowSearch] = useState(false);
@@ -73,10 +74,13 @@ const SellerCategories = () => {
   const refreshButtonRef = useRef(null);
 
   useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 768);
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
+    const checkScreenSize = () => {
+      setIsMobile(window.innerWidth < 768);
+      setIsSmallMobile(window.innerWidth < 480);
+    };
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+    return () => window.removeEventListener('resize', checkScreenSize);
   }, []);
 
   useEffect(() => {
@@ -177,7 +181,7 @@ const SellerCategories = () => {
 
   const getPaginationPages = () => {
     const pages = [];
-    const maxVisible = 5;
+    const maxVisible = isMobile ? 3 : 5;
     let startPage = Math.max(1, currentPage - Math.floor(maxVisible / 2));
     let endPage = Math.min(lastPage, startPage + maxVisible - 1);
     
@@ -191,176 +195,179 @@ const SellerCategories = () => {
     return pages;
   };
 
+  // Get grid columns based on screen size
+  const getGridColumns = () => {
+    if (viewMode === "list") return "grid-cols-1";
+    if (isSmallMobile) return "grid-cols-2";
+    if (isMobile) return "grid-cols-2";
+    return "grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6";
+  };
+
   return (
     <MainLayout>
       <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50">
-        <div className="p-4 md:p-8">
+        <div className="p-3 sm:p-4 md:p-6 lg:p-8">
           
-          {/* Enhanced Header with Stats */}
-          <div className="mb-8">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-              <div>
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="p-2 bg-gradient-to-br from-[#5C352C] to-[#8B5E4F] rounded-xl shadow-lg">
-                    <FolderOpen className="w-5 h-5 text-white" aria-hidden="true" />
+          {/* Enhanced Header with Stats - Responsive */}
+          <div className="mb-4 sm:mb-6 md:mb-8">
+            <div className="flex flex-col gap-3 sm:gap-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="p-1.5 sm:p-2 bg-gradient-to-br from-[#5C352C] to-[#8B5E4F] rounded-lg sm:rounded-xl shadow-lg">
+                    <FolderOpen className="w-4 h-4 sm:w-5 sm:h-5 text-white" aria-hidden="true" />
                   </div>
-                  <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-[#5C352C] to-[#8B5E4F] bg-clip-text text-transparent">
+                  <h1 className="text-xl sm:text-2xl md:text-3xl font-bold bg-gradient-to-r from-[#5C352C] to-[#8B5E4F] bg-clip-text text-transparent">
                     {t('seller.categories.title')}
                   </h1>
                 </div>
-                <p className="text-gray-500 text-sm ml-11">{t('seller.categories.subtitle')}</p>
+                
+                {/* Stats Badge - Responsive */}
+                <div className="bg-white px-2 sm:px-3 py-1 sm:py-2 rounded-lg sm:rounded-xl shadow-md border border-gray-100">
+                  <div className="flex items-center gap-2 sm:gap-3">
+                    <div className="flex items-center gap-0.5 sm:gap-1">
+                      <TrendingUp className="w-3 h-3 sm:w-4 sm:h-4 text-emerald-500" aria-hidden="true" />
+                      <span className="text-xs sm:text-sm font-semibold text-gray-700">{stats.total_categories}</span>
+                      <span className="text-[9px] sm:text-xs text-gray-500 hidden xs:inline">{t('seller.categories.categories')}</span>
+                    </div>
+                    <div className="w-px h-3 sm:h-4 bg-gray-200"></div>
+                    <div className="flex items-center gap-0.5 sm:gap-1">
+                      <Package className="w-3 h-3 sm:w-4 sm:h-4 text-[#5C352C]" aria-hidden="true" />
+                      <span className="text-xs sm:text-sm font-semibold text-gray-700">{stats.total_products}</span>
+                      <span className="text-[9px] sm:text-xs text-gray-500 hidden xs:inline">{t('seller.categories.products')}</span>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div className="flex items-center gap-3">
-                {/* Search Toggle Button for Mobile */}
+              <p className="text-gray-500 text-xs sm:text-sm ml-9 sm:ml-11">{t('seller.categories.subtitle')}</p>
+            </div>
+
+            {/* Search and Filter Bar - Responsive */}
+            <div className="mt-4 sm:mt-6">
+              <div className="flex gap-2">
+                {(showSearch || !isMobile) && (
+                  <div className="flex-1 relative">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-400" aria-hidden="true" />
+                    <label htmlFor="category-search" className="sr-only">{t('seller.categories.searchPlaceholder')}</label>
+                    <input
+                      id="category-search"
+                      ref={searchInputRef}
+                      type="text"
+                      placeholder={t('seller.categories.searchPlaceholder')}
+                      value={searchTerm}
+                      onChange={handleSearch}
+                      className="w-full pl-9 sm:pl-11 pr-8 sm:pr-10 py-2 sm:py-3 border-2 border-gray-200 rounded-lg sm:rounded-xl focus:outline-none focus:border-[#5C352C] focus:ring-2 focus:ring-[#5C352C]/20 transition-all text-xs sm:text-sm bg-gray-50"
+                      aria-label={t('seller.categories.searchPlaceholder')}
+                    />
+                    {searchTerm && (
+                      <button
+                        onClick={clearSearch}
+                        className="absolute right-2 sm:right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-400 rounded-full p-1"
+                        aria-label={t('seller.categories.clearSearch')}
+                      >
+                        <X className="w-3 h-3 sm:w-4 sm:h-4" aria-hidden="true" />
+                      </button>
+                    )}
+                  </div>
+                )}
+                
                 {isMobile && !showSearch && (
                   <button
                     onClick={() => {
                       setShowSearch(true);
                       setTimeout(() => searchInputRef.current?.focus(), 100);
                     }}
-                    className="flex items-center gap-2 px-4 py-2 bg-white border-2 border-gray-200 rounded-xl text-gray-700 hover:bg-gray-50 transition-all text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#5C352C]"
+                    className="flex items-center gap-1 sm:gap-2 px-3 sm:px-4 py-2 sm:py-2.5 bg-white border-2 border-gray-200 rounded-lg sm:rounded-xl text-gray-700 hover:bg-gray-50 transition-all text-xs sm:text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#5C352C]"
                     aria-label={t('seller.categories.openSearch')}
                   >
-                    <Search className="w-4 h-4" aria-hidden="true" />
-                    {t('seller.categories.search')}
+                    <Search className="w-3.5 h-3.5" aria-hidden="true" />
+                    <span className="hidden xs:inline">{t('seller.categories.search')}</span>
                   </button>
                 )}
                 
-                {/* View Mode Toggle */}
-                {!isMobile && (
-                  <div className="flex border-2 border-gray-200 rounded-xl overflow-hidden bg-white" role="group" aria-label={t('seller.categories.viewMode')}>
+                <div className="flex gap-2">
+                  {/* View Mode Toggle - Responsive */}
+                  <div className="border-2 border-gray-200 rounded-lg sm:rounded-xl overflow-hidden flex bg-gray-50">
                     <button
                       onClick={() => setViewMode("grid")}
-                      className={`p-2 px-4 transition-all text-sm focus:outline-none focus:ring-2 focus:ring-[#5C352C] ${
-                        viewMode === "grid" ? "bg-gradient-to-r from-[#5C352C] to-[#8B5E4F] text-white" : "text-gray-600"
+                      className={`p-2 sm:p-2.5 px-3 sm:px-4 transition-all focus:outline-none focus:ring-2 focus:ring-[#5C352C] ${
+                        viewMode === "grid" ? "bg-gradient-to-r from-[#5C352C] to-[#8B5E4F] text-white" : "text-gray-600 hover:bg-gray-100"
                       }`}
                       aria-label={t('seller.categories.gridView')}
                       aria-pressed={viewMode === "grid"}
                     >
-                      <Grid className="w-4 h-4" aria-hidden="true" />
+                      <Grid className="w-3.5 h-3.5 sm:w-4 sm:h-4" aria-hidden="true" />
                     </button>
                     <button
                       onClick={() => setViewMode("list")}
-                      className={`p-2 px-4 transition-all text-sm focus:outline-none focus:ring-2 focus:ring-[#5C352C] ${
-                        viewMode === "list" ? "bg-gradient-to-r from-[#5C352C] to-[#8B5E4F] text-white" : "text-gray-600"
+                      className={`p-2 sm:p-2.5 px-3 sm:px-4 transition-all focus:outline-none focus:ring-2 focus:ring-[#5C352C] ${
+                        viewMode === "list" ? "bg-gradient-to-r from-[#5C352C] to-[#8B5E4F] text-white" : "text-gray-600 hover:bg-gray-100"
                       }`}
                       aria-label={t('seller.categories.listView')}
                       aria-pressed={viewMode === "list"}
                     >
-                      <List className="w-4 h-4" aria-hidden="true" />
+                      <List className="w-3.5 h-3.5 sm:w-4 sm:h-4" aria-hidden="true" />
                     </button>
                   </div>
-                )}
-                
-                <div 
-                  className="bg-white px-4 py-2 rounded-xl shadow-md border border-gray-100"
-                  role="status"
-                  aria-label={t('seller.categories.statsAria', { categories: stats.total_categories, products: stats.total_products })}
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="flex items-center gap-1">
-                      <TrendingUp className="w-4 h-4 text-emerald-500" aria-hidden="true" />
-                      <span className="text-sm font-semibold text-gray-700">{stats.total_categories}</span>
-                      <span className="text-xs text-gray-500">{t('seller.categories.categories')}</span>
-                    </div>
-                    <div className="w-px h-4 bg-gray-200"></div>
-                    <div className="flex items-center gap-1">
-                      <Package className="w-4 h-4 text-[#5C352C]" aria-hidden="true" />
-                      <span className="text-sm font-semibold text-gray-700">{stats.total_products}</span>
-                      <span className="text-xs text-gray-500">{t('seller.categories.products')}</span>
-                    </div>
-                  </div>
-                </div>
-                <button
-                  ref={refreshButtonRef}
-                  onClick={refreshCategories}
-                  className="flex items-center gap-2 px-4 py-2 bg-white border-2 border-gray-200 rounded-xl text-gray-700 hover:bg-gray-50 hover:border-[#5C352C] transition-all text-sm font-medium shadow-md focus:outline-none focus:ring-2 focus:ring-[#5C352C]"
-                  aria-label={t('seller.categories.refresh')}
-                  onKeyPress={(e) => handleKeyPress(e, refreshCategories)}
-                >
-                  <RefreshCw className="w-4 h-4" aria-hidden="true" />
-                  {t('seller.categories.refresh')}
-                </button>
-              </div>
-            </div>
-
-            {/* Enhanced Search Bar */}
-            {(showSearch || !isMobile) && (
-              <div className="mt-6">
-                <div className="relative max-w-md">
-                  <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" aria-hidden="true" />
-                  <label htmlFor="category-search" className="sr-only">{t('seller.categories.searchPlaceholder')}</label>
-                  <input
-                    id="category-search"
-                    ref={searchInputRef}
-                    type="text"
-                    placeholder={t('seller.categories.searchPlaceholder')}
-                    value={searchTerm}
-                    onChange={handleSearch}
-                    className="w-full pl-11 pr-10 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-[#5C352C] focus:ring-2 focus:ring-[#5C352C]/20 transition-all text-sm bg-white shadow-sm"
-                    aria-label={t('seller.categories.searchPlaceholder')}
-                  />
-                  {searchTerm && (
-                    <button
-                      onClick={clearSearch}
-                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-400 rounded-full p-1"
-                      aria-label={t('seller.categories.clearSearch')}
-                    >
-                      <X className="w-4 h-4" aria-hidden="true" />
-                    </button>
-                  )}
-                </div>
-                
-                {/* Enhanced Search Results Count */}
-                {searchTerm && (
-                  <div 
-                    className="mt-2 text-sm text-gray-500 bg-white px-4 py-2 rounded-lg inline-block shadow-sm"
-                    role="status"
-                    aria-live="polite"
+                  
+                  <button
+                    ref={refreshButtonRef}
+                    onClick={refreshCategories}
+                    className="flex items-center gap-1 sm:gap-2 px-3 sm:px-4 py-2 sm:py-2.5 bg-white border-2 border-gray-200 rounded-lg sm:rounded-xl text-gray-700 hover:bg-gray-50 hover:border-[#5C352C] transition-all text-xs sm:text-sm font-medium shadow-md focus:outline-none focus:ring-2 focus:ring-[#5C352C]"
+                    aria-label={t('seller.categories.refresh')}
+                    onKeyPress={(e) => handleKeyPress(e, refreshCategories)}
                   >
-                    {total === 1 
-                      ? t('seller.categories.foundCategory', { count: total })
-                      : t('seller.categories.foundCategories', { count: total })
-                    } "<span className="font-semibold">{searchTerm}</span>"
-                  </div>
-                )}
+                    <RefreshCw className="w-3.5 h-3.5" aria-hidden="true" />
+                    <span className="hidden sm:inline">{t('seller.categories.refresh')}</span>
+                  </button>
+                </div>
               </div>
-            )}
+              
+              {/* Enhanced Search Results Count - Responsive */}
+              {searchTerm && (
+                <div 
+                  className="mt-2 text-[11px] sm:text-sm text-gray-500 bg-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg inline-block shadow-sm"
+                  role="status"
+                  aria-live="polite"
+                >
+                  {t('seller.categories.foundCategories', { count: total })} "<span className="font-semibold">{searchTerm}</span>"
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Loading State */}
           {loading ? (
-            <SkeletonCategoriesGrid count={12} />
+            <SkeletonCategoriesGrid count={isSmallMobile ? 8 : isMobile ? 8 : 12} />
           ) : error ? (
             <div 
-              className="bg-rose-50 border-2 border-rose-200 rounded-2xl p-10 text-center shadow-lg"
+              className="bg-rose-50 border-2 border-rose-200 rounded-xl sm:rounded-2xl p-6 sm:p-10 text-center shadow-lg"
               role="alert"
               aria-live="polite"
             >
-              <AlertTriangle className="w-16 h-16 text-rose-500 mx-auto mb-4" aria-hidden="true" />
-              <h3 className="text-xl font-bold text-rose-800 mb-2">{t('seller.categories.errorLoading')}</h3>
-              <p className="text-rose-600 text-sm mb-5">{error}</p>
+              <AlertTriangle className="w-12 h-12 sm:w-16 sm:h-16 text-rose-500 mx-auto mb-3 sm:mb-4" aria-hidden="true" />
+              <h3 className="text-lg sm:text-xl font-bold text-rose-800 mb-2">{t('seller.categories.errorLoading')}</h3>
+              <p className="text-rose-600 text-xs sm:text-sm mb-4 sm:mb-5">{error}</p>
               <button 
                 onClick={() => {
                   setCurrentPage(1);
                   fetchParentCategories();
                 }} 
-                className="px-6 py-2.5 bg-gradient-to-r from-rose-500 to-rose-600 text-white rounded-xl hover:shadow-lg transition-all text-sm font-bold focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-2"
+                className="px-5 sm:px-6 py-2 sm:py-2.5 bg-gradient-to-r from-rose-500 to-rose-600 text-white rounded-lg sm:rounded-xl hover:shadow-lg transition-all text-xs sm:text-sm font-bold focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-2"
                 aria-label={t('seller.categories.tryAgain')}
               >
                 {t('seller.categories.tryAgain')}
               </button>
             </div>
           ) : categories.length === 0 ? (
-            <div className="bg-white rounded-2xl shadow-xl border-2 border-gray-100 p-12 text-center">
+            <div className="bg-white rounded-xl sm:rounded-2xl shadow-xl border-2 border-gray-100 p-8 sm:p-12 text-center">
               {searchTerm ? (
                 <>
-                  <Search className="w-20 h-20 mx-auto mb-4 text-gray-300" aria-hidden="true" />
-                  <h3 className="text-xl font-bold text-gray-700 mb-2">{t('seller.categories.noCategoriesFound')}</h3>
-                  <p className="text-gray-500 text-sm mb-5">{t('seller.categories.noCategoriesMatch')} "{searchTerm}"</p>
+                  <Search className="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-3 sm:mb-4 text-gray-300" aria-hidden="true" />
+                  <h3 className="text-lg sm:text-xl font-bold text-gray-700 mb-2">{t('seller.categories.noCategoriesFound')}</h3>
+                  <p className="text-gray-500 text-xs sm:text-sm mb-4 sm:mb-5">{t('seller.categories.noCategoriesMatch')} "{searchTerm}"</p>
                   <button 
                     onClick={clearSearch}
-                    className="px-6 py-2.5 bg-gradient-to-r from-[#5C352C] to-[#8B5E4F] text-white rounded-xl hover:shadow-lg transition-all text-sm font-bold focus:outline-none focus:ring-2 focus:ring-[#5C352C] focus:ring-offset-2"
+                    className="px-5 sm:px-6 py-2 sm:py-2.5 bg-gradient-to-r from-[#5C352C] to-[#8B5E4F] text-white rounded-lg sm:rounded-xl hover:shadow-lg transition-all text-xs sm:text-sm font-bold focus:outline-none focus:ring-2 focus:ring-[#5C352C] focus:ring-offset-2"
                     aria-label={t('seller.categories.clearSearchButton')}
                   >
                     {t('seller.categories.clearSearchButton')}
@@ -368,21 +375,17 @@ const SellerCategories = () => {
                 </>
               ) : (
                 <>
-                  <Package className="w-20 h-20 mx-auto mb-4 text-gray-300" aria-hidden="true" />
-                  <h3 className="text-xl font-bold text-gray-700 mb-2">{t('seller.categories.noCategoriesFound')}</h3>
-                  <p className="text-gray-500 text-sm">{t('seller.categories.noCategoriesMessage')}</p>
+                  <Package className="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-3 sm:mb-4 text-gray-300" aria-hidden="true" />
+                  <h3 className="text-lg sm:text-xl font-bold text-gray-700 mb-2">{t('seller.categories.noCategoriesFound')}</h3>
+                  <p className="text-gray-500 text-xs sm:text-sm">{t('seller.categories.noCategoriesMessage')}</p>
                 </>
               )}
             </div>
           ) : (
             <>
-              {/* Enhanced Category Grid */}
+              {/* Enhanced Category Grid - Responsive */}
               <div 
-                className={`grid gap-4 ${
-                  viewMode === "grid" 
-                    ? "grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6" 
-                    : "grid-cols-1"
-                }`}
+                className={`grid ${getGridColumns()} gap-2 sm:gap-3 md:gap-4`}
                 role="list"
                 aria-label={t('seller.categories.categoriesList')}
               >
@@ -412,7 +415,7 @@ const SellerCategories = () => {
                             />
                           ) : (
                             <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200">
-                              <ImageIcon className="w-12 h-12 text-gray-400" aria-hidden="true" />
+                              <ImageIcon className="w-8 h-8 sm:w-12 sm:h-12 text-gray-400" aria-hidden="true" />
                             </div>
                           )}
                         </div>
@@ -420,36 +423,37 @@ const SellerCategories = () => {
                         {/* Enhanced Overlay Gradient */}
                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                         
-                        {/* Enhanced Category Badges - Subcategories Count Only */}
-                        <div className="absolute top-2 right-2 flex gap-1 z-10">
-                          <div className="px-2 py-1 text-[10px] font-bold rounded-lg bg-white/95 backdrop-blur-sm text-[#5C352C] shadow-md flex items-center gap-1">
-                            <Layers className="w-2.5 h-2.5" />
-                            {category.subcategories_count || 0} {t('seller.categories.subcategoriesShort')}
+                        {/* Enhanced Category Badges - Responsive */}
+                        <div className="absolute top-1 sm:top-2 right-1 sm:right-2 flex gap-0.5 sm:gap-1 z-10">
+                          <div className="px-1 sm:px-2 py-0.5 sm:py-1 text-[7px] sm:text-[10px] font-bold rounded-lg bg-white/95 backdrop-blur-sm text-[#5C352C] shadow-md flex items-center gap-0.5 sm:gap-1">
+                            <Layers className="w-2 h-2 sm:w-2.5 sm:h-2.5" />
+                            <span className="hidden xs:inline">{t('seller.categories.subcategoriesShort')}</span>
+                            <span>{category.subcategories_count || 0}</span>
                           </div>
                         </div>
                       </div>
                       
-                      {/* Enhanced Category Info */}
-                      <div className="p-3">
-                        <div className="flex items-start justify-between gap-2">
+                      {/* Enhanced Category Info - Responsive */}
+                      <div className="p-2 sm:p-3">
+                        <div className="flex items-start justify-between gap-1 sm:gap-2">
                           <div className="flex-1 min-w-0">
-                            <h2 className="font-bold text-gray-900 text-sm group-hover:text-[#5C352C] transition-colors truncate">
+                            <h2 className="font-bold text-gray-900 text-xs sm:text-sm group-hover:text-[#5C352C] transition-colors truncate">
                               {category.name}
                             </h2>
                           </div>
                         </div>
                         
-                        {category.description && (
-                          <p className="text-xs text-gray-500 mt-1 line-clamp-2">
-                            {category.description.length > 60 ? category.description.substring(0, 60) + '...' : category.description}
+                        {category.description && !isSmallMobile && (
+                          <p className="text-[10px] sm:text-xs text-gray-500 mt-0.5 sm:mt-1 line-clamp-2">
+                            {category.description.length > (isMobile ? 40 : 60) ? category.description.substring(0, isMobile ? 40 : 60) + '...' : category.description}
                           </p>
                         )}
                         
-                        {/* Highlight search match */}
+                        {/* Highlight search match - Responsive */}
                         {searchTerm && (
-                          <div className="mt-2 text-[10px] text-[#5C352C] font-semibold flex items-center gap-1">
-                            <Zap className="w-2.5 h-2.5" />
-                            {t('seller.categories.matchesSearch')}
+                          <div className="mt-1 sm:mt-2 text-[8px] sm:text-[10px] text-[#5C352C] font-semibold flex items-center gap-0.5 sm:gap-1">
+                            <Zap className="w-2 h-2 sm:w-2.5 sm:h-2.5" />
+                            <span className="hidden xs:inline">{t('seller.categories.matchesSearch')}</span>
                           </div>
                         )}
                       </div>
@@ -458,17 +462,17 @@ const SellerCategories = () => {
                 ))}
               </div>
 
-              {/* Enhanced Pagination Component */}
+              {/* Enhanced Pagination Component - Responsive */}
               {lastPage > 1 && (
                 <nav 
-                  className="mt-10 flex justify-center items-center gap-3"
+                  className="mt-6 sm:mt-8 md:mt-10 flex justify-center items-center gap-2 sm:gap-3"
                   role="navigation"
                   aria-label={t('seller.categories.pagination')}
                 >
                   <button
                     onClick={() => handlePageChange(currentPage - 1)}
                     disabled={currentPage === 1}
-                    className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all focus:outline-none focus:ring-2 focus:ring-[#5C352C] ${
+                    className={`px-2 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl text-xs sm:text-sm font-semibold transition-all focus:outline-none focus:ring-2 focus:ring-[#5C352C] ${
                       currentPage === 1
                         ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
                         : 'bg-white border-2 border-gray-200 text-gray-700 hover:bg-gray-50 hover:border-[#5C352C] shadow-md'
@@ -476,15 +480,15 @@ const SellerCategories = () => {
                     aria-label={t('seller.categories.goToPreviousPage')}
                     aria-disabled={currentPage === 1}
                   >
-                    <ChevronLeft className="w-4 h-4" aria-hidden="true" />
+                    <ChevronLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4" aria-hidden="true" />
                   </button>
                   
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1 sm:gap-2">
                     {getPaginationPages().map(page => (
                       <button
                         key={page}
                         onClick={() => handlePageChange(page)}
-                        className={`w-10 h-10 rounded-xl text-sm font-semibold transition-all focus:outline-none focus:ring-2 focus:ring-[#5C352C] ${
+                        className={`w-7 h-7 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl text-xs sm:text-sm font-semibold transition-all focus:outline-none focus:ring-2 focus:ring-[#5C352C] ${
                           currentPage === page
                             ? 'bg-gradient-to-r from-[#5C352C] to-[#8B5E4F] text-white shadow-lg'
                             : 'bg-white border-2 border-gray-200 text-gray-700 hover:bg-gray-50 hover:border-[#5C352C]'
@@ -500,7 +504,7 @@ const SellerCategories = () => {
                   <button
                     onClick={() => handlePageChange(currentPage + 1)}
                     disabled={currentPage === lastPage}
-                    className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all focus:outline-none focus:ring-2 focus:ring-[#5C352C] ${
+                    className={`px-2 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl text-xs sm:text-sm font-semibold transition-all focus:outline-none focus:ring-2 focus:ring-[#5C352C] ${
                       currentPage === lastPage
                         ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
                         : 'bg-white border-2 border-gray-200 text-gray-700 hover:bg-gray-50 hover:border-[#5C352C] shadow-md'
@@ -508,19 +512,21 @@ const SellerCategories = () => {
                     aria-label={t('seller.categories.goToNextPage')}
                     aria-disabled={currentPage === lastPage}
                   >
-                    <ChevronRightIcon className="w-4 h-4" aria-hidden="true" />
+                    <ChevronRightIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4" aria-hidden="true" />
                   </button>
                 </nav>
               )}
 
-              {/* Enhanced Showing results info */}
+              {/* Enhanced Showing results info - Responsive */}
               <div 
-                className="mt-4 text-center text-sm text-gray-500 bg-white px-4 py-2 rounded-lg inline-block mx-auto shadow-sm"
+                className="mt-3 sm:mt-4 text-center text-[10px] sm:text-sm text-gray-500 bg-white px-2 sm:px-3 py-1 sm:py-2 rounded-lg inline-block mx-auto shadow-sm"
                 role="status"
                 aria-live="polite"
               >
-                {t('seller.categories.showing')} <span className="font-semibold text-[#5C352C]">{categories.length}</span> {t('seller.categories.of')} <span className="font-semibold">{total}</span> {total === 1 ? t('seller.categories.category') : t('seller.categories.categories')}
-                {searchTerm && ` ${t('seller.categories.matchesSearch').toLowerCase()} "${searchTerm}"`}
+                <span className="hidden xs:inline">{t('seller.categories.showing')}</span>
+                <span className="font-semibold text-[#5C352C]">{categories.length}</span> <span className="hidden xs:inline">{t('seller.categories.of')}</span>
+                <span className="font-semibold">{total}</span> <span className="hidden xs:inline">{total === 1 ? t('seller.categories.category') : t('seller.categories.categories')}</span>
+                {searchTerm && ` "${searchTerm}"`}
               </div>
             </>
           )}

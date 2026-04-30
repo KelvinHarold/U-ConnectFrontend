@@ -137,10 +137,12 @@ const Header = ({ toggleSidebar, isMobile }) => {
                   <Menu className="w-5 h-5" />
                 </button>
               )}
-              <Link to={getDashboardLink()} className="flex items-center gap-2">
-                <img src="/U-Connect Logo.png" alt="Logo" className="w-7 h-7" />
-                <span className="font-semibold text-gray-800 text-sm hidden sm:inline">U-Connect</span>
-              </Link>
+             <div className="flex items-center gap-2">
+  <img src="/U-Connect Logo.png" alt="Logo" className="w-7 h-7" />
+  <span className="font-semibold text-gray-800 text-sm hidden sm:inline">
+    U-Connect
+  </span>
+</div>
             </div>
 
             {/* Center Section - Date & Time (Desktop only) */}

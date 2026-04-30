@@ -30,7 +30,9 @@ import {
   Zap,
   Shield,
   Award,
-  Flame
+  Flame,
+  SlidersHorizontal,
+  RotateCcw
 } from "lucide-react";
 
 // ==================== SKELETON LOADERS ====================
@@ -82,7 +84,7 @@ const SkeletonProductListItem = () => (
 );
 
 const SkeletonGridLoader = ({ count = 12 }) => (
-  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+  <div className="grid grid-cols-2 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3 sm:gap-4">
     {[...Array(count)].map((_, i) => (
       <SkeletonProductCard key={i} />
     ))}
@@ -90,7 +92,7 @@ const SkeletonGridLoader = ({ count = 12 }) => (
 );
 
 const SkeletonListLoader = ({ count = 6 }) => (
-  <div className="space-y-4">
+  <div className="space-y-3 sm:space-y-4">
     {[...Array(count)].map((_, i) => (
       <SkeletonProductListItem key={i} />
     ))}
@@ -117,32 +119,32 @@ const ProductCard = React.memo(({ product, formatPrice, addToCart, addingToCart,
             />
           ) : (
             <div className="w-full h-full flex flex-col items-center justify-center bg-gray-100">
-              <ImageIcon className="w-10 h-10 text-gray-300" aria-hidden="true" />
+              <ImageIcon className="w-8 h-8 sm:w-10 sm:h-10 text-gray-300" aria-hidden="true" />
             </div>
           )}
         </div>
         
         <div className="absolute top-2 left-2 flex flex-col gap-1 z-10">
           {product.is_featured && (
-            <span className="px-2 py-0.5 text-[10px] font-bold rounded-lg bg-gradient-to-r from-amber-400 to-amber-500 text-white shadow-md flex items-center gap-1">
-              <Award className="w-2.5 h-2.5" aria-hidden="true" />
-              {t('buyer.products.featured')}
+            <span className="px-1.5 sm:px-2 py-0.5 text-[8px] sm:text-[10px] font-bold rounded-lg bg-gradient-to-r from-amber-400 to-amber-500 text-white shadow-md flex items-center gap-1">
+              <Award className="w-2 h-2 sm:w-2.5 sm:h-2.5" aria-hidden="true" />
+              <span className="hidden xs:inline">{t('buyer.products.featured')}</span>
             </span>
           )}
           {product.discount_percentage > 0 && (
-            <DiscountBadge percentage={product.discount_percentage} className="shadow-md" />
+            <DiscountBadge percentage={product.discount_percentage} className="shadow-md !px-1.5 !py-0.5 !text-[8px] sm:!px-2 sm:!py-0.5 sm:!text-[10px]" />
           )}
           {product.is_new && (
-            <span className="px-2 py-0.5 text-[10px] font-bold rounded-lg bg-gradient-to-r from-emerald-500 to-emerald-600 text-white shadow-md flex items-center gap-1">
-              <Sparkles className="w-2.5 h-2.5" aria-hidden="true" />
-              {t('buyer.products.new')}
+            <span className="px-1.5 sm:px-2 py-0.5 text-[8px] sm:text-[10px] font-bold rounded-lg bg-gradient-to-r from-emerald-500 to-emerald-600 text-white shadow-md flex items-center gap-1">
+              <Sparkles className="w-2 h-2 sm:w-2.5 sm:h-2.5" aria-hidden="true" />
+              <span className="hidden xs:inline">{t('buyer.products.new')}</span>
             </span>
           )}
         </div>
         
         {product.quantity === 0 && (
           <div className="absolute inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-10">
-            <span className="px-3 py-1 text-[10px] font-bold rounded-full bg-gray-900 text-white shadow-lg">
+            <span className="px-2 py-0.5 text-[8px] sm:text-[10px] font-bold rounded-full bg-gray-900 text-white shadow-lg">
               {t('buyer.products.outOfStock')}
             </span>
           </div>
@@ -150,38 +152,38 @@ const ProductCard = React.memo(({ product, formatPrice, addToCart, addingToCart,
       </div>
     </Link>
     
-    <div className="p-3 flex-1 flex flex-col">
+    <div className="p-2 sm:p-3 flex-1 flex flex-col">
       <Link 
         to={`/buyer/shop/products/${product.id}`}
         className="focus:outline-none focus:ring-2 focus:ring-[#5C352C] focus:ring-offset-2 rounded"
       >
-        <h3 className="font-bold text-gray-900 text-sm mb-1 hover:text-[#5C352C] transition-colors line-clamp-2 min-h-[40px]">
+        <h3 className="font-bold text-gray-900 text-xs sm:text-sm mb-1 hover:text-[#5C352C] transition-colors line-clamp-2 min-h-[32px] sm:min-h-[40px]">
           {product.name}
         </h3>
       </Link>
       
-      <div className="flex items-center gap-1.5 mb-2">
-        <div className="flex items-center gap-0.5 bg-amber-50 px-1.5 py-0.5 rounded-lg">
-          <Star className="w-2.5 h-2.5 fill-amber-400 text-amber-400" aria-hidden="true" />
-          <span className="text-[10px] font-bold text-amber-700">{product.average_rating ? product.average_rating.toFixed(1) : '5.0'}</span>
+      <div className="flex flex-wrap items-center gap-1 sm:gap-1.5 mb-1 sm:mb-2">
+        <div className="flex items-center gap-0.5 bg-amber-50 px-1 sm:px-1.5 py-0.5 rounded-lg">
+          <Star className="w-2 h-2 sm:w-2.5 sm:h-2.5 fill-amber-400 text-amber-400" aria-hidden="true" />
+          <span className="text-[8px] sm:text-[10px] font-bold text-amber-700">{product.average_rating ? product.average_rating.toFixed(1) : '5.0'}</span>
         </div>
-        <span className="text-[9px] text-gray-400" aria-hidden="true">•</span>
-        <span className="text-[10px] text-gray-500 font-medium">{product.sales_count || 0} {t('buyer.products.sold')}</span>
+        <span className="text-[8px] sm:text-[9px] text-gray-400" aria-hidden="true">•</span>
+        <span className="text-[8px] sm:text-[10px] text-gray-500 font-medium">{product.sales_count || 0} {t('buyer.products.sold')}</span>
       </div>
       
-      <div className="mb-2">
-        <span className="font-bold text-[#5C352C] text-base">
+      <div className="mb-1 sm:mb-2">
+        <span className="font-bold text-[#5C352C] text-sm sm:text-base">
           {formatPrice(product.discount_percentage > 0 ? product.discounted_price : product.price)}
         </span>
         {product.discount_percentage > 0 && (
-          <span className="text-[10px] text-gray-400 line-through ml-1.5">{formatPrice(product.price)}</span>
+          <span className="text-[9px] sm:text-[10px] text-gray-400 line-through ml-1">{formatPrice(product.price)}</span>
         )}
       </div>
       
       <button
         onClick={() => addToCart(product.id)}
         disabled={product.quantity === 0 || addingToCart[product.id]}
-        className={`mt-auto py-2 rounded-xl transition-all flex items-center justify-center gap-2 text-xs font-bold focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#5C352C] ${
+        className={`mt-auto py-1.5 sm:py-2 rounded-xl transition-all flex items-center justify-center gap-1 sm:gap-2 text-[10px] sm:text-xs font-bold focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#5C352C] ${
           product.quantity === 0 
             ? 'bg-gray-100 cursor-not-allowed text-gray-400' 
             : 'bg-gradient-to-r from-[#5C352C] to-[#8B5E4F] text-white hover:shadow-lg transform hover:scale-105'
@@ -190,11 +192,11 @@ const ProductCard = React.memo(({ product, formatPrice, addToCart, addingToCart,
         aria-disabled={product.quantity === 0}
       >
         {addingToCart[product.id] ? (
-          <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent" aria-hidden="true"></div>
+          <div className="animate-spin rounded-full h-3 w-3 sm:h-4 sm:w-4 border-2 border-white border-t-transparent" aria-hidden="true"></div>
         ) : (
           <>
-            <ShoppingCart className="w-3.5 h-3.5" aria-hidden="true" />
-            {product.quantity === 0 ? t('buyer.products.outOfStock') : t('buyer.products.addToCart')}
+            <ShoppingCart className="w-3 h-3 sm:w-3.5 sm:h-3.5" aria-hidden="true" />
+            <span className="hidden xs:inline">{product.quantity === 0 ? t('buyer.products.outOfStock') : t('buyer.products.addToCart')}</span>
           </>
         )}
       </button>
@@ -210,7 +212,7 @@ const ProductListItem = React.memo(({ product, formatPrice, addToCart, addingToC
     <div className="flex flex-row">
       <Link 
         to={`/buyer/shop/products/${product.id}`} 
-        className="w-24 h-24 flex-shrink-0 focus:outline-none focus:ring-2 focus:ring-[#5C352C] focus:ring-offset-2"
+        className="w-20 sm:w-24 h-20 sm:h-24 flex-shrink-0 focus:outline-none focus:ring-2 focus:ring-[#5C352C] focus:ring-offset-2"
         aria-label={`${t('buyer.products.viewDetails')} ${product.name}`}
       >
         <div className="relative w-full h-full bg-gradient-to-br from-gray-50 to-gray-100 overflow-hidden">
@@ -224,13 +226,13 @@ const ProductListItem = React.memo(({ product, formatPrice, addToCart, addingToC
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center bg-gray-100">
-              <ImageIcon className="w-8 h-8 text-gray-300" aria-hidden="true" />
+              <ImageIcon className="w-6 h-6 sm:w-8 sm:h-8 text-gray-300" aria-hidden="true" />
             </div>
           )}
           
           {product.quantity === 0 && (
             <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
-              <span className="px-2 py-0.5 text-[9px] font-bold rounded-full bg-gray-900 text-white">
+              <span className="px-1.5 py-0.5 text-[8px] sm:text-[9px] font-bold rounded-full bg-gray-900 text-white">
                 {t('buyer.products.outOfStock')}
               </span>
             </div>
@@ -238,57 +240,57 @@ const ProductListItem = React.memo(({ product, formatPrice, addToCart, addingToC
         </div>
       </Link>
       
-      <div className="flex-1 p-3">
-        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3">
+      <div className="flex-1 p-2 sm:p-3">
+        <div className="flex flex-col xs:flex-row xs:justify-between xs:items-start gap-2 sm:gap-3">
           <div className="flex-1 min-w-0">
             <Link 
               to={`/buyer/shop/products/${product.id}`}
               className="focus:outline-none focus:ring-2 focus:ring-[#5C352C] focus:ring-offset-2 rounded"
             >
-              <h3 className="font-bold text-gray-900 text-sm hover:text-[#5C352C] transition-colors line-clamp-1">
+              <h3 className="font-bold text-gray-900 text-xs sm:text-sm hover:text-[#5C352C] transition-colors line-clamp-1">
                 {product.name}
               </h3>
             </Link>
             
-            <div className="flex flex-wrap items-center gap-2 mt-1.5">
-              <div className="flex items-center gap-0.5 bg-amber-50 px-1.5 py-0.5 rounded-lg">
-                <Star className="w-2.5 h-2.5 fill-amber-400 text-amber-400" aria-hidden="true" />
-                <span className="text-[10px] font-bold text-amber-700">{product.average_rating ? product.average_rating.toFixed(1) : '5.0'}</span>
+            <div className="flex flex-wrap items-center gap-1 sm:gap-2 mt-1 sm:mt-1.5">
+              <div className="flex items-center gap-0.5 bg-amber-50 px-1 sm:px-1.5 py-0.5 rounded-lg">
+                <Star className="w-2 h-2 sm:w-2.5 sm:h-2.5 fill-amber-400 text-amber-400" aria-hidden="true" />
+                <span className="text-[8px] sm:text-[10px] font-bold text-amber-700">{product.average_rating ? product.average_rating.toFixed(1) : '5.0'}</span>
               </div>
-              <span className="text-[9px] text-gray-400" aria-hidden="true">•</span>
-              <span className="text-[10px] text-gray-500 font-medium">{product.sales_count || 0} {t('buyer.products.sold')}</span>
-              <span className="text-[9px] text-gray-400" aria-hidden="true">•</span>
-              <div className="flex items-center gap-1">
-                <Shield className="w-2.5 h-2.5 text-emerald-500" aria-hidden="true" />
-                <span className="text-[9px] text-gray-500 truncate">{t('buyer.products.by')} {product.seller?.name?.split(' ')[0] || t('buyer.products.seller')}</span>
+              <span className="text-[8px] sm:text-[9px] text-gray-400" aria-hidden="true">•</span>
+              <span className="text-[8px] sm:text-[10px] text-gray-500 font-medium">{product.sales_count || 0} {t('buyer.products.sold')}</span>
+              <span className="text-[8px] sm:text-[9px] text-gray-400 hidden sm:inline" aria-hidden="true">•</span>
+              <div className="flex items-center gap-1 w-full xs:w-auto">
+                <Shield className="w-2 h-2 sm:w-2.5 sm:h-2.5 text-emerald-500 flex-shrink-0" aria-hidden="true" />
+                <span className="text-[8px] sm:text-[9px] text-gray-500 truncate max-w-[100px] xs:max-w-none">{t('buyer.products.by')} {product.seller?.name?.split(' ')[0] || t('buyer.products.seller')}</span>
               </div>
             </div>
             
-            <div className="flex gap-2 mt-2">
+            <div className="hidden sm:flex gap-2 mt-1.5 sm:mt-2">
               {product.delivery_free && (
-                <span className="text-[9px] font-medium text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded-full flex items-center gap-0.5">
-                  <Truck className="w-2.5 h-2.5" aria-hidden="true" />
+                <span className="text-[8px] sm:text-[9px] font-medium text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded-full flex items-center gap-0.5">
+                  <Truck className="w-2 h-2 sm:w-2.5 sm:h-2.5" aria-hidden="true" />
                   {t('buyer.products.freeDelivery')}
                 </span>
               )}
               {product.quantity > 50 && (
-                <span className="text-[9px] font-medium text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded-full flex items-center gap-0.5">
-                  <Zap className="w-2.5 h-2.5" aria-hidden="true" />
+                <span className="text-[8px] sm:text-[9px] font-medium text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded-full flex items-center gap-0.5">
+                  <Zap className="w-2 h-2 sm:w-2.5 sm:h-2.5" aria-hidden="true" />
                   {t('buyer.products.inStock')}
                 </span>
               )}
             </div>
           </div>
           
-          <div className="flex items-center gap-2">
-            <div className="text-right">
-              <span className="font-bold text-[#5C352C] text-base">
+          <div className="flex items-center gap-1 sm:gap-2 justify-between xs:justify-end w-full xs:w-auto">
+            <div className="text-left xs:text-right">
+              <span className="font-bold text-[#5C352C] text-sm sm:text-base">
                 {formatPrice(product.discount_percentage > 0 ? product.discounted_price : product.price)}
               </span>
               {product.discount_percentage > 0 && (
-                <div className="flex items-center justify-end gap-1.5">
-                  <span className="text-[10px] text-gray-400 line-through">{formatPrice(product.price)}</span>
-                  <span className="text-[10px] font-bold text-rose-500">-{product.discount_percentage}%</span>
+                <div className="flex items-center gap-1 mt-0.5">
+                  <span className="text-[8px] sm:text-[10px] text-gray-400 line-through">{formatPrice(product.price)}</span>
+                  <span className="text-[8px] sm:text-[10px] font-bold text-rose-500">-{product.discount_percentage}%</span>
                 </div>
               )}
             </div>
@@ -296,7 +298,7 @@ const ProductListItem = React.memo(({ product, formatPrice, addToCart, addingToC
             <button
               onClick={() => addToCart(product.id)}
               disabled={product.quantity === 0 || addingToCart[product.id]}
-              className={`px-3 py-1.5 rounded-xl transition-all flex items-center justify-center gap-1.5 text-xs font-bold focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#5C352C] ${
+              className={`px-2 sm:px-3 py-1 sm:py-1.5 rounded-xl transition-all flex items-center justify-center gap-1 text-[10px] sm:text-xs font-bold focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#5C352C] ${
                 product.quantity === 0 
                   ? 'bg-gray-100 cursor-not-allowed text-gray-400' 
                   : 'bg-gradient-to-r from-[#5C352C] to-[#8B5E4F] text-white hover:shadow-lg'
@@ -304,18 +306,18 @@ const ProductListItem = React.memo(({ product, formatPrice, addToCart, addingToC
               aria-label={product.quantity === 0 ? t('buyer.products.outOfStock') : `${t('buyer.products.addToCart')} ${product.name}`}
             >
               {addingToCart[product.id] ? (
-                <div className="animate-spin rounded-full h-3.5 w-3.5 border-2 border-white border-t-transparent" aria-hidden="true"></div>
+                <div className="animate-spin rounded-full h-3 w-3 border-2 border-white border-t-transparent" aria-hidden="true"></div>
               ) : (
-                <ShoppingCart className="w-3.5 h-3.5" aria-hidden="true" />
+                <ShoppingCart className="w-3 h-3" aria-hidden="true" />
               )}
             </button>
             
             <Link
               to={`/buyer/shop/products/${product.id}`}
-              className="p-2 rounded-xl border-2 border-gray-200 hover:border-[#5C352C] hover:bg-[#5C352C]/5 transition-all focus:outline-none focus:ring-2 focus:ring-[#5C352C] focus:ring-offset-2"
+              className="p-1.5 sm:p-2 rounded-xl border-2 border-gray-200 hover:border-[#5C352C] hover:bg-[#5C352C]/5 transition-all focus:outline-none focus:ring-2 focus:ring-[#5C352C] focus:ring-offset-2"
               aria-label={`${t('buyer.products.viewDetails')} ${product.name}`}
             >
-              <Eye className="w-3.5 h-3.5 text-gray-600" aria-hidden="true" />
+              <Eye className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-gray-600" aria-hidden="true" />
             </Link>
           </div>
         </div>
@@ -337,6 +339,7 @@ const Products = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [viewMode, setViewMode] = useState("grid");
   const [isMobile, setIsMobile] = useState(false);
+  const [isSmallMobile, setIsSmallMobile] = useState(false);
   const [pagination, setPagination] = useState({
     current_page: 1,
     last_page: 1,
@@ -355,13 +358,29 @@ const Products = () => {
   
   const searchTimeoutRef = useRef(null);
   const filterTimeoutRef = useRef(null);
+  const filtersRef = useRef(null);
 
   useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 768);
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
+    const checkScreenSize = () => {
+      setIsMobile(window.innerWidth < 768);
+      setIsSmallMobile(window.innerWidth < 480);
+    };
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+    return () => window.removeEventListener('resize', checkScreenSize);
   }, []);
+
+  // Click outside to close filters on mobile
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (isMobile && showFilters && filtersRef.current && !filtersRef.current.contains(event.target)) {
+        setShowFilters(false);
+      }
+    };
+    
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isMobile, showFilters]);
 
   useEffect(() => {
     fetchCategories();
@@ -383,7 +402,7 @@ const Products = () => {
     };
   }, [search]);
 
-  // Debounced filter changes - only category and price range
+  // Debounced filter changes
   useEffect(() => {
     if (filterTimeoutRef.current) {
       clearTimeout(filterTimeoutRef.current);
@@ -422,7 +441,6 @@ const Products = () => {
     try {
       const params = { 
         page,
-        // Only include category and price range filters
         ...(search && { search }),
         ...(selectedCategory && { category_id: selectedCategory }),
         ...(minPrice && { min_price: minPrice }),
@@ -437,6 +455,10 @@ const Products = () => {
           setProducts(prev => [...prev, ...response.data.data]);
         } else {
           setProducts(response.data.data);
+          // Auto scroll to top on mobile when filters are applied
+          if (isMobile && (selectedCategory || minPrice || maxPrice || search)) {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }
         }
         setPagination({
           current_page: response.data.current_page || 1,
@@ -469,12 +491,6 @@ const Products = () => {
     try {
       await api.post('/buyer/cart/add', { product_id: productId, quantity: 1 });
       showToast(t('buyer.products.productAddedToCart'), 'success');
-      const announcement = document.createElement('div');
-      announcement.setAttribute('aria-live', 'assertive');
-      announcement.className = 'sr-only';
-      announcement.textContent = t('buyer.products.productAddedToCart');
-      document.body.appendChild(announcement);
-      setTimeout(() => announcement.remove(), 3000);
     } catch (error) {
       showToast(error.response?.data?.message || t('buyer.products.errorAddingToCart'), 'error');
     } finally {
@@ -525,126 +541,148 @@ const Products = () => {
     { value: "popular", label: t('buyer.products.mostPopular') },
   ];
 
+  // Get grid columns based on screen size
+  const getGridColumns = () => {
+    if (isSmallMobile) return "grid-cols-2";
+    if (isMobile) return "grid-cols-2";
+    return "grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6";
+  };
+
   return (
     <MainLayout>
       <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50">
-        <div className="p-4 md:p-8">
+        <div className="p-3 sm:p-4 md:p-6 lg:p-8">
           
-          {/* Header */}
-          <div className="mb-8">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-              <div>
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="p-2 bg-gradient-to-br from-[#5C352C] to-[#8B5E4F] rounded-xl shadow-lg">
-                    <Tag className="w-5 h-5 text-white" aria-hidden="true" />
+          {/* Mobile Header with Compact Layout */}
+          <div className="mb-4 sm:mb-6 md:mb-8">
+            <div className="flex flex-col gap-3 sm:gap-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="p-1.5 sm:p-2 bg-gradient-to-br from-[#5C352C] to-[#8B5E4F] rounded-lg sm:rounded-xl shadow-lg">
+                    <Tag className="w-4 h-4 sm:w-5 sm:h-5 text-white" aria-hidden="true" />
                   </div>
-                  <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-[#5C352C] to-[#8B5E4F] bg-clip-text text-transparent">
+                  <h1 className="text-xl sm:text-2xl md:text-3xl font-bold bg-gradient-to-r from-[#5C352C] to-[#8B5E4F] bg-clip-text text-transparent">
                     {t('buyer.products.shop')}
                   </h1>
                 </div>
-                <p className="text-gray-500 text-sm ml-11">{t('buyer.products.subtitle')}</p>
-              </div>
-              <div className="flex items-center gap-3">
-                <div 
-                  className="bg-white px-4 py-2 rounded-xl shadow-md border border-gray-100"
-                  role="status"
-                  aria-label={`${pagination.total} ${t('buyer.products.products')} available`}
-                >
-                  <div className="flex items-center gap-2">
-                    <TrendingUp className="w-4 h-4 text-emerald-500" aria-hidden="true" />
-                    <span className="text-sm font-semibold text-gray-700">{pagination.total}</span>
-                    <span className="text-xs text-gray-500">{t('buyer.products.products')}</span>
+                <div className="bg-white px-2 sm:px-3 py-1 sm:py-2 rounded-lg sm:rounded-xl shadow-md border border-gray-100">
+                  <div className="flex items-center gap-1 sm:gap-2">
+                    <TrendingUp className="w-3 h-3 sm:w-4 sm:h-4 text-emerald-500" aria-hidden="true" />
+                    <span className="text-xs sm:text-sm font-semibold text-gray-700">{pagination.total}</span>
+                    <span className="text-[10px] sm:text-xs text-gray-500 hidden xs:inline">{t('buyer.products.products')}</span>
                   </div>
                 </div>
               </div>
+              <p className="text-gray-500 text-xs sm:text-sm ml-9 sm:ml-10">{t('buyer.products.subtitle')}</p>
             </div>
           </div>
 
-          {/* Search and Filter Bar */}
-          <div className="bg-white rounded-2xl shadow-xl border-2 border-gray-100 p-4 mb-6">
-            <div className="flex flex-col lg:flex-row gap-4">
-              <div className="flex-1 relative">
-                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" aria-hidden="true" />
-                <input
-                  type="text"
-                  placeholder={t('buyer.products.searchPlaceholder')}
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  className="w-full pl-11 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-[#5C352C] focus:ring-2 focus:ring-[#5C352C]/20 transition-all text-sm bg-gray-50"
-                  aria-label="Search products"
-                />
-              </div>
-              <div className="flex gap-3">
+          {/* Search and Filter Bar - Mobile Optimized */}
+          <div className="bg-white rounded-xl sm:rounded-2xl shadow-xl border-2 border-gray-100 p-3 sm:p-4 mb-4 sm:mb-6">
+            <div className="flex flex-col gap-3">
+              <div className="flex gap-2">
+                <div className="flex-1 relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-400" aria-hidden="true" />
+                  <input
+                    type="text"
+                    placeholder={t('buyer.products.searchPlaceholder')}
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    className="w-full pl-9 sm:pl-11 pr-3 sm:pr-4 py-2 sm:py-3 border-2 border-gray-200 rounded-lg sm:rounded-xl focus:outline-none focus:border-[#5C352C] focus:ring-2 focus:ring-[#5C352C]/20 transition-all text-xs sm:text-sm bg-gray-50"
+                    aria-label="Search products"
+                  />
+                </div>
                 <button
                   type="button"
                   onClick={toggleFilters}
-                  className={`flex items-center gap-2 px-4 py-3 rounded-xl transition-all text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-[#5C352C] focus:ring-offset-2 ${
+                  className={`flex items-center gap-1 sm:gap-2 px-3 sm:px-4 py-2 sm:py-3 rounded-lg sm:rounded-xl transition-all text-xs sm:text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-[#5C352C] focus:ring-offset-2 ${
                     showFilters || hasActiveFilters
                       ? 'bg-gradient-to-r from-[#5C352C] to-[#8B5E4F] text-white shadow-lg'
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                   }`}
                   aria-expanded={showFilters}
                 >
-                  <Filter className="w-4 h-4" aria-hidden="true" />
-                  <span>{t('buyer.products.filters')}</span>
+                  <SlidersHorizontal className="w-3.5 h-3.5 sm:w-4 sm:h-4" aria-hidden="true" />
+                  <span className="hidden xs:inline">{t('buyer.products.filters')}</span>
                   {hasActiveFilters && (
-                    <span className="ml-1 px-2 py-0.5 bg-white/20 rounded-full text-[10px]">
+                    <span className="ml-1 px-1.5 py-0.5 bg-white/20 rounded-full text-[8px] sm:text-[9px]">
                       {t('buyer.products.active')}
                     </span>
                   )}
-                  <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${showFilters ? 'rotate-180' : ''}`} aria-hidden="true" />
                 </button>
+              </div>
+              
+              <div className="flex gap-2">
+                <div className="flex-1">
+                  <select
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value)}
+                    className="w-full px-3 py-2 sm:py-2.5 border-2 border-gray-200 rounded-lg sm:rounded-xl focus:outline-none focus:border-[#5C352C] focus:ring-2 focus:ring-[#5C352C]/20 text-xs sm:text-sm font-semibold bg-gray-50 cursor-pointer"
+                  >
+                    {sortOptions.map(option => (
+                      <option key={option.value} value={option.value}>{option.label}</option>
+                    ))}
+                  </select>
+                </div>
                 
-                <select
-                  value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value)}
-                  className="px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-[#5C352C] focus:ring-2 focus:ring-[#5C352C]/20 text-sm font-semibold bg-gray-50 cursor-pointer"
-                >
-                  {sortOptions.map(option => (
-                    <option key={option.value} value={option.value}>{option.label}</option>
-                  ))}
-                </select>
-                
-                {!isMobile && (
-                  <div className="border-2 border-gray-200 rounded-xl overflow-hidden flex bg-gray-50">
-                    <button
-                      type="button"
-                      onClick={() => setViewMode("grid")}
-                      className={`p-3 px-4 transition-all focus:outline-none focus:ring-2 focus:ring-[#5C352C] focus:ring-offset-2 ${
-                        viewMode === "grid" ? "bg-gradient-to-r from-[#5C352C] to-[#8B5E4F] text-white" : "text-gray-600 hover:bg-gray-100"
-                      }`}
-                    >
-                      <Grid className="w-4 h-4" aria-hidden="true" />
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setViewMode("list")}
-                      className={`p-3 px-4 transition-all focus:outline-none focus:ring-2 focus:ring-[#5C352C] focus:ring-offset-2 ${
-                        viewMode === "list" ? "bg-gradient-to-r from-[#5C352C] to-[#8B5E4F] text-white" : "text-gray-600 hover:bg-gray-100"
-                      }`}
-                    >
-                      <List className="w-4 h-4" aria-hidden="true" />
-                    </button>
-                  </div>
-                )}
+                <div className="border-2 border-gray-200 rounded-lg sm:rounded-xl overflow-hidden flex bg-gray-50">
+                  <button
+                    type="button"
+                    onClick={() => setViewMode("grid")}
+                    className={`p-2 sm:p-2.5 px-3 sm:px-4 transition-all focus:outline-none focus:ring-2 focus:ring-[#5C352C] focus:ring-offset-2 ${
+                      viewMode === "grid" ? "bg-gradient-to-r from-[#5C352C] to-[#8B5E4F] text-white" : "text-gray-600 hover:bg-gray-100"
+                    }`}
+                    aria-label="Grid view"
+                  >
+                    <Grid className="w-3.5 h-3.5 sm:w-4 sm:h-4" aria-hidden="true" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setViewMode("list")}
+                    className={`p-2 sm:p-2.5 px-3 sm:px-4 transition-all focus:outline-none focus:ring-2 focus:ring-[#5C352C] focus:ring-offset-2 ${
+                      viewMode === "list" ? "bg-gradient-to-r from-[#5C352C] to-[#8B5E4F] text-white" : "text-gray-600 hover:bg-gray-100"
+                    }`}
+                    aria-label="List view"
+                  >
+                    <List className="w-3.5 h-3.5 sm:w-4 sm:h-4" aria-hidden="true" />
+                  </button>
+                </div>
               </div>
             </div>
 
-            {/* Filter Panel - Only Category and Price Range */}
+            {/* Filter Panel - Mobile Optimized Drawer */}
             {showFilters && (
               <div 
-                className="mt-5 pt-5 border-t-2 border-gray-100"
+                ref={filtersRef}
+                className={`mt-3 sm:mt-4 pt-3 sm:pt-4 border-t-2 border-gray-100 transition-all duration-300 ${
+                  isMobile ? 'fixed inset-x-0 bottom-0 top-auto z-50 bg-white rounded-t-2xl shadow-2xl p-4 animate-slide-up border-t-0 max-h-[80vh] overflow-y-auto' : ''
+                }`}
                 onKeyDown={handleFilterPanelKeyDown}
+                role="dialog"
+                aria-label="Filter options"
               >
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                {isMobile && (
+                  <div className="flex justify-between items-center mb-4 sticky top-0 bg-white pt-2 pb-3 border-b border-gray-100">
+                    <h3 className="font-bold text-gray-900">{t('buyer.products.filterOptions')}</h3>
+                    <button
+                      onClick={() => setShowFilters(false)}
+                      className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                      aria-label="Close filters"
+                    >
+                      <X className="w-5 h-5" />
+                    </button>
+                  </div>
+                )}
+                
+                <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-2">
+                    <label className="block text-xs sm:text-sm font-bold text-gray-700 mb-1.5 sm:mb-2">
                       {t('buyer.products.category')}
                     </label>
                     <select
                       value={selectedCategory}
                       onChange={(e) => setSelectedCategory(e.target.value)}
-                      className="w-full px-4 py-2.5 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-[#5C352C] text-sm bg-gray-50 font-medium"
+                      className="w-full px-3 sm:px-4 py-2 sm:py-2.5 border-2 border-gray-200 rounded-lg sm:rounded-xl focus:outline-none focus:border-[#5C352C] text-xs sm:text-sm bg-gray-50 font-medium"
                     >
                       <option value="">{t('buyer.products.allCategories')}</option>
                       {categories && categories.length > 0 ? (
@@ -659,47 +697,50 @@ const Products = () => {
                     </select>
                   </div>
                   
-                  <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-2">
-                      {t('buyer.products.minPrice')}
-                    </label>
-                    <div className="relative">
-                      <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" aria-hidden="true" />
-                      <input
-                        type="number"
-                        placeholder="0"
-                        value={minPrice}
-                        onChange={(e) => setMinPrice(e.target.value)}
-                        className="w-full pl-10 pr-4 py-2.5 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-[#5C352C] text-sm bg-gray-50"
-                      />
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-xs sm:text-sm font-bold text-gray-700 mb-1.5 sm:mb-2">
+                        {t('buyer.products.minPrice')}
+                      </label>
+                      <div className="relative">
+                        <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-400" aria-hidden="true" />
+                        <input
+                          type="number"
+                          placeholder="0"
+                          value={minPrice}
+                          onChange={(e) => setMinPrice(e.target.value)}
+                          className="w-full pl-8 sm:pl-10 pr-3 sm:pr-4 py-2 sm:py-2.5 border-2 border-gray-200 rounded-lg sm:rounded-xl focus:outline-none focus:border-[#5C352C] text-xs sm:text-sm bg-gray-50"
+                        />
+                      </div>
                     </div>
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-2">
-                      {t('buyer.products.maxPrice')}
-                    </label>
-                    <div className="relative">
-                      <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" aria-hidden="true" />
-                      <input
-                        type="number"
-                        placeholder={t('buyer.products.any')}
-                        value={maxPrice}
-                        onChange={(e) => setMaxPrice(e.target.value)}
-                        className="w-full pl-10 pr-4 py-2.5 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-[#5C352C] text-sm bg-gray-50"
-                      />
+                    
+                    <div>
+                      <label className="block text-xs sm:text-sm font-bold text-gray-700 mb-1.5 sm:mb-2">
+                        {t('buyer.products.maxPrice')}
+                      </label>
+                      <div className="relative">
+                        <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-400" aria-hidden="true" />
+                        <input
+                          type="number"
+                          placeholder={t('buyer.products.any')}
+                          value={maxPrice}
+                          onChange={(e) => setMaxPrice(e.target.value)}
+                          className="w-full pl-8 sm:pl-10 pr-3 sm:pr-4 py-2 sm:py-2.5 border-2 border-gray-200 rounded-lg sm:rounded-xl focus:outline-none focus:border-[#5C352C] text-xs sm:text-sm bg-gray-50"
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
                 
                 {/* Clear Filters Button */}
                 {hasActiveFilters && (
-                  <div className="mt-4 flex justify-end">
+                  <div className="mt-4 sm:mt-5 flex justify-end">
                     <button
                       type="button"
                       onClick={clearFilters}
-                      className="px-6 py-2.5 bg-gradient-to-r from-rose-500 to-rose-600 text-white rounded-xl hover:shadow-lg transition-all text-sm font-bold"
+                      className="px-4 sm:px-6 py-2 sm:py-2.5 bg-gradient-to-r from-rose-500 to-rose-600 text-white rounded-lg sm:rounded-xl hover:shadow-lg transition-all text-xs sm:text-sm font-bold flex items-center gap-2"
                     >
+                      <RotateCcw className="w-3.5 h-3.5" />
                       {t('buyer.products.clearAllFilters')}
                     </button>
                   </div>
@@ -708,60 +749,38 @@ const Products = () => {
             )}
           </div>
 
-          {/* Results Count */}
-          <div className="mb-5 flex justify-between items-center">
-            <div className="text-sm text-gray-600 bg-white px-4 py-2 rounded-xl shadow-md border border-gray-100">
+          {/* Results Count - Responsive */}
+          <div className="mb-3 sm:mb-5 flex justify-between items-center">
+            <div className="text-[11px] sm:text-sm text-gray-600 bg-white px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg sm:rounded-xl shadow-md border border-gray-100">
               {t('buyer.products.showing')} <span className="font-bold text-[#5C352C]">{products.length}</span> {t('buyer.products.of')}{' '}
-              <span className="font-bold">{pagination.total}</span> {t('buyer.products.products')}
+              <span className="font-bold">{pagination.total}</span> <span className="hidden xs:inline">{t('buyer.products.products')}</span>
             </div>
-            {isMobile && (
-              <div className="flex border-2 border-gray-200 rounded-xl overflow-hidden bg-white">
-                <button
-                  type="button"
-                  onClick={() => setViewMode("grid")}
-                  className={`p-2 px-4 transition-all text-sm ${
-                    viewMode === "grid" ? "bg-gradient-to-r from-[#5C352C] to-[#8B5E4F] text-white" : "text-gray-600"
-                  }`}
-                >
-                  <Grid className="w-4 h-4" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setViewMode("list")}
-                  className={`p-2 px-4 transition-all text-sm ${
-                    viewMode === "list" ? "bg-gradient-to-r from-[#5C352C] to-[#8B5E4F] text-white" : "text-gray-600"
-                  }`}
-                >
-                  <List className="w-4 h-4" />
-                </button>
-              </div>
-            )}
           </div>
 
-          {/* Products Display */}
+          {/* Products Display - Responsive Grid */}
           {loading ? (
-            viewMode === "grid" ? <SkeletonGridLoader count={12} /> : <SkeletonListLoader count={6} />
+            viewMode === "grid" ? <SkeletonGridLoader count={isSmallMobile ? 8 : isMobile ? 8 : 12} /> : <SkeletonListLoader count={isMobile ? 4 : 6} />
           ) : error ? (
-            <div className="bg-rose-50 border-2 border-rose-200 rounded-2xl p-10 text-center shadow-lg">
-              <AlertTriangle className="w-16 h-16 text-rose-500 mx-auto mb-4" />
-              <h3 className="text-xl font-bold text-rose-800 mb-2">{t('buyer.products.errorLoading')}</h3>
-              <p className="text-rose-600 text-sm mb-5">{error}</p>
+            <div className="bg-rose-50 border-2 border-rose-200 rounded-xl sm:rounded-2xl p-6 sm:p-10 text-center shadow-lg">
+              <AlertTriangle className="w-12 h-12 sm:w-16 sm:h-16 text-rose-500 mx-auto mb-3 sm:mb-4" />
+              <h3 className="text-lg sm:text-xl font-bold text-rose-800 mb-2">{t('buyer.products.errorLoading')}</h3>
+              <p className="text-rose-600 text-xs sm:text-sm mb-4 sm:mb-5">{error}</p>
               <button 
                 onClick={() => fetchProducts(1)} 
-                className="px-6 py-2.5 bg-gradient-to-r from-rose-500 to-rose-600 text-white rounded-xl hover:shadow-lg transition-all text-sm font-bold"
+                className="px-5 sm:px-6 py-2 sm:py-2.5 bg-gradient-to-r from-rose-500 to-rose-600 text-white rounded-lg sm:rounded-xl hover:shadow-lg transition-all text-xs sm:text-sm font-bold"
               >
                 {t('buyer.products.tryAgain')}
               </button>
             </div>
           ) : products.length === 0 ? (
-            <div className="bg-white rounded-2xl shadow-xl border-2 border-gray-100 p-12 text-center">
-              <ShoppingCart className="w-20 h-20 mx-auto mb-4 text-gray-300" />
-              <h3 className="text-xl font-bold text-gray-700 mb-2">{t('buyer.products.noProductsFound')}</h3>
-              <p className="text-gray-500 text-sm mb-5">{t('buyer.products.adjustFilters')}</p>
+            <div className="bg-white rounded-xl sm:rounded-2xl shadow-xl border-2 border-gray-100 p-8 sm:p-12 text-center">
+              <ShoppingCart className="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-3 sm:mb-4 text-gray-300" />
+              <h3 className="text-lg sm:text-xl font-bold text-gray-700 mb-2">{t('buyer.products.noProductsFound')}</h3>
+              <p className="text-gray-500 text-xs sm:text-sm mb-4 sm:mb-5">{t('buyer.products.adjustFilters')}</p>
               {hasActiveFilters && (
                 <button 
                   onClick={clearFilters} 
-                  className="px-6 py-2.5 bg-gradient-to-r from-[#5C352C] to-[#8B5E4F] text-white rounded-xl hover:shadow-lg transition-all text-sm font-bold"
+                  className="px-5 sm:px-6 py-2 sm:py-2.5 bg-gradient-to-r from-[#5C352C] to-[#8B5E4F] text-white rounded-lg sm:rounded-xl hover:shadow-lg transition-all text-xs sm:text-sm font-bold"
                 >
                   {t('buyer.products.clearAllFilters')}
                 </button>
@@ -770,7 +789,7 @@ const Products = () => {
           ) : (
             <>
               {viewMode === "grid" ? (
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+                <div className={`grid ${getGridColumns()} gap-2 sm:gap-3 md:gap-4`}>
                   {products.map((product) => (
                     <ProductCard 
                       key={product.id}
@@ -785,7 +804,7 @@ const Products = () => {
                   ))}
                 </div>
               ) : (
-                <div className="space-y-4">
+                <div className="space-y-2 sm:space-y-3 md:space-y-4">
                   {products.map((product) => (
                     <ProductListItem 
                       key={product.id}
@@ -803,16 +822,16 @@ const Products = () => {
               
               {/* Loading More Indicator */}
               {loadingMore && (
-                <div className="mt-6">
+                <div className="mt-4 sm:mt-6">
                   {viewMode === "grid" ? (
-                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-                      {[...Array(6)].map((_, i) => (
+                    <div className={`grid ${getGridColumns()} gap-2 sm:gap-3 md:gap-4`}>
+                      {[...Array(isSmallMobile ? 4 : 6)].map((_, i) => (
                         <SkeletonProductCard key={`more-${i}`} />
                       ))}
                     </div>
                   ) : (
-                    <div className="space-y-4">
-                      {[...Array(3)].map((_, i) => (
+                    <div className="space-y-2 sm:space-y-3">
+                      {[...Array(2)].map((_, i) => (
                         <SkeletonProductListItem key={`more-${i}`} />
                       ))}
                     </div>
@@ -822,19 +841,19 @@ const Products = () => {
             </>
           )}
 
-          {/* Pagination */}
+          {/* Pagination - Responsive */}
           {!loading && products.length > 0 && pagination.last_page > 1 && (
-            <div className="mt-10 flex justify-center">
+            <div className="mt-6 sm:mt-8 md:mt-10 flex justify-center">
               {isMobile ? (
                 <button
                   type="button"
                   onClick={loadMore}
                   disabled={loadingMore || pagination.current_page === pagination.last_page}
-                  className="px-8 py-3 bg-gradient-to-r from-[#5C352C] to-[#8B5E4F] text-white rounded-xl hover:shadow-lg transition-all text-sm font-bold disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-6 sm:px-8 py-2.5 sm:py-3 bg-gradient-to-r from-[#5C352C] to-[#8B5E4F] text-white rounded-lg sm:rounded-xl hover:shadow-lg transition-all text-xs sm:text-sm font-bold disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {loadingMore ? (
                     <>
-                      <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent inline-block mr-2"></div>
+                      <div className="animate-spin rounded-full h-3.5 w-3.5 border-2 border-white border-t-transparent inline-block mr-2"></div>
                       {t('buyer.products.loading')}
                     </>
                   ) : (
@@ -842,16 +861,16 @@ const Products = () => {
                   )}
                 </button>
               ) : (
-                <div className="flex gap-2">
+                <div className="flex gap-1 sm:gap-2">
                   <button
                     type="button"
                     onClick={() => fetchProducts(pagination.current_page - 1)}
                     disabled={pagination.current_page === 1}
-                    className="px-4 py-2 border-2 border-gray-200 rounded-xl text-sm disabled:opacity-50 hover:border-[#5C352C] hover:text-[#5C352C] transition-all bg-white font-semibold"
+                    className="px-3 sm:px-4 py-1.5 sm:py-2 border-2 border-gray-200 rounded-lg sm:rounded-xl text-xs sm:text-sm disabled:opacity-50 hover:border-[#5C352C] hover:text-[#5C352C] transition-all bg-white font-semibold"
                   >
-                    <ChevronLeft className="w-4 h-4" />
+                    <ChevronLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                   </button>
-                  <div className="flex gap-2">
+                  <div className="flex gap-1 sm:gap-2">
                     {[...Array(Math.min(5, pagination.last_page))].map((_, i) => {
                       let pageNum;
                       if (pagination.last_page <= 5) {
@@ -868,7 +887,7 @@ const Products = () => {
                           type="button"
                           key={i}
                           onClick={() => fetchProducts(pageNum)}
-                          className={`w-10 h-10 rounded-xl text-sm font-bold transition-all ${
+                          className={`w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl text-xs sm:text-sm font-bold transition-all ${
                             pagination.current_page === pageNum
                               ? 'bg-gradient-to-r from-[#5C352C] to-[#8B5E4F] text-white shadow-lg'
                               : 'bg-white text-gray-700 hover:bg-gray-100 border-2 border-gray-200'
@@ -883,9 +902,9 @@ const Products = () => {
                     type="button"
                     onClick={() => fetchProducts(pagination.current_page + 1)}
                     disabled={pagination.current_page === pagination.last_page}
-                    className="px-4 py-2 border-2 border-gray-200 rounded-xl text-sm disabled:opacity-50 hover:border-[#5C352C] hover:text-[#5C352C] transition-all bg-white font-semibold"
+                    className="px-3 sm:px-4 py-1.5 sm:py-2 border-2 border-gray-200 rounded-lg sm:rounded-xl text-xs sm:text-sm disabled:opacity-50 hover:border-[#5C352C] hover:text-[#5C352C] transition-all bg-white font-semibold"
                   >
-                    <ChevronRight className="w-4 h-4" />
+                    <ChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                   </button>
                 </div>
               )}
@@ -893,6 +912,29 @@ const Products = () => {
           )}
         </div>
       </div>
+
+      {/* Animation styles for mobile filter drawer */}
+      <style jsx>{`
+        @keyframes slide-up {
+          from {
+            transform: translateY(100%);
+            opacity: 0;
+          }
+          to {
+            transform: translateY(0);
+            opacity: 1;
+          }
+        }
+        .animate-slide-up {
+          animation: slide-up 0.3s ease-out;
+        }
+        
+        @media (max-width: 480px) {
+          .grid {
+            gap: 0.5rem;
+          }
+        }
+      `}</style>
     </MainLayout>
   );
 };

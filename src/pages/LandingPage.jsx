@@ -1206,9 +1206,9 @@ const LandingPage = () => {
                 {label: t('landing.footer.returns'), icon: <FiShield className="w-3 h-3" />},
               ]},
               { title: t('landing.footer.contact'), links: [
-                {label: 'support@uconnect.com', icon: <FiMail className="w-3 h-3" />},
-                {label: '+1 (555) 123-4567', icon: <FiPhone className="w-3 h-3" />},
-                {label: '123 Commerce St', icon: <FiMapPin className="w-3 h-3" />},
+                {label: 'support@u-connect.co.tz', icon: <FiMail className="w-3 h-3" />},
+                {label: '+255 749 022 773', icon: <FiPhone className="w-3 h-3" />},
+                {label: 'Dodoma', icon: <FiMapPin className="w-3 h-3" />},
               ]},
             ].map((col, i) => (
               <div key={i}>
