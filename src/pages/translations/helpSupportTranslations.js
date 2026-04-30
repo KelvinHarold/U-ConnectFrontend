@@ -15,7 +15,7 @@ export const helpSupportTranslations = {
     },
     phoneSupport: {
       title: "Phone Support",
-      description: "Mon-Fri, 9AM - 6PM"
+      description: "Mon-Sund, 9AM - 6PM"
     },
     liveChat: {
       title: "Live Chat",
@@ -41,7 +41,7 @@ export const helpSupportTranslations = {
       },
       paymentMethods: {
         question: "What payment methods are accepted?",
-        answer: "We accept credit/debit cards, mobile money (M-Pesa, Tigo Pesa, Airtel Money), and bank transfers."
+        answer: "We accept mobile money (M-Pesa, Tigo Pesa, Airtel Money), and bank transfers."
       },
       trackOrder: {
         question: "How can I track my order?",
@@ -92,7 +92,7 @@ export const helpSupportTranslations = {
     },
     phoneSupport: {
       title: "Msaada wa Simu",
-      description: "Jumatatu-Ijumaa, 9AM - 6PM"
+      description: "Jumatatu-Jumapili, 9AM - 6PM"
     },
     liveChat: {
       title: "Mazungumzo ya Moja kwa Moja",
@@ -118,7 +118,7 @@ export const helpSupportTranslations = {
       },
       paymentMethods: {
         question: "Ni njia gani za malipo zinakubalika?",
-        answer: "Tunakubali kadi za mkopo/benki, pesa za simu (M-Pesa, Tigo Pesa, Airtel Money), na uhamisho wa benki."
+        answer: "Tunakubali pesa za simu (M-Pesa, Tigo Pesa, Airtel Money), na uhamisho wa benki."
       },
       trackOrder: {
         question: "Ninawezaje kufuatilia agizo langu?",

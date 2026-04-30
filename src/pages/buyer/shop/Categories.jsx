@@ -1,3 +1,4 @@
+// src/pages/buyer/categories/Categories.jsx
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import MainLayout from "../../../layouts/MainLayout";
@@ -26,7 +27,9 @@ import {
   List,
   Clock,
   Shield,
-  Tag
+  Tag,
+  SlidersHorizontal,
+  RotateCcw
 } from "lucide-react";
 
 // ==================== ENHANCED SKELETON LOADERS ====================
@@ -34,13 +37,13 @@ const SkeletonCategoryCard = () => (
   <div className="animate-pulse">
     <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
       <div className="relative w-full pt-[100%] bg-gradient-to-br from-gray-200 to-gray-300"></div>
-      <div className="p-3 space-y-2">
-        <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-        <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+      <div className="p-2 sm:p-3 space-y-2">
+        <div className="h-3 sm:h-4 bg-gray-200 rounded w-3/4"></div>
+        <div className="h-2 sm:h-3 bg-gray-200 rounded w-1/2"></div>
         <div className="flex gap-2">
-          <div className="w-8 h-8 bg-gray-200 rounded-lg"></div>
-          <div className="w-8 h-8 bg-gray-200 rounded-lg"></div>
-          <div className="w-8 h-8 bg-gray-200 rounded-lg"></div>
+          <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gray-200 rounded-lg"></div>
+          <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gray-200 rounded-lg"></div>
+          <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gray-200 rounded-lg"></div>
         </div>
       </div>
     </div>
@@ -48,7 +51,7 @@ const SkeletonCategoryCard = () => (
 );
 
 const SkeletonCategoriesGrid = ({ count = 12 }) => (
-  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+  <div className="grid grid-cols-2 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-2 sm:gap-3 md:gap-4">
     {[...Array(count)].map((_, i) => (
       <SkeletonCategoryCard key={i} />
     ))}
@@ -66,27 +69,44 @@ const Categories = () => {
   const [imageErrors, setImageErrors] = useState({});
   const [productImageErrors, setProductImageErrors] = useState({});
   const [isMobile, setIsMobile] = useState(false);
+  const [isSmallMobile, setIsSmallMobile] = useState(false);
   const [stats, setStats] = useState({ total_categories: 0, total_products: 0 });
   const [searchTerm, setSearchTerm] = useState("");
   const [showSearch, setShowSearch] = useState(false);
   const [viewMode, setViewMode] = useState("grid");
+  const [showFilters, setShowFilters] = useState(false);
   
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const [lastPage, setLastPage] = useState(1);
   const [total, setTotal] = useState(0);
-  const [perPage, setPerPage] = useState(6);
+  const [perPage, setPerPage] = useState(12);
 
   // Refs for keyboard navigation
   const searchInputRef = useRef(null);
   const refreshButtonRef = useRef(null);
+  const filtersRef = useRef(null);
 
   useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 768);
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
+    const checkScreenSize = () => {
+      setIsMobile(window.innerWidth < 768);
+      setIsSmallMobile(window.innerWidth < 480);
+    };
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+    return () => window.removeEventListener('resize', checkScreenSize);
   }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (isMobile && showFilters && filtersRef.current && !filtersRef.current.contains(event.target)) {
+        setShowFilters(false);
+      }
+    };
+    
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isMobile, showFilters]);
 
   useEffect(() => {
     fetchParentCategories();
@@ -109,12 +129,12 @@ const Categories = () => {
       setCurrentPage(response.data.current_page || 1);
       setLastPage(response.data.last_page || 1);
       setTotal(response.data.total || 0);
-      setPerPage(response.data.per_page || 6);
+      setPerPage(response.data.per_page || 12);
       
       setImageErrors({});
       setProductImageErrors({});
       
-      announceToScreenReader(t('buyer.categories.foundCategories', { count: response.data.total || 0, ies: total !== 1 ? 'ies' : 'y' }));
+      announceToScreenReader(t('buyer.categories.foundCategories', { count: response.data.total || 0 }));
     } catch (error) {
       console.error('Error fetching parent categories:', error);
       const errorMsg = error.response?.data?.message || t('buyer.categories.failedToLoad');
@@ -131,7 +151,6 @@ const Categories = () => {
       setStats(response.data);
     } catch (error) {
       console.error('Error fetching stats:', error);
-      showToast(t('buyer.categories.failedToLoad'), 'error');
     }
   };
 
@@ -180,10 +199,6 @@ const Categories = () => {
     setImageErrors(prev => ({ ...prev, [categoryId]: true }));
   };
 
-  const handleProductImageError = (productId) => {
-    setProductImageErrors(prev => ({ ...prev, [productId]: true }));
-  };
-
   const formatPrice = (price) => {
     return `Tsh ${Number(price).toLocaleString('en-US')}`;
   };
@@ -196,7 +211,7 @@ const Categories = () => {
 
   const getPaginationPages = () => {
     const pages = [];
-    const maxVisible = 5;
+    const maxVisible = isMobile ? 3 : 5;
     let startPage = Math.max(1, currentPage - Math.floor(maxVisible / 2));
     let endPage = Math.min(lastPage, startPage + maxVisible - 1);
     
@@ -210,176 +225,179 @@ const Categories = () => {
     return pages;
   };
 
+  // Get grid columns based on screen size
+  const getGridColumns = () => {
+    if (viewMode === "list") return "grid-cols-1";
+    if (isSmallMobile) return "grid-cols-2";
+    if (isMobile) return "grid-cols-2";
+    return "grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6";
+  };
+
   return (
     <MainLayout>
       <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50">
-        <div className="p-4 md:p-8">
+        <div className="p-3 sm:p-4 md:p-6 lg:p-8">
           
-          {/* Enhanced Header with Stats */}
-          <div className="mb-8">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-              <div>
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="p-2 bg-gradient-to-br from-[#5C352C] to-[#8B5E4F] rounded-xl shadow-lg">
-                    <FolderOpen className="w-5 h-5 text-white" aria-hidden="true" />
+          {/* Enhanced Header with Stats - Mobile Optimized */}
+          <div className="mb-4 sm:mb-6 md:mb-8">
+            <div className="flex flex-col gap-3 sm:gap-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="p-1.5 sm:p-2 bg-gradient-to-br from-[#5C352C] to-[#8B5E4F] rounded-lg sm:rounded-xl shadow-lg">
+                    <FolderOpen className="w-4 h-4 sm:w-5 sm:h-5 text-white" aria-hidden="true" />
                   </div>
-                  <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-[#5C352C] to-[#8B5E4F] bg-clip-text text-transparent">
+                  <h1 className="text-xl sm:text-2xl md:text-3xl font-bold bg-gradient-to-r from-[#5C352C] to-[#8B5E4F] bg-clip-text text-transparent">
                     {t('buyer.categories.title')}
                   </h1>
                 </div>
-                <p className="text-gray-500 text-sm ml-11">{t('buyer.categories.subtitle')}</p>
+                
+                {/* Stats Badge - Mobile Optimized */}
+                <div className="bg-white px-2 sm:px-3 py-1 sm:py-2 rounded-lg sm:rounded-xl shadow-md border border-gray-100">
+                  <div className="flex items-center gap-2 sm:gap-3">
+                    <div className="flex items-center gap-0.5 sm:gap-1">
+                      <TrendingUp className="w-3 h-3 sm:w-4 sm:h-4 text-emerald-500" aria-hidden="true" />
+                      <span className="text-xs sm:text-sm font-semibold text-gray-700">{stats.total_categories}</span>
+                      <span className="text-[9px] sm:text-xs text-gray-500 hidden xs:inline">{t('buyer.categories.categories')}</span>
+                    </div>
+                    <div className="w-px h-3 sm:h-4 bg-gray-200"></div>
+                    <div className="flex items-center gap-0.5 sm:gap-1">
+                      <Package className="w-3 h-3 sm:w-4 sm:h-4 text-[#5C352C]" aria-hidden="true" />
+                      <span className="text-xs sm:text-sm font-semibold text-gray-700">{stats.total_products}</span>
+                      <span className="text-[9px] sm:text-xs text-gray-500 hidden xs:inline">{t('buyer.categories.products')}</span>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div className="flex items-center gap-3">
-                {/* Search Toggle Button for Mobile */}
+              <p className="text-gray-500 text-xs sm:text-sm ml-9 sm:ml-10">{t('buyer.categories.subtitle')}</p>
+            </div>
+
+            {/* Search and Filter Bar - Mobile Optimized */}
+            <div className="mt-4 sm:mt-6">
+              <div className="flex gap-2">
+                {(showSearch || !isMobile) && (
+                  <div className="flex-1 relative">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-400" aria-hidden="true" />
+                    <label htmlFor="category-search" className="sr-only">{t('buyer.categories.searchPlaceholder')}</label>
+                    <input
+                      id="category-search"
+                      ref={searchInputRef}
+                      type="text"
+                      placeholder={t('buyer.categories.searchPlaceholder')}
+                      value={searchTerm}
+                      onChange={handleSearch}
+                      className="w-full pl-9 sm:pl-11 pr-8 sm:pr-10 py-2 sm:py-3 border-2 border-gray-200 rounded-lg sm:rounded-xl focus:outline-none focus:border-[#5C352C] focus:ring-2 focus:ring-[#5C352C]/20 transition-all text-xs sm:text-sm bg-gray-50"
+                      aria-label={t('buyer.categories.searchPlaceholder')}
+                    />
+                    {searchTerm && (
+                      <button
+                        onClick={clearSearch}
+                        className="absolute right-2 sm:right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-400 rounded-full p-1"
+                        aria-label={t('buyer.categories.clearSearch')}
+                      >
+                        <X className="w-3 h-3 sm:w-4 sm:h-4" aria-hidden="true" />
+                      </button>
+                    )}
+                  </div>
+                )}
+                
                 {isMobile && !showSearch && (
                   <button
                     onClick={() => {
                       setShowSearch(true);
                       setTimeout(() => searchInputRef.current?.focus(), 100);
                     }}
-                    className="flex items-center gap-2 px-4 py-2 bg-white border-2 border-gray-200 rounded-xl text-gray-700 hover:bg-gray-50 transition-all text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#5C352C]"
+                    className="flex items-center gap-1 sm:gap-2 px-3 sm:px-4 py-2 sm:py-2.5 bg-white border-2 border-gray-200 rounded-lg sm:rounded-xl text-gray-700 hover:bg-gray-50 transition-all text-xs sm:text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#5C352C]"
                     aria-label={t('buyer.categories.openSearch')}
                   >
-                    <Search className="w-4 h-4" aria-hidden="true" />
-                    {t('buyer.categories.search')}
+                    <Search className="w-3.5 h-3.5" aria-hidden="true" />
+                    <span className="hidden xs:inline">{t('buyer.categories.search')}</span>
                   </button>
                 )}
                 
-                {/* View Mode Toggle */}
-                {!isMobile && (
-                  <div className="flex border-2 border-gray-200 rounded-xl overflow-hidden bg-white" role="group" aria-label={t('buyer.categories.gridView')}>
+                <div className="flex gap-2">
+                  {/* View Mode Toggle - Mobile Optimized */}
+                  <div className="border-2 border-gray-200 rounded-lg sm:rounded-xl overflow-hidden flex bg-gray-50">
                     <button
                       onClick={() => setViewMode("grid")}
-                      className={`p-2 px-4 transition-all text-sm focus:outline-none focus:ring-2 focus:ring-[#5C352C] ${
-                        viewMode === "grid" ? "bg-gradient-to-r from-[#5C352C] to-[#8B5E4F] text-white" : "text-gray-600"
+                      className={`p-2 sm:p-2.5 px-3 sm:px-4 transition-all focus:outline-none focus:ring-2 focus:ring-[#5C352C] ${
+                        viewMode === "grid" ? "bg-gradient-to-r from-[#5C352C] to-[#8B5E4F] text-white" : "text-gray-600 hover:bg-gray-100"
                       }`}
                       aria-label={t('buyer.categories.gridView')}
                       aria-pressed={viewMode === "grid"}
                     >
-                      <Grid className="w-4 h-4" aria-hidden="true" />
+                      <Grid className="w-3.5 h-3.5 sm:w-4 sm:h-4" aria-hidden="true" />
                     </button>
                     <button
                       onClick={() => setViewMode("list")}
-                      className={`p-2 px-4 transition-all text-sm focus:outline-none focus:ring-2 focus:ring-[#5C352C] ${
-                        viewMode === "list" ? "bg-gradient-to-r from-[#5C352C] to-[#8B5E4F] text-white" : "text-gray-600"
+                      className={`p-2 sm:p-2.5 px-3 sm:px-4 transition-all focus:outline-none focus:ring-2 focus:ring-[#5C352C] ${
+                        viewMode === "list" ? "bg-gradient-to-r from-[#5C352C] to-[#8B5E4F] text-white" : "text-gray-600 hover:bg-gray-100"
                       }`}
                       aria-label={t('buyer.categories.listView')}
                       aria-pressed={viewMode === "list"}
                     >
-                      <List className="w-4 h-4" aria-hidden="true" />
+                      <List className="w-3.5 h-3.5 sm:w-4 sm:h-4" aria-hidden="true" />
                     </button>
                   </div>
-                )}
-                
-                <div 
-                  className="bg-white px-4 py-2 rounded-xl shadow-md border border-gray-100"
-                  role="status"
-                  aria-label={t('buyer.categories.statsAria', { categories: stats.total_categories, products: stats.total_products })}
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="flex items-center gap-1">
-                      <TrendingUp className="w-4 h-4 text-emerald-500" aria-hidden="true" />
-                      <span className="text-sm font-semibold text-gray-700">{stats.total_categories}</span>
-                      <span className="text-xs text-gray-500">{t('buyer.categories.categories')}</span>
-                    </div>
-                    <div className="w-px h-4 bg-gray-200"></div>
-                    <div className="flex items-center gap-1">
-                      <Package className="w-4 h-4 text-[#5C352C]" aria-hidden="true" />
-                      <span className="text-sm font-semibold text-gray-700">{stats.total_products}</span>
-                      <span className="text-xs text-gray-500">{t('buyer.categories.products')}</span>
-                    </div>
-                  </div>
-                </div>
-                <button
-                  ref={refreshButtonRef}
-                  onClick={refreshCategories}
-                  className="flex items-center gap-2 px-4 py-2 bg-white border-2 border-gray-200 rounded-xl text-gray-700 hover:bg-gray-50 hover:border-[#5C352C] transition-all text-sm font-medium shadow-md focus:outline-none focus:ring-2 focus:ring-[#5C352C]"
-                  aria-label={t('buyer.categories.refresh')}
-                  onKeyPress={(e) => handleKeyPress(e, refreshCategories)}
-                >
-                  <RefreshCw className="w-4 h-4" aria-hidden="true" />
-                  {t('buyer.categories.refresh')}
-                </button>
-              </div>
-            </div>
-
-            {/* Enhanced Search Bar */}
-            {(showSearch || !isMobile) && (
-              <div className="mt-6">
-                <div className="relative max-w-md">
-                  <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" aria-hidden="true" />
-                  <label htmlFor="category-search" className="sr-only">{t('buyer.categories.searchPlaceholder')}</label>
-                  <input
-                    id="category-search"
-                    ref={searchInputRef}
-                    type="text"
-                    placeholder={t('buyer.categories.searchPlaceholder')}
-                    value={searchTerm}
-                    onChange={handleSearch}
-                    className="w-full pl-11 pr-10 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-[#5C352C] focus:ring-2 focus:ring-[#5C352C]/20 transition-all text-sm bg-white shadow-sm"
-                    aria-label={t('buyer.categories.searchPlaceholder')}
-                  />
-                  {searchTerm && (
-                    <button
-                      onClick={clearSearch}
-                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-400 rounded-full p-1"
-                      aria-label={t('buyer.categories.clearSearch')}
-                    >
-                      <X className="w-4 h-4" aria-hidden="true" />
-                    </button>
-                  )}
-                </div>
-                
-                {/* Enhanced Search Results Count */}
-                {searchTerm && (
-                  <div 
-                    className="mt-2 text-sm text-gray-500 bg-white px-4 py-2 rounded-lg inline-block shadow-sm"
-                    role="status"
-                    aria-live="polite"
+                  
+                  <button
+                    ref={refreshButtonRef}
+                    onClick={refreshCategories}
+                    className="flex items-center gap-1 sm:gap-2 px-3 sm:px-4 py-2 sm:py-2.5 bg-white border-2 border-gray-200 rounded-lg sm:rounded-xl text-gray-700 hover:bg-gray-50 hover:border-[#5C352C] transition-all text-xs sm:text-sm font-medium shadow-md focus:outline-none focus:ring-2 focus:ring-[#5C352C]"
+                    aria-label={t('buyer.categories.refresh')}
+                    onKeyPress={(e) => handleKeyPress(e, refreshCategories)}
                   >
-                    {total === 1 
-                      ? t('buyer.categories.foundCategory', { count: total })
-                      : t('buyer.categories.foundCategories', { count: total, ies: 'ies' })
-                    } "<span className="font-semibold">{searchTerm}</span>"
-                  </div>
-                )}
+                    <RefreshCw className="w-3.5 h-3.5" aria-hidden="true" />
+                    <span className="hidden sm:inline">{t('buyer.categories.refresh')}</span>
+                  </button>
+                </div>
               </div>
-            )}
+              
+              {/* Enhanced Search Results Count */}
+              {searchTerm && (
+                <div 
+                  className="mt-2 text-[11px] sm:text-sm text-gray-500 bg-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg inline-block shadow-sm"
+                  role="status"
+                  aria-live="polite"
+                >
+                  {t('buyer.categories.foundCategories', { count: total })} "<span className="font-semibold">{searchTerm}</span>"
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Loading State */}
           {loading ? (
-            <SkeletonCategoriesGrid count={12} />
+            <SkeletonCategoriesGrid count={isSmallMobile ? 8 : isMobile ? 8 : 12} />
           ) : error ? (
             <div 
-              className="bg-rose-50 border-2 border-rose-200 rounded-2xl p-10 text-center shadow-lg"
+              className="bg-rose-50 border-2 border-rose-200 rounded-xl sm:rounded-2xl p-6 sm:p-10 text-center shadow-lg"
               role="alert"
               aria-live="polite"
             >
-              <AlertTriangle className="w-16 h-16 text-rose-500 mx-auto mb-4" aria-hidden="true" />
-              <h3 className="text-xl font-bold text-rose-800 mb-2">{t('buyer.categories.errorLoading')}</h3>
-              <p className="text-rose-600 text-sm mb-5">{error}</p>
+              <AlertTriangle className="w-12 h-12 sm:w-16 sm:h-16 text-rose-500 mx-auto mb-3 sm:mb-4" aria-hidden="true" />
+              <h3 className="text-lg sm:text-xl font-bold text-rose-800 mb-2">{t('buyer.categories.errorLoading')}</h3>
+              <p className="text-rose-600 text-xs sm:text-sm mb-4 sm:mb-5">{error}</p>
               <button 
                 onClick={() => {
                   setCurrentPage(1);
                   fetchParentCategories();
                 }} 
-                className="px-6 py-2.5 bg-gradient-to-r from-rose-500 to-rose-600 text-white rounded-xl hover:shadow-lg transition-all text-sm font-bold focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-2"
+                className="px-5 sm:px-6 py-2 sm:py-2.5 bg-gradient-to-r from-rose-500 to-rose-600 text-white rounded-lg sm:rounded-xl hover:shadow-lg transition-all text-xs sm:text-sm font-bold focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-2"
                 aria-label={t('buyer.categories.tryAgain')}
               >
                 {t('buyer.categories.tryAgain')}
               </button>
             </div>
           ) : categories.length === 0 ? (
-            <div className="bg-white rounded-2xl shadow-xl border-2 border-gray-100 p-12 text-center">
+            <div className="bg-white rounded-xl sm:rounded-2xl shadow-xl border-2 border-gray-100 p-8 sm:p-12 text-center">
               {searchTerm ? (
                 <>
-                  <Search className="w-20 h-20 mx-auto mb-4 text-gray-300" aria-hidden="true" />
-                  <h3 className="text-xl font-bold text-gray-700 mb-2">{t('buyer.categories.noCategoriesFound')}</h3>
-                  <p className="text-gray-500 text-sm mb-5">{t('buyer.categories.noCategoriesMatch')} "{searchTerm}"</p>
+                  <Search className="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-3 sm:mb-4 text-gray-300" aria-hidden="true" />
+                  <h3 className="text-lg sm:text-xl font-bold text-gray-700 mb-2">{t('buyer.categories.noCategoriesFound')}</h3>
+                  <p className="text-gray-500 text-xs sm:text-sm mb-4 sm:mb-5">{t('buyer.categories.noCategoriesMatch')} "{searchTerm}"</p>
                   <button 
                     onClick={clearSearch}
-                    className="px-6 py-2.5 bg-gradient-to-r from-[#5C352C] to-[#8B5E4F] text-white rounded-xl hover:shadow-lg transition-all text-sm font-bold focus:outline-none focus:ring-2 focus:ring-[#5C352C] focus:ring-offset-2"
+                    className="px-5 sm:px-6 py-2 sm:py-2.5 bg-gradient-to-r from-[#5C352C] to-[#8B5E4F] text-white rounded-lg sm:rounded-xl hover:shadow-lg transition-all text-xs sm:text-sm font-bold focus:outline-none focus:ring-2 focus:ring-[#5C352C] focus:ring-offset-2"
                     aria-label={t('buyer.categories.clearSearchButton')}
                   >
                     {t('buyer.categories.clearSearchButton')}
@@ -387,21 +405,17 @@ const Categories = () => {
                 </>
               ) : (
                 <>
-                  <Package className="w-20 h-20 mx-auto mb-4 text-gray-300" aria-hidden="true" />
-                  <h3 className="text-xl font-bold text-gray-700 mb-2">{t('buyer.categories.noCategoriesFound')}</h3>
-                  <p className="text-gray-500 text-sm">{t('buyer.categories.noCategoriesMessage')}</p>
+                  <Package className="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-3 sm:mb-4 text-gray-300" aria-hidden="true" />
+                  <h3 className="text-lg sm:text-xl font-bold text-gray-700 mb-2">{t('buyer.categories.noCategoriesFound')}</h3>
+                  <p className="text-gray-500 text-xs sm:text-sm">{t('buyer.categories.noCategoriesMessage')}</p>
                 </>
               )}
             </div>
           ) : (
             <>
-              {/* Enhanced Category Grid */}
+              {/* Enhanced Category Grid - Responsive */}
               <div 
-                className={`grid gap-4 ${
-                  viewMode === "grid" 
-                    ? "grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6" 
-                    : "grid-cols-1"
-                }`}
+                className={`grid ${getGridColumns()} gap-2 sm:gap-3 md:gap-4`}
                 role="list"
                 aria-label={t('buyer.categories.categories')}
               >
@@ -431,7 +445,7 @@ const Categories = () => {
                             />
                           ) : (
                             <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200">
-                              <ImageIcon className="w-12 h-12 text-gray-400" aria-hidden="true" />
+                              <ImageIcon className="w-8 h-8 sm:w-12 sm:h-12 text-gray-400" aria-hidden="true" />
                             </div>
                           )}
                         </div>
@@ -439,47 +453,48 @@ const Categories = () => {
                         {/* Enhanced Overlay Gradient */}
                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                         
-                        {/* Enhanced Category Badges */}
-                        <div className="absolute top-2 right-2 flex gap-1 z-10">
-                          <div className="px-2 py-1 text-[10px] font-bold rounded-lg bg-white/95 backdrop-blur-sm text-[#5C352C] shadow-md flex items-center gap-1">
-                            <Layers className="w-2.5 h-2.5" />
-                            {category.subcategories_count || 0} {t('buyer.categories.subcategories')}
+                        {/* Enhanced Category Badges - Mobile Optimized */}
+                        <div className="absolute top-1 sm:top-2 right-1 sm:right-2 flex gap-0.5 sm:gap-1 z-10">
+                          <div className="px-1 sm:px-2 py-0.5 sm:py-1 text-[7px] sm:text-[10px] font-bold rounded-lg bg-white/95 backdrop-blur-sm text-[#5C352C] shadow-md flex items-center gap-0.5 sm:gap-1">
+                            <Layers className="w-2 h-2 sm:w-2.5 sm:h-2.5" />
+                            <span className="hidden xs:inline">{t('buyer.categories.subcategories')}</span>
+                            <span>{category.subcategories_count || 0}</span>
                           </div>
                         </div>
                         
-                        {/* Products Count Overlay */}
-                        <div className="absolute bottom-2 left-2 z-10">
-                          <div className="px-2 py-1 text-[10px] font-bold rounded-lg bg-black/70 backdrop-blur-sm text-white shadow-md flex items-center gap-1">
-                            <Package className="w-2.5 h-2.5" />
-                            {category.products_count || 0} {t('buyer.categories.productsCount')}
+                        {/* Products Count Overlay - Mobile Optimized */}
+                        <div className="absolute bottom-1 sm:bottom-2 left-1 sm:left-2 z-10">
+                          <div className="px-1 sm:px-2 py-0.5 sm:py-1 text-[7px] sm:text-[10px] font-bold rounded-lg bg-black/70 backdrop-blur-sm text-white shadow-md flex items-center gap-0.5 sm:gap-1">
+                            <Package className="w-2 h-2 sm:w-2.5 sm:h-2.5" />
+                            <span>{category.products_count || 0}</span>
                           </div>
                         </div>
                       </div>
                       
-                      {/* Enhanced Category Info */}
-                      <div className="p-3">
-                        <div className="flex items-start justify-between gap-2">
+                      {/* Enhanced Category Info - Mobile Optimized */}
+                      <div className="p-2 sm:p-3">
+                        <div className="flex items-start justify-between gap-1 sm:gap-2">
                           <div className="flex-1 min-w-0">
-                            <h2 className="font-bold text-gray-900 text-sm group-hover:text-[#5C352C] transition-colors truncate">
+                            <h2 className="font-bold text-gray-900 text-xs sm:text-sm group-hover:text-[#5C352C] transition-colors truncate">
                               {category.name}
                             </h2>
                           </div>
-                          <div className="bg-gradient-to-r from-[#5C352C] to-[#8B5E4F] rounded-full p-1.5 group-hover:scale-110 transition-all flex-shrink-0 shadow-md">
-                            <ChevronRight className="w-3 h-3 text-white" aria-hidden="true" />
+                          <div className="bg-gradient-to-r from-[#5C352C] to-[#8B5E4F] rounded-full p-1 sm:p-1.5 group-hover:scale-110 transition-all flex-shrink-0 shadow-md">
+                            <ChevronRight className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-white" aria-hidden="true" />
                           </div>
                         </div>
                         
-                        {category.description && (
-                          <p className="text-xs text-gray-500 mt-1 line-clamp-2">
-                            {category.description.length > 60 ? category.description.substring(0, 60) + '...' : category.description}
+                        {category.description && !isSmallMobile && (
+                          <p className="text-[10px] sm:text-xs text-gray-500 mt-0.5 sm:mt-1 line-clamp-2">
+                            {category.description.length > (isMobile ? 40 : 60) ? category.description.substring(0, isMobile ? 40 : 60) + '...' : category.description}
                           </p>
                         )}
                         
-                        {/* Highlight search match */}
+                        {/* Highlight search match - Mobile Optimized */}
                         {searchTerm && (
-                          <div className="mt-2 text-[10px] text-[#5C352C] font-semibold flex items-center gap-1">
-                            <Zap className="w-2.5 h-2.5" />
-                            {t('buyer.categories.matchesSearch')}
+                          <div className="mt-1 sm:mt-2 text-[8px] sm:text-[10px] text-[#5C352C] font-semibold flex items-center gap-0.5 sm:gap-1">
+                            <Zap className="w-2 h-2 sm:w-2.5 sm:h-2.5" />
+                            <span className="hidden xs:inline">{t('buyer.categories.matchesSearch')}</span>
                           </div>
                         )}
                       </div>
@@ -488,17 +503,17 @@ const Categories = () => {
                 ))}
               </div>
 
-              {/* Enhanced Pagination Component */}
+              {/* Enhanced Pagination - Responsive */}
               {lastPage > 1 && (
                 <nav 
-                  className="mt-10 flex justify-center items-center gap-3"
+                  className="mt-6 sm:mt-8 md:mt-10 flex justify-center items-center gap-2 sm:gap-3"
                   role="navigation"
                   aria-label={t('buyer.categories.goToPage', { page: '' })}
                 >
                   <button
                     onClick={() => handlePageChange(currentPage - 1)}
                     disabled={currentPage === 1}
-                    className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all focus:outline-none focus:ring-2 focus:ring-[#5C352C] ${
+                    className={`px-2 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl text-xs sm:text-sm font-semibold transition-all focus:outline-none focus:ring-2 focus:ring-[#5C352C] ${
                       currentPage === 1
                         ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
                         : 'bg-white border-2 border-gray-200 text-gray-700 hover:bg-gray-50 hover:border-[#5C352C] shadow-md'
@@ -506,15 +521,15 @@ const Categories = () => {
                     aria-label={t('buyer.categories.goToPreviousPage')}
                     aria-disabled={currentPage === 1}
                   >
-                    <ChevronLeft className="w-4 h-4" aria-hidden="true" />
+                    <ChevronLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4" aria-hidden="true" />
                   </button>
                   
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1 sm:gap-2">
                     {getPaginationPages().map(page => (
                       <button
                         key={page}
                         onClick={() => handlePageChange(page)}
-                        className={`w-10 h-10 rounded-xl text-sm font-semibold transition-all focus:outline-none focus:ring-2 focus:ring-[#5C352C] ${
+                        className={`w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl text-xs sm:text-sm font-semibold transition-all focus:outline-none focus:ring-2 focus:ring-[#5C352C] ${
                           currentPage === page
                             ? 'bg-gradient-to-r from-[#5C352C] to-[#8B5E4F] text-white shadow-lg'
                             : 'bg-white border-2 border-gray-200 text-gray-700 hover:bg-gray-50 hover:border-[#5C352C]'
@@ -530,7 +545,7 @@ const Categories = () => {
                   <button
                     onClick={() => handlePageChange(currentPage + 1)}
                     disabled={currentPage === lastPage}
-                    className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all focus:outline-none focus:ring-2 focus:ring-[#5C352C] ${
+                    className={`px-2 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl text-xs sm:text-sm font-semibold transition-all focus:outline-none focus:ring-2 focus:ring-[#5C352C] ${
                       currentPage === lastPage
                         ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
                         : 'bg-white border-2 border-gray-200 text-gray-700 hover:bg-gray-50 hover:border-[#5C352C] shadow-md'
@@ -538,38 +553,28 @@ const Categories = () => {
                     aria-label={t('buyer.categories.goToNextPage')}
                     aria-disabled={currentPage === lastPage}
                   >
-                    <ChevronRightIcon className="w-4 h-4" aria-hidden="true" />
+                    <ChevronRightIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4" aria-hidden="true" />
                   </button>
                 </nav>
-              )}
+              )} 
 
-              {/* Enhanced Showing results info */}
-              <div 
-                className="mt-4 text-center text-sm text-gray-500 bg-white px-4 py-2 rounded-lg inline-block mx-auto shadow-sm"
-                role="status"
-                aria-live="polite"
-              >
-                {t('buyer.categories.showing')} <span className="font-semibold text-[#5C352C]">{categories.length}</span> {t('buyer.categories.of')} <span className="font-semibold">{total}</span> {total === 1 ? t('buyer.categories.category') : t('buyer.categories.categories')}
-                {searchTerm && ` ${t('buyer.categories.matchesSearch').toLowerCase().replace('matches search', '')}"${searchTerm}"`}
-              </div>
-
-              {/* Enhanced Quick Tips Section */}
-              <div className="mt-8 bg-gradient-to-r from-[#5C352C] via-[#7A4B3A] to-[#8B5E4F] rounded-xl p-5 text-white shadow-xl relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -mr-16 -mt-16"></div>
-                <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/5 rounded-full -ml-12 -mb-12"></div>
-                <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-3">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center shadow-lg">
-                      <Layers className="w-5 h-5" aria-hidden="true" />
+              {/* Enhanced Quick Tips Section - Responsive */}
+              <div className="mt-6 sm:mt-8 bg-gradient-to-r from-[#5C352C] via-[#7A4B3A] to-[#8B5E4F] rounded-xl p-4 sm:p-5 text-white shadow-xl relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-24 h-24 sm:w-32 sm:h-32 bg-white/5 rounded-full -mr-12 -mt-12 sm:-mr-16 sm:-mt-16"></div>
+                <div className="absolute bottom-0 left-0 w-20 h-20 sm:w-24 sm:h-24 bg-white/5 rounded-full -ml-10 -mb-10 sm:-ml-12 sm:-mb-12"></div>
+                <div className="relative z-10 flex flex-col sm:flex-row items-center justify-between gap-2 sm:gap-3">
+                  <div className="flex items-center gap-2 sm:gap-3 text-center sm:text-left">
+                    <div className="w-8 h-8 sm:w-10 sm:h-10 bg-white/20 rounded-full flex items-center justify-center shadow-lg flex-shrink-0">
+                      <Layers className="w-4 h-4 sm:w-5 sm:h-5" aria-hidden="true" />
                     </div>
                     <div>
-                      <h3 className="font-bold text-base">{t('buyer.categories.cantFindWhatLookingFor')}</h3>
-                      <p className="text-white/90 text-xs">{t('buyer.categories.browseAllProducts')}</p>
+                      <h3 className="font-bold text-sm sm:text-base">{t('buyer.categories.cantFindWhatLookingFor')}</h3>
+                      <p className="text-white/90 text-[10px] sm:text-xs hidden xs:block">{t('buyer.categories.browseAllProducts')}</p>
                     </div>
                   </div>
                   <Link 
                     to="/buyer/shop/products" 
-                    className="px-5 py-2 bg-white text-[#5C352C] rounded-xl font-bold hover:shadow-lg transition-all text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-[#5C352C]"
+                    className="px-3 sm:px-5 py-1.5 sm:py-2 bg-white text-[#5C352C] rounded-lg sm:rounded-xl font-bold hover:shadow-lg transition-all text-[11px] sm:text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-[#5C352C] whitespace-nowrap"
                     aria-label={t('buyer.categories.browseAllProductsButton')}
                   >
                     {t('buyer.categories.browseAllProductsButton')}

@@ -46,14 +46,14 @@ const HelpSupportModal = ({ isOpen, onClose }) => {
       title: t('helpSupport.emailSupport.title'),
       description: t('helpSupport.emailSupport.description'),
       icon: Mail,
-      contact: "support@uconnect.com",
-      action: "mailto:support@uconnect.com",
+      contact: "support@u-connect.co.tz",
+      action: "mailto:support@u-connect.co.tz",
     },
     {
       title: t('helpSupport.phoneSupport.title'),
       description: t('helpSupport.phoneSupport.description'),
       icon: Phone,
-      contact: "+255 123 456 789",
+      contact: "+255 749 022 773",
       action: "tel:+255123456789",
     },
     {
@@ -239,7 +239,7 @@ const HelpSupportModal = ({ isOpen, onClose }) => {
             </div>
 
             {/* Social Media Links - Minimal */}
-            <div className="border-t border-gray-100 pt-5">
+            {/* <div className="border-t border-gray-100 pt-5">
               <p className="text-center text-xs text-gray-400 mb-3">
                 {t('helpSupport.social.followUs')}
               </p>
@@ -266,7 +266,7 @@ const HelpSupportModal = ({ isOpen, onClose }) => {
                   LinkedIn
                 </button>
               </div>
-            </div>
+            </div> */}
 
             {/* Trust Badge - Minimal */}
             <div className="flex justify-center items-center gap-3 pt-2">
