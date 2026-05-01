@@ -4,6 +4,8 @@ import { useParams, Link } from "react-router-dom";
 import MainLayout from "../../../layouts/MainLayout";
 import api from "../../../api/axios";
 import { useToast } from "../../../contexts/ToastContext";
+import { useLanguage } from "../../../contexts/LanguageContext";
+import { confirmAlert, passwordResetPrompt } from '../../../utils/sweetAlertHelper';
 import { 
   ArrowLeft, 
   Mail, 
@@ -63,6 +65,7 @@ const SkeletonInfoItem = () => (
 const UserDetails = () => {
   const { id } = useParams();
   const { showToast } = useToast();
+  const { t } = useLanguage();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -137,36 +140,47 @@ const UserDetails = () => {
   };
 
   const handleResetPassword = async () => {
-    const newPassword = prompt(`Enter new password for ${user?.name} (min 8 characters):`);
-    if (newPassword && newPassword.length >= 8) {
-      const confirmPassword = prompt('Confirm new password:');
-      if (newPassword === confirmPassword) {
-        try {
-          await api.post(`/admin/users/${id}/reset-password`, {
-            password: newPassword,
-            password_confirmation: confirmPassword
-          });
-          showToast('Password reset successfully', 'success');
-        } catch (error) {
-          showToast('Error resetting password', 'error');
-        }
-      } else {
-        showToast('Passwords do not match', 'error');
+    const result = await passwordResetPrompt(user?.name, {
+      title: t('alerts.resetPassword'),
+      text: t('alerts.enterNewPassword'),
+      inputPlaceholder: t('alerts.confirmNewPassword'),
+      nextButton: t('alerts.next'),
+      cancelButton: t('common.cancel'),
+      passwordRequired: t('alerts.passwordRequired'),
+      passwordMinLength: t('alerts.passwordMinLength'),
+      confirmTitle: t('alerts.confirmNewPassword'),
+      confirmText: t('alerts.reenterPassword'),
+      confirmPlaceholder: t('alerts.confirmNewPassword'),
+      resetButton: t('alerts.resetPassword'),
+      passwordMismatch: t('alerts.passwordMismatch'),
+      pleaseConfirm: t('alerts.pleaseConfirm'),
+    });
+    if (result) {
+      try {
+        await api.post(`/admin/users/${id}/reset-password`, result);
+        showToast(t('alerts.passwordChangeSuccess'), 'success');
+      } catch (error) {
+        showToast(t('alerts.error'), 'error');
       }
-    } else if (newPassword) {
-      showToast('Password must be at least 8 characters', 'error');
     }
   };
 
   const handleToggleStatus = async () => {
-    const action = user?.is_active ? 'deactivate' : 'activate';
-    if (window.confirm(`${action.charAt(0).toUpperCase() + action.slice(1)} "${user?.name}"?`)) {
+    const actionKey = user?.is_active ? 'deactivate' : 'activate';
+    const confirmed = await confirmAlert({
+      title: t(`alerts.${actionKey}Confirm`, { name: user?.name }),
+      text: '',
+      icon: 'question',
+      confirmButtonText: t(`alerts.${actionKey}`),
+      cancelButtonText: t('common.cancel'),
+    });
+    if (confirmed) {
       try {
         await api.patch(`/admin/users/${id}/toggle-status`);
         await fetchUser();
-        showToast(`${user?.name} ${action}d successfully`, 'success');
+        showToast(t(`alerts.${actionKey}Success`, { name: user?.name }) || `${user?.name} ${actionKey}d successfully`, 'success');
       } catch (error) {
-        showToast(`Error ${action}ing user`, 'error');
+        showToast(t(`alerts.${actionKey}Error`) || `Error ${actionKey}ing user`, 'error');
       }
     }
   };

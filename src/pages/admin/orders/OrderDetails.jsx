@@ -4,6 +4,8 @@ import { useParams, Link } from "react-router-dom";
 import MainLayout from "../../../layouts/MainLayout";
 import api from "../../../api/axios";
 import { useToast } from "../../../contexts/ToastContext";
+import { useLanguage } from "../../../contexts/LanguageContext";
+import { confirmAlert } from '../../../utils/sweetAlertHelper';
 import { 
   ArrowLeft, 
   ShoppingBag, 
@@ -61,6 +63,7 @@ const SkeletonOrderItem = () => (
 const OrderDetails = () => {
   const { id } = useParams();
   const { showToast } = useToast();
+  const { t } = useLanguage();
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
@@ -101,7 +104,14 @@ const OrderDetails = () => {
       return;
     }
     
-    if (window.confirm(`Change order status to "${selectedStatus}"?`)) {
+    const confirmed = await confirmAlert({
+      title: t('alerts.statusUpdateConfirm', { status: selectedStatus }),
+      text: '',
+      icon: 'question',
+      confirmButtonText: t('common.save'),
+      cancelButtonText: t('common.cancel'),
+    });
+    if (confirmed) {
       setUpdating(true);
       try {
         await api.patch(`/admin/orders/${id}/status`, { status: selectedStatus });

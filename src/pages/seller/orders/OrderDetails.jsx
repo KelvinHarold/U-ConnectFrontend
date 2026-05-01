@@ -5,6 +5,7 @@ import { useParams, Link } from "react-router-dom";
 import MainLayout from "../../../layouts/MainLayout";
 import api from "../../../api/axios";
 import { useToast } from "../../../contexts/ToastContext";
+import { confirmAlert } from '../../../utils/sweetAlertHelper';
 import { useLanguage } from "../../../contexts/LanguageContext";
 import { 
   ArrowLeft, 
@@ -93,7 +94,14 @@ const OrderDetails = () => {
       return;
     }
     
-    if (window.confirm(t('seller.orderDetails.confirmStatusChange', { status: selectedStatus.replace('_', ' ').toUpperCase() }))) {
+    const confirmed = await confirmAlert({
+      title: t('seller.orderDetails.confirmStatusChange', { status: selectedStatus.replace('_', ' ').toUpperCase() }),
+      text: '',
+      icon: 'question',
+      confirmButtonText: t('seller.orderDetails.yesUpdate'),
+      cancelButtonText: t('common.cancel'),
+    });
+    if (confirmed) {
       setUpdating(true);
       try {
         await api.patch(`/seller/orders/${id}/status`, { status: selectedStatus });

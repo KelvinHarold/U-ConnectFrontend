@@ -45,6 +45,7 @@ import { sellerOutOfStockProductsTranslations } from './sellers/sellerOutOfStock
 
 export const translations = {
   en: {
+    ...commonTranslations.en,
     common: commonTranslations.en,
     header: headerTranslations.en,
     footer: footerTranslations.en,
@@ -91,6 +92,7 @@ export const translations = {
   },
 
   sw: {
+    ...commonTranslations.sw,
     common: commonTranslations.sw,
     header: headerTranslations.sw,
     footer: footerTranslations.sw,

@@ -4,6 +4,7 @@ import { NavLink, useLocation } from "react-router-dom";
 import { AuthContext } from "../contexts/AuthContext";
 import { CartContext } from "../contexts/CartContext";
 import { useLanguage } from "../contexts/LanguageContext";
+import { confirmAlert } from "../utils/sweetAlertHelper";
 import {
   LayoutDashboard,
   Users,
@@ -150,8 +151,15 @@ const Sidebar = ({ isMobile, closeSidebar }) => {
     }
   };
 
-  const handleLogout = () => {
-    if (window.confirm(t('sidebar.logoutConfirm'))) {
+  const handleLogout = async () => {
+    const confirmed = await confirmAlert({
+      title: t('sidebar.logoutConfirm'),
+      text: '',
+      icon: 'question',
+      confirmButtonText: t('sidebar.logout'),
+      cancelButtonText: t('common.cancel'),
+    });
+    if (confirmed) {
       logout();
     }
   };

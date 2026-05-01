@@ -49,7 +49,14 @@ export const cartTranslations = {
     whatsappDescription: "Seller will be notified via WhatsApp about your order",
     placeOrder: "Place Order",
     cancel: "Cancel",
+    yes: "Yes",
     processing: "Processing...",
+    reviewOrder: "Review and confirm your order",
+    itemsCount: "{count} items",
+    moreItemsCount: "+{count} more items",
+    optional: "(Optional)",
+    emailNotificationTitle: "Email Notification",
+    emailNotificationDesc: "Seller receives order details via email",
     
     // Stock Messages
     onlyXItemsAvailable: "Only {count} items available in stock",
@@ -131,7 +138,14 @@ export const cartTranslations = {
     whatsappDescription: "Muuzaji ataarifiwa kupitia WhatsApp kuhusu agizo lako",
     placeOrder: "Weka Agizo",
     cancel: "Ghairi",
+    yes: "Ndiyo",
     processing: "Inachakata...",
+    reviewOrder: "Kagua na uthibitishe agizo lako",
+    itemsCount: "bidhaa {count}",
+    moreItemsCount: "+bidhaa {count} zaidi",
+    optional: "(Sio lazima)",
+    emailNotificationTitle: "Arifa ya Barua Pepe",
+    emailNotificationDesc: "Muuzaji atapokea maelezo ya agizo kupitia barua pepe",
     
     // Stock Messages
     onlyXItemsAvailable: "Bidhaa {count} tu zinapatikana kwenye hifadhi",

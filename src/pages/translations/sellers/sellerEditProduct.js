@@ -63,6 +63,7 @@ export const sellerEditProductTranslations = {
     imageRemoved: "Image removed successfully",
     errorRemovingImage: "Error removing image",
     confirmRemoveImage: "Remove this image?",
+    yesRemove: "Yes, remove",
     enterQuantityFirst: "Enter quantity",
     
     // Common
@@ -131,6 +132,7 @@ export const sellerEditProductTranslations = {
     imageRemoved: "Picha imeondolewa kikamilifu",
     errorRemovingImage: "Hitilafu katika kuondoa picha",
     confirmRemoveImage: "Ondoa picha hii?",
+    yesRemove: "Ndiyo, ondoa",
     enterQuantityFirst: "Weka kiasi",
     
     // Common

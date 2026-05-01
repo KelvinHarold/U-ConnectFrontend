@@ -30,6 +30,8 @@ export const sellerBulkStockTranslations = {
     // Buttons
     updateButton: "Update {count} product{count !== 1 ? 's' : ''}",
     updating: "Updating {count} product(s)...",
+    yesUpdate: "Yes, update",
+    cancel: "Cancel",
     
     // Messages
     noChanges: "No changes to update",
@@ -79,6 +81,8 @@ export const sellerBulkStockTranslations = {
     // Buttons
     updateButton: "Sasisha bidhaa {count}",
     updating: "Inasasisha bidhaa {count}...",
+    yesUpdate: "Ndiyo, sasisha",
+    cancel: "Ghairi",
     
     // Messages
     noChanges: "Hakuna mabadiliko ya kusasisha",

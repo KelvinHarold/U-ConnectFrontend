@@ -277,16 +277,27 @@ const LandingPage = () => {
   };
 
   const handleAddToCart = async (productId, quantity = 1) => {
-    setAddingToCart(prev => ({ ...prev, [productId]: true }));
+    console.log(`Attempting to add product ${productId} to cart (quantity: ${quantity})`);
     try {
+      setAddingToCart(prev => ({ ...prev, [productId]: true }));
+      
       const result = await addToCartWithAuth(productId, quantity);
+      console.log("Cart operation result:", result);
+      
       if (result.requiresLogin) {
         showToast(t('landing.toast.pleaseLogin'), "info");
         setTimeout(() => navigate("/login"), 1500);
       } else if (result.success) {
         showToast(t('landing.toast.addedToCart'), "success");
+      } else {
+        // If it failed due to role restriction or other error
+        const errorMessage = result.error === "role_restricted" 
+          ? "Only buyers can use the cart." 
+          : t('landing.toast.failedToAdd');
+        showToast(errorMessage, "error");
       }
-    } catch (e) {
+    } catch (err) {
+      console.error("Unexpected error in handleAddToCart:", err);
       showToast(t('landing.toast.failedToAdd'), "error");
     } finally {
       setAddingToCart(prev => ({ ...prev, [productId]: false }));
@@ -295,18 +306,31 @@ const LandingPage = () => {
 
   const handleAddFromModal = async () => {
     if (!selectedProduct) return;
+    const productId = selectedProduct.id;
+    const productName = selectedProduct.name.substring(0, 30) + (selectedProduct.name.length > 30 ? '...' : '');
+    
+    console.log(`Modal: Attempting to add product ${selectedProduct.name} (ID: ${productId}) to cart, quantity: ${modalQuantity}`);
     setAddingFromModal(true);
+    
     try {
-      const result = await addToCartWithAuth(selectedProduct.id, modalQuantity);
+      const result = await addToCartWithAuth(productId, modalQuantity);
+      console.log("Modal cart operation result:", result);
+      
       if (result.requiresLogin) {
         showToast(t('landing.toast.pleaseLogin'), "info");
         setTimeout(() => { navigate("/login"); closeModal(); }, 1500);
       } else if (result.success) {
-        const productName = selectedProduct.name.substring(0, 30) + (selectedProduct.name.length > 30 ? '...' : '');
         showToast(t('landing.toast.addedToCartWithQuantity', { quantity: modalQuantity, product: productName }), "success");
         closeModal();
+      } else {
+        // If it failed due to role restriction or other error
+        const errorMessage = result.error === "role_restricted" 
+          ? "Only buyers can use the cart." 
+          : t('landing.toast.failedToAdd');
+        showToast(errorMessage, "error");
       }
-    } catch (e) {
+    } catch (err) {
+      console.error("Unexpected error in handleAddFromModal:", err);
       showToast(t('landing.toast.failedToAdd'), "error");
     } finally {
       setAddingFromModal(false);
@@ -1208,7 +1232,7 @@ const LandingPage = () => {
               { title: t('landing.footer.contact'), links: [
                 {label: 'support@u-connect.co.tz', icon: <FiMail className="w-3 h-3" />},
                 {label: '+255 749 022 773', icon: <FiPhone className="w-3 h-3" />},
-                {label: 'Dodoma', icon: <FiMapPin className="w-3 h-3" />},
+                {label: 'Dodoma, Tanzania', icon: <FiMapPin className="w-3 h-3" />},
               ]},
             ].map((col, i) => (
               <div key={i}>

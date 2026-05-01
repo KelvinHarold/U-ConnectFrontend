@@ -5,6 +5,7 @@ import MainLayout from "../../../layouts/MainLayout";
 import InactiveSellerPopup from "../../../components/InactiveSellerPopup";
 import api from "../../../api/axios";
 import { useToast } from "../../../contexts/ToastContext";
+import { confirmAlert } from '../../../utils/sweetAlertHelper';
 import { useCart } from "../../../contexts/CartContext";
 import { useLanguage } from "../../../contexts/LanguageContext";
 import { 
@@ -184,7 +185,15 @@ const Cart = () => {
   };
 
   const removeItem = async (cartId, productName) => {
-    if (window.confirm(t('buyer.cart.removeItem', { product: productName }))) {
+    const confirmed = await confirmAlert({
+      title: t('buyer.cart.removeItem', { product: productName }),
+      text: '',
+      icon: 'warning',
+      confirmButtonText: t('buyer.cart.yes'),
+      cancelButtonText: t('buyer.cart.cancel'),
+      dangerMode: true,
+    });
+    if (confirmed) {
       setUpdatingItem(cartId);
       try {
         await api.delete(`/buyer/cart/${cartId}`);
@@ -201,7 +210,15 @@ const Cart = () => {
   };
 
   const clearCart = async () => {
-    if (window.confirm(t('buyer.cart.clearCartConfirm'))) {
+    const confirmed = await confirmAlert({
+      title: t('buyer.cart.clearCartConfirm'),
+      text: '',
+      icon: 'warning',
+      confirmButtonText: t('buyer.cart.yes'),
+      cancelButtonText: t('buyer.cart.cancel'),
+      dangerMode: true,
+    });
+    if (confirmed) {
       try {
         await api.delete('/buyer/cart/clear/all');
         await fetchCart();
@@ -594,7 +611,7 @@ const Cart = () => {
           </div>
           <div className="flex-1">
             <h3 className="text-lg font-semibold text-white">{t('buyer.cart.completeCheckout')}</h3>
-            <p className="text-white/60 text-xs mt-0.5">Review and confirm your order</p>
+            <p className="text-white/60 text-xs mt-0.5">{t('buyer.cart.reviewOrder')}</p>
           </div>
           <button 
             onClick={() => setShowCheckoutModal(false)}
@@ -612,7 +629,7 @@ const Cart = () => {
           <div className="flex items-center gap-2 mb-3">
             <Package className="w-4 h-4 text-[#5C352C]" />
             <span className="text-sm font-semibold text-gray-900">{t('buyer.cart.itemsInOrder')}</span>
-            <span className="text-xs text-gray-400 ml-auto">{cart.length} items</span>
+            <span className="text-xs text-gray-400 ml-auto">{t('buyer.cart.itemsCount', { count: cart.length })}</span>
           </div>
           <div className="space-y-2 max-h-48 overflow-y-auto">
             {cart.slice(0, 5).map((item) => (
@@ -625,7 +642,7 @@ const Cart = () => {
               </div>
             ))}
             {cart.length > 5 && (
-              <p className="text-xs text-gray-400 pt-1">+{cart.length - 5} more items</p>
+              <p className="text-xs text-gray-400 pt-1">{t('buyer.cart.moreItemsCount', { count: cart.length - 5 })}</p>
             )}
           </div>
           <div className="border-t border-gray-200 mt-3 pt-3 flex justify-between">
@@ -670,7 +687,7 @@ const Cart = () => {
             <div className="flex items-center gap-2">
               <Clock className="w-4 h-4 text-gray-400" />
               <span>{t('buyer.cart.orderNotes')}</span>
-              <span className="text-xs text-gray-400 font-normal">(Optional)</span>
+              <span className="text-xs text-gray-400 font-normal">{t('buyer.cart.optional')}</span>
             </div>
           </label>
           <textarea
@@ -704,8 +721,8 @@ const Cart = () => {
               <Mail className="w-4 h-4 text-emerald-600" />
             </div>
             <div className="flex-1">
-              <span className="text-sm font-semibold text-emerald-800">Email Notification</span>
-              <p className="text-xs text-emerald-600 mt-0.5">Seller receives order details via email</p>
+              <span className="text-sm font-semibold text-emerald-800">{t('buyer.cart.emailNotificationTitle')}</span>
+              <p className="text-xs text-emerald-600 mt-0.5">{t('buyer.cart.emailNotificationDesc')}</p>
             </div>
           </div>
         </div>

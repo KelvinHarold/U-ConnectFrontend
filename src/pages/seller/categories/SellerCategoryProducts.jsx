@@ -5,6 +5,7 @@ import { Link, useParams } from "react-router-dom";
 import MainLayout from "../../../layouts/MainLayout";
 import api from "../../../api/axios";
 import { useToast } from "../../../contexts/ToastContext";
+import { confirmAlert } from '../../../utils/sweetAlertHelper';
 import { useLanguage } from "../../../contexts/LanguageContext";
 import { 
   Package, 
@@ -112,7 +113,15 @@ const SellerCategoryProducts = () => {
   };
 
   const handleDelete = async (productId, productName) => {
-    if (window.confirm(t('seller.categoryProducts.deleteConfirm', { name: productName }))) {
+    const confirmed = await confirmAlert({
+      title: t('seller.categoryProducts.deleteConfirm', { name: productName }),
+      text: '',
+      icon: 'warning',
+      confirmButtonText: t('seller.categoryProducts.yesDelete'),
+      cancelButtonText: t('common.cancel'),
+      dangerMode: true,
+    });
+    if (confirmed) {
       try {
         await api.delete(`/seller/products/${productId}`);
         showToast(t('seller.categoryProducts.deleteSuccess'), 'success');

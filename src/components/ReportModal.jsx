@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { X, AlertTriangle, Upload, Eye, Trash2, Loader2, CheckCircle2, ChevronRight } from 'lucide-react';
 import api from '../api/axios';
+import { useLanguage } from '../contexts/LanguageContext';
+import { errorAlert } from '../utils/sweetAlertHelper';
 
 const ReportModal = ({ 
   isOpen, 
@@ -9,6 +11,7 @@ const ReportModal = ({
   initialData = null, // { orderId, productId, userId }
   onSuccess 
 }) => {
+  const { t } = useLanguage();
   const [formData, setFormData] = useState({
     type: initialType,
     subject: '',
@@ -85,7 +88,7 @@ const ReportModal = ({
       if (err.response?.data?.errors) {
         setErrors(err.response.data.errors);
       } else {
-        alert('Failed to submit report. Please try again.');
+        errorAlert(t('alerts.submissionFailed'), t('alerts.reportSubmitError'));
       }
     } finally {
       setLoading(false);

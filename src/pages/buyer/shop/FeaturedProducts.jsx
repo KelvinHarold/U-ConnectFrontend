@@ -3,9 +3,12 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import MainLayout from "../../../layouts/MainLayout";
 import api from "../../../api/axios";
+import { useLanguage } from "../../../contexts/LanguageContext";
+import { successAlert, errorAlert } from '../../../utils/sweetAlertHelper';
 import { ShoppingCart, DollarSign, Package, Star, RefreshCw, Image as ImageIcon, Heart, Eye } from "lucide-react";
 
 const FeaturedProducts = () => {
+  const { t } = useLanguage();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -43,9 +46,9 @@ const FeaturedProducts = () => {
     setAddingToCart(prev => ({ ...prev, [productId]: true }));
     try {
       await api.post('/buyer/cart/add', { product_id: productId, quantity: 1 });
-      alert('Product added to cart!');
+      successAlert(t('alerts.addedToCart'), t('alerts.productAdded'));
     } catch (error) {
-      alert(error.response?.data?.message || 'Error adding to cart');
+      errorAlert(t('alerts.error'), error.response?.data?.message || t('alerts.cartError') || 'Error adding to cart');
     } finally {
       setAddingToCart(prev => ({ ...prev, [productId]: false }));
     }

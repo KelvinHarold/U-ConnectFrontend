@@ -2,6 +2,9 @@ import React, { useState, useEffect, useContext } from "react";
 import MainLayout from "../layouts/MainLayout";
 import api from "../api/axios";
 import { AuthContext } from "../contexts/AuthContext";
+import { useToast } from "../contexts/ToastContext";
+import { useLanguage } from "../contexts/LanguageContext";
+import { errorAlert, successAlert } from '../utils/sweetAlertHelper';
 
 import { 
   User, 
@@ -315,6 +318,7 @@ const StatsCard = ({ icon: Icon, title, value, gradient }) => (
 // ==================== MAIN COMPONENT ====================
 const Profile = () => {
   const { user: authUser, role: authRole, refreshUser } = useContext(AuthContext);
+  const { t } = useLanguage();
 
   const [user, setUser] = useState(null);
   const [role, setRole] = useState(null);
@@ -374,7 +378,7 @@ const Profile = () => {
 
     } catch (error) {
       console.error('Error fetching profile:', error);
-      alert('Failed to load profile');
+      errorAlert(t('alerts.error'), t('alerts.failedToLoadProfile') || 'Failed to load profile');
     } finally {
       setLoading(false);
     }
@@ -394,12 +398,12 @@ const Profile = () => {
 
     const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
     if (!allowedTypes.includes(file.type)) {
-      alert('Please upload a valid image file (JPEG, PNG, JPG, WEBP)');
+      errorAlert(t('alerts.invalidFile'), t('alerts.invalidImageText'));
       return;
     }
 
     if (file.size > 2 * 1024 * 1024) {
-      alert('Image size must be less than 2MB');
+      errorAlert(t('alerts.fileTooLarge'), t('alerts.fileSizeError'));
       return;
     }
 
@@ -425,7 +429,7 @@ const Profile = () => {
 
       await api.post('/profile?_method=PUT', submitData);
 
-      alert('Profile updated successfully');
+      successAlert(t('alerts.profileUpdated'), t('alerts.profileUpdateSuccess'));
       setIsEditing(false);
       fetchProfile();
       refreshUser?.();
@@ -434,7 +438,7 @@ const Profile = () => {
       if (error.response?.data?.errors) {
         setErrors(error.response.data.errors);
       } else {
-        alert(error.response?.data?.message || 'Error updating profile');
+        errorAlert(t('alerts.error'), error.response?.data?.message || t('alerts.profileUpdateError') || 'Error updating profile');
       }
     } finally {
       setUpdating(false);
@@ -446,13 +450,13 @@ const Profile = () => {
     setUpdating(true);
     try {
       await api.post('/profile/change-password', passwordData);
-      alert('Password changed successfully');
+      successAlert(t('alerts.passwordChanged'), t('alerts.passwordChangeSuccess'));
       setShowPasswordModal(false);
       setPasswordData({ current_password:'', new_password:'', new_password_confirmation:'' });
       setErrors({});
     } catch (error) {
       if (error.response?.data?.errors) setErrors(error.response.data.errors);
-      else alert(error.response?.data?.message || 'Error changing password');
+      else errorAlert(t('alerts.error'), error.response?.data?.message || t('alerts.passwordChangeError') || 'Error changing password');
     } finally { 
       setUpdating(false); 
     }

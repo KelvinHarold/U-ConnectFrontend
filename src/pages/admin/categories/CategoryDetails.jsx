@@ -4,6 +4,8 @@ import { useParams, Link } from "react-router-dom";
 import MainLayout from "../../../layouts/MainLayout";
 import api from "../../../api/axios";
 import { useToast } from "../../../contexts/ToastContext";
+import { useLanguage } from "../../../contexts/LanguageContext";
+import { confirmAlert } from '../../../utils/sweetAlertHelper';
 import { 
   ArrowLeft, 
   Folder, 
@@ -57,6 +59,7 @@ const SkeletonDetailItem = () => (
 const CategoryDetails = () => {
   const { id } = useParams();
   const { showToast } = useToast();
+  const { t } = useLanguage();
   const [category, setCategory] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -76,7 +79,7 @@ const CategoryDetails = () => {
       setImageError(false);
     } catch (error) {
       console.error("Error fetching category:", error);
-      const errorMsg = error.response?.data?.message || "Category not found";
+      const errorMsg = error.response?.data?.message || t('buyer.categories.failedToLoadCategories');
       setError(errorMsg);
       showToast(errorMsg, "error");
     } finally {
@@ -88,7 +91,7 @@ const CategoryDetails = () => {
     setRefreshing(true);
     await fetchCategory();
     setRefreshing(false);
-    showToast('Category details refreshed', 'info');
+    showToast(t('common.alerts.refreshed'), 'info');
   };
 
   const formatDateTime = (date) => {
@@ -102,10 +105,18 @@ const CategoryDetails = () => {
   };
 
   const handleDelete = async () => {
-    if (window.confirm(`Delete category "${category?.name}"? Products will be moved to uncategorized.`)) {
+    const confirmed = await confirmAlert({
+      title: t('alerts.deleteConfirm', { name: category?.name }),
+      text: t('alerts.deleteConfirmText'),
+      icon: 'warning',
+      confirmButtonText: t('common.delete'),
+      cancelButtonText: t('common.cancel'),
+      dangerMode: true,
+    });
+    if (confirmed) {
       try {
         await api.delete(`/admin/categories/${category.id}`);
-        showToast('Category deleted successfully', 'success');
+        showToast(t('alerts.deleteSuccess'), 'success');
         setTimeout(() => {
           window.location.href = '/admin/categories';
         }, 1500);
@@ -176,10 +187,10 @@ const CategoryDetails = () => {
           <div className="max-w-7xl mx-auto">
             <div className="bg-white rounded-xl border border-red-100 p-12 text-center">
               <XCircle className="w-12 h-12 text-red-400 mx-auto mb-3" />
-              <h3 className="text-base font-medium text-gray-900 mb-1">Error Loading Category</h3>
-              <p className="text-sm text-gray-500 mb-4">{error || "Category not found"}</p>
+              <h3 className="text-base font-medium text-gray-900 mb-1">{t('buyer.categories.failedToLoadCategories')}</h3>
+              <p className="text-sm text-gray-500 mb-4">{error || t('buyer.categories.failedToLoadCategories')}</p>
               <Link to="/admin/categories" className="inline-flex items-center gap-2 px-4 py-2 bg-[#5C352C] text-white rounded-lg hover:bg-[#956959] transition-colors text-sm">
-                <ArrowLeft className="w-4 h-4" /> Back to Categories
+                <ArrowLeft className="w-4 h-4" /> {t('common.back')} {t('common.to')} {t('common.categories')}
               </Link>
             </div>
           </div>
@@ -191,25 +202,25 @@ const CategoryDetails = () => {
   // Stats cards
   const statCards = [
     {
-      title: "Products Count",
+      title: t('common.products'),
       value: category.products_count || 0,
-      subValue: "Products in this category",
+      subValue: t('seller.categories.totalProducts'),
       icon: Package,
       color: "text-emerald-600",
       bg: "bg-emerald-50"
     },
     {
-      title: "Subcategories",
+      title: t('common.categories'),
       value: category.children?.length || 0,
-      subValue: "Child categories",
+      subValue: t('buyer.categories.selectCategory'),
       icon: Folder,
       color: "text-amber-600",
       bg: "bg-amber-50"
     },
     {
-      title: "Category Status",
-      value: category.is_active ? "Active" : "Inactive",
-      subValue: category.is_active ? "Visible to customers" : "Hidden from customers",
+      title: t('seller.products.status'),
+      value: category.is_active ? t('common.alerts.activate') : t('common.alerts.deactivate'),
+      subValue: category.is_active ? t('seller.products.featured') : t('seller.products.notFeatured'),
       icon: Activity,
       color: category.is_active ? "text-emerald-600" : "text-rose-600",
       bg: category.is_active ? "bg-emerald-50" : "bg-rose-50"
@@ -225,15 +236,15 @@ const CategoryDetails = () => {
           <div className="mb-6">
             <Link to="/admin/categories" className="inline-flex items-center gap-2 text-[#5C352C] hover:text-[#956959] transition-colors mb-2">
               <ChevronLeft className="w-4 h-4" />
-              <span className="text-sm">Back to Categories</span>
+              <span className="text-sm">{t('common.back')} {t('common.to')} {t('common.categories')}</span>
             </Link>
             <div className="flex items-center gap-3 mb-1">
               <div className="p-2 bg-[#5C352C]/10 rounded-xl">
                 <Folder className="w-5 h-5 text-[#5C352C]" />
               </div>
-              <h1 className="text-xl font-semibold text-gray-900">Category Details</h1>
+              <h1 className="text-xl font-semibold text-gray-900">{t('seller.categories.categoryDetails')}</h1>
             </div>
-            <p className="text-sm text-gray-500 ml-11">View and manage category information</p>
+            <p className="text-sm text-gray-500 ml-11">{t('common.view')} {t('common.and')} {t('common.manage')} {t('common.categories')}</p>
           </div>
 
           {/* Refresh Button */}
@@ -244,7 +255,7 @@ const CategoryDetails = () => {
               className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50 transition-colors text-sm"
             >
               <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
-              Refresh
+              {t('common.refresh')}
             </button>
           </div>
 
@@ -292,7 +303,7 @@ const CategoryDetails = () => {
                         : 'bg-rose-50 text-rose-700'
                     }`}>
                       {category.is_active ? <CheckCircle className="w-3 h-3" /> : <XCircle className="w-3 h-3" />}
-                      {category.is_active ? 'Active' : 'Inactive'}
+                      {category.is_active ? t('common.alerts.activate') : t('common.alerts.deactivate')}
                     </span>
                   </div>
                   <h2 className="text-2xl font-bold text-white mb-2">{category.name}</h2>
@@ -316,17 +327,17 @@ const CategoryDetails = () => {
               <div className="px-6 py-4 border-b border-gray-100">
                 <h3 className="text-base font-semibold text-gray-900 flex items-center gap-2">
                   <Folder className="w-5 h-5 text-[#5C352C]" />
-                  Category Information
+                  {t('seller.categories.categoryInformation')}
                 </h3>
               </div>
               <div className="p-6 space-y-4">
-                <DetailItem icon={Folder} label="Category Name" value={category.name} />
-                <DetailItem icon={LinkIcon} label="Slug" value={category.slug} monospace />
-                <DetailItem icon={Calendar} label="Created Date" value={formatDateTime(category.created_at)} />
-                <DetailItem icon={Clock} label="Last Updated" value={formatDateTime(category.updated_at)} />
+                <DetailItem icon={Folder} label={t('seller.categories.name')} value={category.name} />
+                <DetailItem icon={LinkIcon} label={t('seller.categories.slug')} value={category.slug} monospace />
+                <DetailItem icon={Calendar} label={t('common.announcements.publishedOn')} value={formatDateTime(category.created_at)} />
+                <DetailItem icon={Clock} label={t('common.footer.copyright').split(' ')[0]} value={formatDateTime(category.updated_at)} />
                 {category.description && (
                   <div className="pt-2 border-t border-gray-100">
-                    <p className="text-xs text-gray-500 uppercase tracking-wide mb-2">Description</p>
+                    <p className="text-xs text-gray-500 uppercase tracking-wide mb-2">{t('seller.categories.description')}</p>
                     <p className="text-gray-700 text-sm leading-relaxed">{category.description}</p>
                   </div>
                 )}
@@ -338,7 +349,7 @@ const CategoryDetails = () => {
               <div className="px-6 py-4 border-b border-gray-100">
                 <h3 className="text-base font-semibold text-gray-900 flex items-center gap-2">
                   <TrendingUp className="w-5 h-5 text-[#5C352C]" />
-                  Hierarchy Information
+                  {t('buyer.categories.selectCategory')}
                 </h3>
               </div>
               <div className="p-6 space-y-4">
@@ -348,14 +359,14 @@ const CategoryDetails = () => {
                     <Folder className="w-5 h-5 text-[#5C352C]" />
                   </div>
                   <div className="flex-1">
-                    <p className="text-xs text-gray-500 uppercase tracking-wide">Parent Category</p>
+                    <p className="text-xs text-gray-500 uppercase tracking-wide">{t('seller.categories.parent')}</p>
                     {category.parent ? (
                       <Link to={`/admin/categories/${category.parent.id}`} className="text-[#5C352C] hover:text-[#956959] text-sm inline-flex items-center gap-1">
                         {category.parent.name}
                         <ChevronRight className="w-3 h-3" />
                       </Link>
                     ) : (
-                      <p className="text-gray-700 text-sm">Top Level Category (No Parent)</p>
+                      <p className="text-gray-700 text-sm">{t('seller.categories.none')}</p>
                     )}
                   </div>
                 </div>
@@ -367,7 +378,7 @@ const CategoryDetails = () => {
                       <Package className="w-5 h-5 text-[#5C352C]" />
                     </div>
                     <div className="flex-1">
-                      <p className="text-xs text-gray-500 uppercase tracking-wide">Subcategories</p>
+                      <p className="text-xs text-gray-500 uppercase tracking-wide">{t('common.categories')}</p>
                       <div className="space-y-1 mt-2">
                         {category.children.map(child => (
                           <Link key={child.id} to={`/admin/categories/${child.id}`} className="flex items-center text-[#5C352C] hover:text-[#956959] text-sm py-0.5">
@@ -389,17 +400,17 @@ const CategoryDetails = () => {
               <div className="px-6 py-4 border-b border-gray-100">
                 <h3 className="text-base font-semibold text-gray-900 flex items-center gap-2">
                   <Package className="w-5 h-5 text-[#5C352C]" />
-                  Products in this Category ({category.products.length})
+                  {t('common.products')} {t('common.in')} {t('common.this')} {t('common.categories')} ({category.products.length})
                 </h3>
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead className="bg-gray-50 border-b border-gray-100">
                     <tr>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">Product Name</th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">Price</th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">Stock</th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">Status</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">{t('seller.products.name')}</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">{t('seller.products.price')}</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">{t('seller.products.quantity')}</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">{t('seller.products.status')}</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-100">
@@ -425,7 +436,7 @@ const CategoryDetails = () => {
                             product.is_active ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-700'
                           }`}>
                             {product.is_active ? <CheckCircle className="w-3 h-3" /> : <XCircle className="w-3 h-3" />}
-                            {product.is_active ? 'Active' : 'Inactive'}
+                            {product.is_active ? t('common.alerts.activate') : t('common.alerts.deactivate')}
                           </span>
                         </td>
                       </tr>
@@ -435,7 +446,7 @@ const CategoryDetails = () => {
               </div>
               {category.products.length > 10 && (
                 <div className="px-6 py-3 bg-gray-50 border-t border-gray-100 text-center">
-                  <p className="text-xs text-gray-500">Showing 10 of {category.products.length} products</p>
+                  <p className="text-xs text-gray-500">{t('buyer.orders.showing')} 10 {t('buyer.orders.of')} {category.products.length} {t('common.products')}</p>
                 </div>
               )}
             </div>
@@ -450,8 +461,7 @@ const CategoryDetails = () => {
                 </div>
                 <div>
                   <p className="text-sm text-blue-800">
-                    <span className="font-semibold">Note:</span> This category has no products assigned to it yet. 
-                    Products can be assigned to this category when creating or editing products.
+                    <span className="font-semibold">{t('common.alerts.error')}</span> {t('buyer.products.noProductsFound')}
                   </p>
                 </div>
               </div>
@@ -463,7 +473,7 @@ const CategoryDetails = () => {
             <Link to={`/admin/categories/${category.id}/edit`}>
               <button className="flex items-center justify-center gap-2 px-5 py-2.5 bg-[#5C352C] text-white rounded-lg hover:bg-[#956959] transition-colors font-medium text-sm">
                 <Edit className="w-4 h-4" />
-                Edit Category
+                {t('common.edit')} {t('common.categories')}
               </button>
             </Link>
             <button
@@ -471,7 +481,7 @@ const CategoryDetails = () => {
               className="flex items-center justify-center gap-2 px-5 py-2.5 bg-rose-600 text-white rounded-lg hover:bg-rose-700 transition-colors font-medium text-sm"
             >
               <Trash2 className="w-4 h-4" />
-              Delete Category
+              {t('common.delete')} {t('common.categories')}
             </button>
           </div>
         </div>

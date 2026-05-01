@@ -2,7 +2,10 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import MainLayout from '../../../layouts/MainLayout';
 import { announcementService } from '../../../services/announcementService';
+import api from '../../../api/axios';
+import { useLanguage } from '../../../contexts/LanguageContext';
 import { useToast } from '../../../contexts/ToastContext';
+import { confirmAlert } from '../../../utils/sweetAlertHelper';
 import { 
   Plus, 
   Edit, 
@@ -69,6 +72,7 @@ const SkeletonStats = () => (
 
 const AnnouncementManagement = () => {
   const { showToast } = useToast();
+  const { t } = useLanguage();
   const [announcements, setAnnouncements] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -121,13 +125,21 @@ const AnnouncementManagement = () => {
   };
 
   const handleDelete = async (id, title) => {
-    if (window.confirm(`Delete "${title}"?`)) {
+    const confirmed = await confirmAlert({
+      title: t('alerts.deleteConfirm', { name: title }),
+      text: t('alerts.deleteConfirmText'),
+      icon: 'warning',
+      confirmButtonText: t('common.delete'),
+      cancelButtonText: t('common.cancel'),
+      dangerMode: true,
+    });
+    if (confirmed) {
       try {
         await announcementService.deleteAnnouncement(id);
-        showToast('Announcement deleted successfully', 'success');
+        showToast(t('alerts.deleteSuccess', { name: title }) || 'Announcement deleted successfully', 'success');
         await fetchAnnouncements();
       } catch (error) {
-        showToast('Failed to delete announcement', 'error');
+        showToast(t('alerts.deleteError') || 'Failed to delete announcement', 'error');
       }
     }
   };

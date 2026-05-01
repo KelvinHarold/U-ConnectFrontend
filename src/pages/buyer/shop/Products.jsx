@@ -196,7 +196,7 @@ const ProductCard = React.memo(({ product, formatPrice, addToCart, addingToCart,
         ) : (
           <>
             <ShoppingCart className="w-3 h-3 sm:w-3.5 sm:h-3.5" aria-hidden="true" />
-            <span className="hidden xs:inline">{product.quantity === 0 ? t('buyer.products.outOfStock') : t('buyer.products.addToCart')}</span>
+            <span>{product.quantity === 0 ? t('buyer.products.outOfStock') : t('buyer.products.addToCart')}</span>
           </>
         )}
       </button>
@@ -308,7 +308,10 @@ const ProductListItem = React.memo(({ product, formatPrice, addToCart, addingToC
               {addingToCart[product.id] ? (
                 <div className="animate-spin rounded-full h-3 w-3 border-2 border-white border-t-transparent" aria-hidden="true"></div>
               ) : (
-                <ShoppingCart className="w-3 h-3" aria-hidden="true" />
+                <>
+                  <ShoppingCart className="w-3 h-3" aria-hidden="true" />
+                  <span>{t('buyer.products.addToCart')}</span>
+                </>
               )}
             </button>
             

@@ -3,6 +3,7 @@ export const sidebarTranslations = {
   en: {
     logout: "Logout",
     logoutConfirm: "Are you sure you want to logout?",
+    cancel: "Cancel",
     expand: "Expand",
     collapse: "Collapse",
     
@@ -56,6 +57,7 @@ export const sidebarTranslations = {
   sw: {
     logout: "Toka",
     logoutConfirm: "Una uhakika unataka kutoka?",
+    cancel: "Ghairi",
     expand: "Panua",
     collapse: "Kunja",
     

@@ -4,6 +4,7 @@ import { useNavigate, Link } from "react-router-dom";
 import MainLayout from "../../../layouts/MainLayout";
 import api from "../../../api/axios";
 import { useToast } from "../../../contexts/ToastContext";
+import { confirmAlert } from '../../../utils/sweetAlertHelper';
 import { useLanguage } from "../../../contexts/LanguageContext";
 import { 
   ArrowLeft, 
@@ -119,7 +120,14 @@ const BulkStockUpdate = () => {
       return;
     }
     
-    if (window.confirm(t('seller.bulkStock.confirmUpdate', { count: stockUpdates.length }))) {
+    const confirmed = await confirmAlert({
+      title: t('seller.bulkStock.confirmUpdate', { count: stockUpdates.length }),
+      text: '',
+      icon: 'question',
+      confirmButtonText: t('seller.bulkStock.yesUpdate'),
+      cancelButtonText: t('common.cancel'),
+    });
+    if (confirmed) {
       try {
         await api.post('/seller/inventory/bulk-update', { updates: stockUpdates });
         showToast(t('seller.bulkStock.updateSuccess', { count: stockUpdates.length }), 'success');

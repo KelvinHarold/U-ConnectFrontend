@@ -6,6 +6,7 @@ import { useLanguage } from "../../../contexts/LanguageContext";
 import MainLayout from "../../../layouts/MainLayout";
 import api from "../../../api/axios";
 import { useToast } from "../../../contexts/ToastContext";
+import { confirmAlert } from '../../../utils/sweetAlertHelper';
 import DiscountBadge from "../../../components/common/DiscountBadge";
 import {
   ArrowLeft,
@@ -166,7 +167,15 @@ const ProductDetails = () => {
   };
 
   const handleDeleteComment = async (commentId) => {
-    if (!window.confirm(t('buyer.productDetails.deleteConfirm'))) return;
+    const confirmed = await confirmAlert({
+      title: t('buyer.productDetails.deleteConfirm'),
+      text: '',
+      icon: 'warning',
+      confirmButtonText: t('buyer.productDetails.yesDelete'),
+      cancelButtonText: t('common.cancel'),
+      dangerMode: true,
+    });
+    if (!confirmed) return;
     setDeletingComment(commentId);
     try {
       await api.delete(`/products/${id}/comments/${commentId}`);
