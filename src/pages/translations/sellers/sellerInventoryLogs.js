@@ -15,6 +15,7 @@ export const sellerInventoryLogsTranslations = {
     
     // Search and Filters
     searchPlaceholder: "Search by product...",
+    searchShort: "Search...",
     filters: "Filters",
     allTypes: "All Types",
     addRestock: "Add / Restock",
@@ -70,6 +71,7 @@ export const sellerInventoryLogsTranslations = {
     
     // Search and Filters
     searchPlaceholder: "Tafuta kwa bidhaa...",
+    searchShort: "Tafuta...",
     filters: "Vichujio",
     allTypes: "Aina Zote",
     addRestock: "Ongeza / Jaza tena",

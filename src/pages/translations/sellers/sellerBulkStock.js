@@ -16,6 +16,7 @@ export const sellerBulkStockTranslations = {
     
     // Search
     searchPlaceholder: "Search products...",
+    searchShort: "Search...",
     
     // Table Headers
     product: "Product",
@@ -67,6 +68,7 @@ export const sellerBulkStockTranslations = {
     
     // Search
     searchPlaceholder: "Tafuta bidhaa...",
+    searchShort: "Tafuta...",
     
     // Table Headers
     product: "Bidhaa",

@@ -310,7 +310,7 @@ const Sidebar = ({ isMobile, closeSidebar }) => {
       </nav>
 
       {/* Logout Button */}
-      <div className="p-3 border-t border-[#5C352C]/30 bg-[#1A0F0C] sticky bottom-0">
+      {/* <div className="p-3 border-t border-[#5C352C]/30 bg-[#1A0F0C] sticky bottom-0">
         <button
           onClick={handleLogout}
           className="flex items-center gap-3 w-full px-3 py-2 rounded-lg text-[#E9B48A] hover:bg-[#5C352C]/30 hover:text-white transition-all duration-200 group"
@@ -324,7 +324,7 @@ const Sidebar = ({ isMobile, closeSidebar }) => {
             <span className="text-xs font-medium">{t('sidebar.logout')}</span>
           )}
         </button>
-      </div>
+      </div> */}
 
       <style>{`
         .custom-scrollbar::-webkit-scrollbar {

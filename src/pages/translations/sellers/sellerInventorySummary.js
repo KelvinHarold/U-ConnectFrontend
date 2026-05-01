@@ -7,6 +7,7 @@ export const sellerInventorySummaryTranslations = {
     subtitle: "Real-time overview of your inventory",
     refresh: "Refresh",
     bulkUpdate: "Bulk Update",
+    bulkUpdateShort: "Bulk",
     
     // Stats Cards
     products: "Products",
@@ -45,6 +46,7 @@ export const sellerInventorySummaryTranslations = {
     subtitle: "Muhtasari wa orodha yako kwa wakati halisi",
     refresh: "Onyesha upya",
     bulkUpdate: "Sasisha Kwa Wingi",
+    bulkUpdateShort: "Kwa Wingi",
     
     // Stats Cards
     products: "Bidhaa",
