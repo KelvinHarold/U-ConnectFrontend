@@ -4,6 +4,7 @@ import { NavLink, useLocation } from "react-router-dom";
 import { AuthContext } from "../contexts/AuthContext";
 import { CartContext } from "../contexts/CartContext";
 import { useLanguage } from "../contexts/LanguageContext";
+import { confirmAlert } from "../utils/sweetAlertHelper";
 import {
   LayoutDashboard,
   Users,
@@ -150,8 +151,15 @@ const Sidebar = ({ isMobile, closeSidebar }) => {
     }
   };
 
-  const handleLogout = () => {
-    if (window.confirm(t('sidebar.logoutConfirm'))) {
+  const handleLogout = async () => {
+    const confirmed = await confirmAlert({
+      title: t('sidebar.logoutConfirm'),
+      text: '',
+      icon: 'question',
+      confirmButtonText: t('sidebar.logout'),
+      cancelButtonText: t('common.cancel'),
+    });
+    if (confirmed) {
       logout();
     }
   };
@@ -302,7 +310,7 @@ const Sidebar = ({ isMobile, closeSidebar }) => {
       </nav>
 
       {/* Logout Button */}
-      <div className="p-3 border-t border-[#5C352C]/30 bg-[#1A0F0C] sticky bottom-0">
+      {/* <div className="p-3 border-t border-[#5C352C]/30 bg-[#1A0F0C] sticky bottom-0">
         <button
           onClick={handleLogout}
           className="flex items-center gap-3 w-full px-3 py-2 rounded-lg text-[#E9B48A] hover:bg-[#5C352C]/30 hover:text-white transition-all duration-200 group"
@@ -316,7 +324,7 @@ const Sidebar = ({ isMobile, closeSidebar }) => {
             <span className="text-xs font-medium">{t('sidebar.logout')}</span>
           )}
         </button>
-      </div>
+      </div> */}
 
       <style>{`
         .custom-scrollbar::-webkit-scrollbar {

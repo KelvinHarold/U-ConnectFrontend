@@ -9,6 +9,7 @@ export const headerTranslations = {
     subscriptions: "Subscriptions",
     logout: "Logout",
     logoutConfirm: "Are you sure you want to logout?",
+    cancel: "Cancel",
     roles: {
       admin: "Admin",
       seller: "Seller",
@@ -24,6 +25,7 @@ export const headerTranslations = {
     subscriptions: "Usajili",
     logout: "Toka",
     logoutConfirm: "Una uhakika unataka kutoka?",
+    cancel: "Ghairi",
     roles: {
       admin: "Msimamizi",
       seller: "Muuzaji",

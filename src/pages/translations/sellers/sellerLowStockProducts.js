@@ -7,6 +7,7 @@ export const sellerLowStockProductsTranslations = {
     subtitle: "Products that need restocking",
     refresh: "Refresh",
     bulkUpdate: "Bulk Update",
+    bulkUpdateShort: "Bulk",
     
     // Stats
     lowStockItems: "Low Stock Items",
@@ -16,6 +17,7 @@ export const sellerLowStockProductsTranslations = {
     
     // Search and Sort
     searchPlaceholder: "Search products...",
+    searchShort: "Search...",
     sort: "Sort",
     stockLowToHigh: "Stock: Low to High",
     stockHighToLow: "Stock: High to Low",
@@ -59,6 +61,7 @@ export const sellerLowStockProductsTranslations = {
     subtitle: "Bidhaa zinazohitaji kujazwa tena",
     refresh: "Onyesha upya",
     bulkUpdate: "Sasisha Kwa Wingi",
+    bulkUpdateShort: "Kwa Wingi",
     
     // Stats
     lowStockItems: "Bidhaa Chache",
@@ -68,6 +71,7 @@ export const sellerLowStockProductsTranslations = {
     
     // Search and Sort
     searchPlaceholder: "Tafuta bidhaa...",
+    searchShort: "Tafuta...",
     sort: "Panga",
     stockLowToHigh: "Idadi: Chini hadi Juu",
     stockHighToLow: "Idadi: Juu hadi Chini",

@@ -3,6 +3,8 @@ import React, { useState, useEffect } from "react";
 import MainLayout from "../../../layouts/MainLayout";
 import api from "../../../api/axios";
 import { useToast } from "../../../contexts/ToastContext";
+import { useLanguage } from "../../../contexts/LanguageContext";
+import { confirmAlert } from "../../../utils/sweetAlertHelper";
 import { 
   Plus, 
   Edit, 
@@ -71,6 +73,7 @@ const CategoryRowSkeleton = ({ level = 0 }) => {
 // ==================== MAIN COMPONENT ====================
 const CategoryManagement = () => {
   const { showToast } = useToast();
+  const { t } = useLanguage();
   const [categories, setCategories] = useState([]);
   const [treeView, setTreeView] = useState(true);
   const [loading, setLoading] = useState(true);
@@ -110,8 +113,8 @@ const CategoryManagement = () => {
       setCategories(treeData);
     } catch (error) {
       console.error('Error fetching categories:', error);
-      setError(error.response?.data?.message || 'Failed to load categories');
-      showToast(error.response?.data?.message || 'Failed to load categories', 'error');
+      setError(error.response?.data?.message || t('seller.categories.errorLoading'));
+      showToast(error.response?.data?.message || t('seller.categories.errorLoading'), 'error');
     } finally {
       setLoading(false);
     }
@@ -126,8 +129,8 @@ const CategoryManagement = () => {
       setTreeView(true);
     } catch (error) {
       console.error('Error fetching category tree:', error);
-      setError(error.response?.data?.message || 'Failed to load category tree');
-      showToast(error.response?.data?.message || 'Failed to load category tree', 'error');
+      setError(error.response?.data?.message || t('seller.categories.errorLoadingTree'));
+      showToast(error.response?.data?.message || t('seller.categories.errorLoadingTree'), 'error');
     } finally {
       setLoading(false);
     }
@@ -141,7 +144,7 @@ const CategoryManagement = () => {
       await fetchCategories();
     }
     setRefreshing(false);
-    showToast('Categories refreshed', 'info');
+    showToast(t('alerts.refreshed'), 'info');
   };
 
   const buildTree = (flatList, parentId = null) => {
@@ -159,34 +162,51 @@ const CategoryManagement = () => {
   };
 
   const handleDelete = async (id, name) => {
-    if (window.confirm(`Delete category "${name}"? Products will be moved to uncategorized.`)) {
+    const confirmed = await confirmAlert({
+      title: t('alerts.deleteConfirm', { name }),
+      text: t('alerts.categoryDeleteText'),
+      icon: 'warning',
+      confirmButtonText: t('common.delete'),
+      cancelButtonText: t('common.cancel'),
+      dangerMode: true,
+    });
+    if (confirmed) {
       try {
         await api.delete(`/admin/categories/${id}`);
-        showToast('Category deleted successfully', 'success');
+        showToast(t('alerts.deleteSuccess'), 'success');
         if (treeView) {
           await fetchCategoryTree();
         } else {
           await fetchCategories();
         }
       } catch (error) {
-        const errorMsg = error.response?.data?.message || 'Error deleting category';
-        showToast(errorMsg, 'error');
+        showToast(error.response?.data?.message || t('alerts.deleteError'), 'error');
       }
     }
   };
 
-  const handleToggleStatus = async (id, currentStatus) => {
+  const handleToggleStatus = async (id, currentStatus, name) => {
+    const actionKey = currentStatus ? 'deactivate' : 'activate';
+    const confirmed = await confirmAlert({
+      title: t(`alerts.${actionKey}Confirm`, { name }),
+      text: '',
+      icon: 'question',
+      confirmButtonText: t(`alerts.${actionKey}`),
+      cancelButtonText: t('common.cancel'),
+    });
+    
+    if (!confirmed) return;
+
     try {
       await api.put(`/admin/categories/${id}`, { is_active: !currentStatus });
-      showToast(`Category ${currentStatus ? 'deactivated' : 'activated'}`, 'success');
+      showToast(t(`alerts.${currentStatus ? 'deactivation' : 'activation'}Success`), 'success');
       if (treeView) {
         await fetchCategoryTree();
       } else {
         await fetchCategories();
       }
     } catch (error) {
-      const errorMsg = error.response?.data?.message || 'Error updating category status';
-      showToast(errorMsg, 'error');
+      showToast(error.response?.data?.message || t(`alerts.${currentStatus ? 'deactivation' : 'activation'}Error`), 'error');
     }
   };
 
@@ -347,7 +367,7 @@ const CategoryManagement = () => {
                       <Edit className="w-4 h-4" />
                     </button>
                     <button
-                      onClick={() => handleToggleStatus(category.id, category.is_active)}
+                      onClick={() => handleToggleStatus(category.id, category.is_active, category.name)}
                       className="p-1.5 text-gray-500 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition-colors"
                       title={category.is_active ? "Deactivate" : "Activate"}
                     >
@@ -463,7 +483,7 @@ const CategoryManagement = () => {
                     <Edit className="w-4 h-4" />
                   </button>
                   <button
-                    onClick={() => handleToggleStatus(category.id, category.is_active)}
+                    onClick={() => handleToggleStatus(category.id, category.is_active, category.name)}
                     className="p-1.5 text-gray-500 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition-colors"
                   >
                     <Power className="w-4 h-4" />
@@ -704,14 +724,14 @@ const CategoryModal = ({
     if (file) {
       const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/webp'];
       if (!allowedTypes.includes(file.type)) {
-        setErrors({ ...errors, image: 'Please upload a valid image file' });
-        showToast('Invalid image format', 'error');
+        setErrors({ ...errors, image: t('alerts.invalidImageText') });
+        showToast(t('alerts.invalidFile'), 'error');
         return;
       }
       
       if (file.size > 2 * 1024 * 1024) {
-        setErrors({ ...errors, image: 'Image size must be less than 2MB' });
-        showToast('Image size must be less than 2MB', 'error');
+        setErrors({ ...errors, image: t('alerts.fileSizeError') });
+        showToast(t('alerts.fileTooLarge'), 'error');
         return;
       }
       
@@ -760,10 +780,10 @@ const CategoryModal = ({
       if (category) {
         submitData.append('_method', 'PUT');
         await api.post(`/admin/categories/${category.id}`, submitData);
-        showToast('Category updated successfully', 'success');
+        showToast(t('alerts.updateSuccess'), 'success');
       } else {
         await api.post('/admin/categories', submitData);
-        showToast('Category created successfully', 'success');
+        showToast(t('alerts.success'), 'success');
       }
       
       onSave();
@@ -771,11 +791,11 @@ const CategoryModal = ({
       console.error('Error saving category:', error);
       if (error.response?.data?.errors) {
         setErrors(error.response.data.errors);
-        showToast('Please fix the form errors', 'error');
+        showToast(t('common.error'), 'error');
       } else if (error.response?.data?.message) {
         showToast(error.response.data.message, 'error');
       } else {
-        showToast('Error saving category', 'error');
+        showToast(t('alerts.updateError'), 'error');
       }
     } finally {
       setSaving(false);

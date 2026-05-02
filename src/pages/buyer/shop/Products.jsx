@@ -56,45 +56,10 @@ const SkeletonProductCard = () => (
   </div>
 );
 
-const SkeletonProductListItem = () => (
-  <div className="animate-pulse">
-    <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
-      <div className="flex flex-row">
-        <div className="w-24 h-24 bg-gradient-to-br from-gray-200 to-gray-300 flex-shrink-0"></div>
-        <div className="flex-1 p-3">
-          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2">
-            <div className="flex-1 space-y-2">
-              <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-              <div className="flex gap-2">
-                <div className="h-3 bg-gray-200 rounded w-10"></div>
-                <div className="h-3 bg-gray-200 rounded w-8"></div>
-                <div className="h-3 bg-gray-200 rounded w-12"></div>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="h-5 bg-gray-200 rounded w-20"></div>
-              <div className="h-8 w-12 bg-gray-200 rounded-lg"></div>
-              <div className="h-8 w-8 bg-gray-200 rounded-lg"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-);
-
 const SkeletonGridLoader = ({ count = 12 }) => (
   <div className="grid grid-cols-2 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3 sm:gap-4">
     {[...Array(count)].map((_, i) => (
       <SkeletonProductCard key={i} />
-    ))}
-  </div>
-);
-
-const SkeletonListLoader = ({ count = 6 }) => (
-  <div className="space-y-3 sm:space-y-4">
-    {[...Array(count)].map((_, i) => (
-      <SkeletonProductListItem key={i} />
     ))}
   </div>
 );
@@ -196,7 +161,7 @@ const ProductCard = React.memo(({ product, formatPrice, addToCart, addingToCart,
         ) : (
           <>
             <ShoppingCart className="w-3 h-3 sm:w-3.5 sm:h-3.5" aria-hidden="true" />
-            <span className="hidden xs:inline">{product.quantity === 0 ? t('buyer.products.outOfStock') : t('buyer.products.addToCart')}</span>
+            <span>{product.quantity === 0 ? t('buyer.products.outOfStock') : t('buyer.products.addToCart')}</span>
           </>
         )}
       </button>
@@ -205,128 +170,6 @@ const ProductCard = React.memo(({ product, formatPrice, addToCart, addingToCart,
 ));
 
 ProductCard.displayName = 'ProductCard';
-
-// ==================== PRODUCT LIST ITEM COMPONENT ====================
-const ProductListItem = React.memo(({ product, formatPrice, addToCart, addingToCart, handleImageError, imageErrors, t }) => (
-  <div className="group bg-white rounded-xl shadow-lg border-2 border-gray-100 overflow-hidden hover:shadow-2xl transition-all duration-300 hover:border-[#5C352C]/20">
-    <div className="flex flex-row">
-      <Link 
-        to={`/buyer/shop/products/${product.id}`} 
-        className="w-20 sm:w-24 h-20 sm:h-24 flex-shrink-0 focus:outline-none focus:ring-2 focus:ring-[#5C352C] focus:ring-offset-2"
-        aria-label={`${t('buyer.products.viewDetails')} ${product.name}`}
-      >
-        <div className="relative w-full h-full bg-gradient-to-br from-gray-50 to-gray-100 overflow-hidden">
-          {product.image && !imageErrors[product.id] ? (
-            <img 
-              src={product.image} 
-              alt={product.name} 
-              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-              onError={() => handleImageError(product.id)}
-              loading="lazy"
-            />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center bg-gray-100">
-              <ImageIcon className="w-6 h-6 sm:w-8 sm:h-8 text-gray-300" aria-hidden="true" />
-            </div>
-          )}
-          
-          {product.quantity === 0 && (
-            <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
-              <span className="px-1.5 py-0.5 text-[8px] sm:text-[9px] font-bold rounded-full bg-gray-900 text-white">
-                {t('buyer.products.outOfStock')}
-              </span>
-            </div>
-          )}
-        </div>
-      </Link>
-      
-      <div className="flex-1 p-2 sm:p-3">
-        <div className="flex flex-col xs:flex-row xs:justify-between xs:items-start gap-2 sm:gap-3">
-          <div className="flex-1 min-w-0">
-            <Link 
-              to={`/buyer/shop/products/${product.id}`}
-              className="focus:outline-none focus:ring-2 focus:ring-[#5C352C] focus:ring-offset-2 rounded"
-            >
-              <h3 className="font-bold text-gray-900 text-xs sm:text-sm hover:text-[#5C352C] transition-colors line-clamp-1">
-                {product.name}
-              </h3>
-            </Link>
-            
-            <div className="flex flex-wrap items-center gap-1 sm:gap-2 mt-1 sm:mt-1.5">
-              <div className="flex items-center gap-0.5 bg-amber-50 px-1 sm:px-1.5 py-0.5 rounded-lg">
-                <Star className="w-2 h-2 sm:w-2.5 sm:h-2.5 fill-amber-400 text-amber-400" aria-hidden="true" />
-                <span className="text-[8px] sm:text-[10px] font-bold text-amber-700">{product.average_rating ? product.average_rating.toFixed(1) : '5.0'}</span>
-              </div>
-              <span className="text-[8px] sm:text-[9px] text-gray-400" aria-hidden="true">•</span>
-              <span className="text-[8px] sm:text-[10px] text-gray-500 font-medium">{product.sales_count || 0} {t('buyer.products.sold')}</span>
-              <span className="text-[8px] sm:text-[9px] text-gray-400 hidden sm:inline" aria-hidden="true">•</span>
-              <div className="flex items-center gap-1 w-full xs:w-auto">
-                <Shield className="w-2 h-2 sm:w-2.5 sm:h-2.5 text-emerald-500 flex-shrink-0" aria-hidden="true" />
-                <span className="text-[8px] sm:text-[9px] text-gray-500 truncate max-w-[100px] xs:max-w-none">{t('buyer.products.by')} {product.seller?.name?.split(' ')[0] || t('buyer.products.seller')}</span>
-              </div>
-            </div>
-            
-            <div className="hidden sm:flex gap-2 mt-1.5 sm:mt-2">
-              {product.delivery_free && (
-                <span className="text-[8px] sm:text-[9px] font-medium text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded-full flex items-center gap-0.5">
-                  <Truck className="w-2 h-2 sm:w-2.5 sm:h-2.5" aria-hidden="true" />
-                  {t('buyer.products.freeDelivery')}
-                </span>
-              )}
-              {product.quantity > 50 && (
-                <span className="text-[8px] sm:text-[9px] font-medium text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded-full flex items-center gap-0.5">
-                  <Zap className="w-2 h-2 sm:w-2.5 sm:h-2.5" aria-hidden="true" />
-                  {t('buyer.products.inStock')}
-                </span>
-              )}
-            </div>
-          </div>
-          
-          <div className="flex items-center gap-1 sm:gap-2 justify-between xs:justify-end w-full xs:w-auto">
-            <div className="text-left xs:text-right">
-              <span className="font-bold text-[#5C352C] text-sm sm:text-base">
-                {formatPrice(product.discount_percentage > 0 ? product.discounted_price : product.price)}
-              </span>
-              {product.discount_percentage > 0 && (
-                <div className="flex items-center gap-1 mt-0.5">
-                  <span className="text-[8px] sm:text-[10px] text-gray-400 line-through">{formatPrice(product.price)}</span>
-                  <span className="text-[8px] sm:text-[10px] font-bold text-rose-500">-{product.discount_percentage}%</span>
-                </div>
-              )}
-            </div>
-            
-            <button
-              onClick={() => addToCart(product.id)}
-              disabled={product.quantity === 0 || addingToCart[product.id]}
-              className={`px-2 sm:px-3 py-1 sm:py-1.5 rounded-xl transition-all flex items-center justify-center gap-1 text-[10px] sm:text-xs font-bold focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#5C352C] ${
-                product.quantity === 0 
-                  ? 'bg-gray-100 cursor-not-allowed text-gray-400' 
-                  : 'bg-gradient-to-r from-[#5C352C] to-[#8B5E4F] text-white hover:shadow-lg'
-              }`}
-              aria-label={product.quantity === 0 ? t('buyer.products.outOfStock') : `${t('buyer.products.addToCart')} ${product.name}`}
-            >
-              {addingToCart[product.id] ? (
-                <div className="animate-spin rounded-full h-3 w-3 border-2 border-white border-t-transparent" aria-hidden="true"></div>
-              ) : (
-                <ShoppingCart className="w-3 h-3" aria-hidden="true" />
-              )}
-            </button>
-            
-            <Link
-              to={`/buyer/shop/products/${product.id}`}
-              className="p-1.5 sm:p-2 rounded-xl border-2 border-gray-200 hover:border-[#5C352C] hover:bg-[#5C352C]/5 transition-all focus:outline-none focus:ring-2 focus:ring-[#5C352C] focus:ring-offset-2"
-              aria-label={`${t('buyer.products.viewDetails')} ${product.name}`}
-            >
-              <Eye className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-gray-600" aria-hidden="true" />
-            </Link>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-));
-
-ProductListItem.displayName = 'ProductListItem';
 
 // ==================== MAIN PRODUCTS COMPONENT ====================
 const Products = () => {
@@ -337,7 +180,6 @@ const Products = () => {
   const [loadingMore, setLoadingMore] = useState(false);
   const [categories, setCategories] = useState([]);
   const [showFilters, setShowFilters] = useState(false);
-  const [viewMode, setViewMode] = useState("grid");
   const [isMobile, setIsMobile] = useState(false);
   const [isSmallMobile, setIsSmallMobile] = useState(false);
   const [pagination, setPagination] = useState({
@@ -624,29 +466,6 @@ const Products = () => {
                     ))}
                   </select>
                 </div>
-                
-                <div className="border-2 border-gray-200 rounded-lg sm:rounded-xl overflow-hidden flex bg-gray-50">
-                  <button
-                    type="button"
-                    onClick={() => setViewMode("grid")}
-                    className={`p-2 sm:p-2.5 px-3 sm:px-4 transition-all focus:outline-none focus:ring-2 focus:ring-[#5C352C] focus:ring-offset-2 ${
-                      viewMode === "grid" ? "bg-gradient-to-r from-[#5C352C] to-[#8B5E4F] text-white" : "text-gray-600 hover:bg-gray-100"
-                    }`}
-                    aria-label="Grid view"
-                  >
-                    <Grid className="w-3.5 h-3.5 sm:w-4 sm:h-4" aria-hidden="true" />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setViewMode("list")}
-                    className={`p-2 sm:p-2.5 px-3 sm:px-4 transition-all focus:outline-none focus:ring-2 focus:ring-[#5C352C] focus:ring-offset-2 ${
-                      viewMode === "list" ? "bg-gradient-to-r from-[#5C352C] to-[#8B5E4F] text-white" : "text-gray-600 hover:bg-gray-100"
-                    }`}
-                    aria-label="List view"
-                  >
-                    <List className="w-3.5 h-3.5 sm:w-4 sm:h-4" aria-hidden="true" />
-                  </button>
-                </div>
               </div>
             </div>
 
@@ -757,9 +576,9 @@ const Products = () => {
             </div>
           </div>
 
-          {/* Products Display - Responsive Grid */}
+          {/* Products Display - Grid Only */}
           {loading ? (
-            viewMode === "grid" ? <SkeletonGridLoader count={isSmallMobile ? 8 : isMobile ? 8 : 12} /> : <SkeletonListLoader count={isMobile ? 4 : 6} />
+            <SkeletonGridLoader count={isSmallMobile ? 8 : isMobile ? 8 : 12} />
           ) : error ? (
             <div className="bg-rose-50 border-2 border-rose-200 rounded-xl sm:rounded-2xl p-6 sm:p-10 text-center shadow-lg">
               <AlertTriangle className="w-12 h-12 sm:w-16 sm:h-16 text-rose-500 mx-auto mb-3 sm:mb-4" />
@@ -788,54 +607,29 @@ const Products = () => {
             </div>
           ) : (
             <>
-              {viewMode === "grid" ? (
-                <div className={`grid ${getGridColumns()} gap-2 sm:gap-3 md:gap-4`}>
-                  {products.map((product) => (
-                    <ProductCard 
-                      key={product.id}
-                      product={product}
-                      formatPrice={formatPrice}
-                      addToCart={addToCart}
-                      addingToCart={addingToCart}
-                      handleImageError={handleImageError}
-                      imageErrors={imageErrors}
-                      t={t}
-                    />
-                  ))}
-                </div>
-              ) : (
-                <div className="space-y-2 sm:space-y-3 md:space-y-4">
-                  {products.map((product) => (
-                    <ProductListItem 
-                      key={product.id}
-                      product={product}
-                      formatPrice={formatPrice}
-                      addToCart={addToCart}
-                      addingToCart={addingToCart}
-                      handleImageError={handleImageError}
-                      imageErrors={imageErrors}
-                      t={t}
-                    />
-                  ))}
-                </div>
-              )}
+              <div className={`grid ${getGridColumns()} gap-2 sm:gap-3 md:gap-4`}>
+                {products.map((product) => (
+                  <ProductCard 
+                    key={product.id}
+                    product={product}
+                    formatPrice={formatPrice}
+                    addToCart={addToCart}
+                    addingToCart={addingToCart}
+                    handleImageError={handleImageError}
+                    imageErrors={imageErrors}
+                    t={t}
+                  />
+                ))}
+              </div>
               
               {/* Loading More Indicator */}
               {loadingMore && (
                 <div className="mt-4 sm:mt-6">
-                  {viewMode === "grid" ? (
-                    <div className={`grid ${getGridColumns()} gap-2 sm:gap-3 md:gap-4`}>
-                      {[...Array(isSmallMobile ? 4 : 6)].map((_, i) => (
-                        <SkeletonProductCard key={`more-${i}`} />
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="space-y-2 sm:space-y-3">
-                      {[...Array(2)].map((_, i) => (
-                        <SkeletonProductListItem key={`more-${i}`} />
-                      ))}
-                    </div>
-                  )}
+                  <div className={`grid ${getGridColumns()} gap-2 sm:gap-3 md:gap-4`}>
+                    {[...Array(isSmallMobile ? 4 : 6)].map((_, i) => (
+                      <SkeletonProductCard key={`more-${i}`} />
+                    ))}
+                  </div>
                 </div>
               )}
             </>

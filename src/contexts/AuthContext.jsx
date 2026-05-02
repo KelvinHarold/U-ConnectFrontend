@@ -87,22 +87,40 @@ export const AuthProvider = ({ children }) => {
   // Function to add to cart that handles auth check
   const addToCartWithAuth = async (productId, quantity = 1) => {
     const token = localStorage.getItem("auth_token");
+    const currentRole = localStorage.getItem("role");
     
+    console.log("addToCartWithAuth called:", { productId, quantity, hasToken: !!token, role: currentRole });
+
     if (!token) {
-      // Store the product to add after login
+      console.log("No token found, storing pending product for redirect after login");
       setPendingProduct({ product_id: productId, quantity });
       setRedirectAfterLogin("/buyer/cart");
       return { requiresLogin: true };
     }
+
+    // Check if the user has the buyer role
+    if (currentRole && currentRole !== "buyer") {
+      console.warn("Action restricted: User role is", currentRole, "but 'buyer' role is required for cart operations");
+      return { 
+        success: false, 
+        error: "role_restricted",
+        message: "Only buyers can add items to cart" 
+      };
+    }
     
-    // User is logged in, add to cart directly
+    // User is logged in as a buyer, add to cart directly
     try {
-      // FIXED: Use correct endpoint with buyer prefix
+      console.log("Sending request to /buyer/cart/add...");
       const response = await api.post("/buyer/cart/add", { product_id: productId, quantity });
+      console.log("Cart addition successful:", response.data);
       return { success: true, data: response.data };
     } catch (error) {
-      console.error("Failed to add to cart", error);
-      throw error;
+      console.error("API error during cart addition:", error.response?.data || error.message);
+      return { 
+        success: false, 
+        error: "api_error",
+        message: error.response?.data?.message || "Failed to add to cart"
+      };
     }
   };
 

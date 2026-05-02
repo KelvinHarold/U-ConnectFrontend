@@ -4,6 +4,7 @@ import { useParams, Link } from "react-router-dom";
 import MainLayout from "../../../layouts/MainLayout";
 import api from "../../../api/axios";
 import { useToast } from "../../../contexts/ToastContext";
+import { confirmAlert } from '../../../utils/sweetAlertHelper';
 import { useLanguage } from "../../../contexts/LanguageContext";
 import {
   ArrowLeft,
@@ -119,7 +120,15 @@ const BuyerOrderDetails = () => {
   };
 
   const cancelOrder = async () => {
-    if (window.confirm(t('buyer.orderDetails.cancelConfirm'))) {
+    const confirmed = await confirmAlert({
+      title: t('buyer.orderDetails.cancelConfirm'),
+      text: '',
+      icon: 'warning',
+      confirmButtonText: t('buyer.orderDetails.yesCancel'),
+      cancelButtonText: t('buyer.orderDetails.no'),
+      dangerMode: true,
+    });
+    if (confirmed) {
       setCancelling(true);
       try {
         await api.post(`/buyer/orders/${id}/cancel`);
@@ -134,7 +143,14 @@ const BuyerOrderDetails = () => {
   };
 
   const confirmDelivery = async () => {
-    if (window.confirm(t('buyer.orderDetails.confirmDeliveryConfirm'))) {
+    const confirmed = await confirmAlert({
+      title: t('buyer.orderDetails.confirmDeliveryConfirm'),
+      text: '',
+      icon: 'question',
+      confirmButtonText: t('buyer.orderDetails.yesConfirm'),
+      cancelButtonText: t('buyer.orderDetails.no'),
+    });
+    if (confirmed) {
       setConfirming(true);
       try {
         await api.post(`/buyer/orders/${id}/confirm-delivery`);
@@ -452,7 +468,7 @@ const BuyerOrderDetails = () => {
                   )}
 
                   {/* Contact Button */}
-                  <button
+                  {/* <button
                     onClick={() => {
                       window.location.href = `/buyer/messages?user=${order.seller?.id}`;
                     }}
@@ -460,7 +476,7 @@ const BuyerOrderDetails = () => {
                   >
                     <MessageCircle className="w-3.5 h-3.5" />
                     Contact Seller
-                  </button>
+                  </button> */}
                 </div>
               </div>
 

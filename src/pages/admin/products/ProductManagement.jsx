@@ -3,6 +3,8 @@ import React, { useState, useEffect, useCallback, useRef } from "react";
 import MainLayout from "../../../layouts/MainLayout";
 import api from "../../../api/axios";
 import { useToast } from "../../../contexts/ToastContext";
+import { useLanguage } from "../../../contexts/LanguageContext";
+import { confirmAlert } from '../../../utils/sweetAlertHelper';
 import { 
   Search, 
   Edit, 
@@ -107,6 +109,7 @@ const SkeletonProductCard = () => (
 // ==================== MAIN COMPONENT ====================
 const ProductManagement = () => {
   const { showToast } = useToast();
+  const { t } = useLanguage();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -179,26 +182,41 @@ const ProductManagement = () => {
   };
 
   const handleDelete = async (id, productName) => {
-    if (window.confirm(`Delete "${productName}"? This cannot be undone.`)) {
+    const confirmed = await confirmAlert({
+      title: t('alerts.deleteConfirm', { name: productName }),
+      text: t('alerts.deleteConfirmText'),
+      icon: 'warning',
+      confirmButtonText: t('common.delete'),
+      cancelButtonText: t('common.cancel'),
+      dangerMode: true,
+    });
+    if (confirmed) {
       try {
         await api.delete(`/admin/products/${id}`);
-        showToast('Product deleted successfully', 'success');
+        showToast(t('alerts.deleteSuccess') || 'Product deleted successfully', 'success');
         await fetchProducts(pagination.current_page);
       } catch (error) {
-        showToast(error.response?.data?.message || 'Error deleting product', 'error');
+        showToast(error.response?.data?.message || t('alerts.deleteError'), 'error');
       }
     }
   };
 
   const handleToggleStatus = async (id, currentStatus, productName) => {
-    const action = currentStatus ? 'deactivate' : 'activate';
-    if (window.confirm(`${action.charAt(0).toUpperCase() + action.slice(1)} "${productName}"?`)) {
+    const actionKey = currentStatus ? 'deactivate' : 'activate';
+    const confirmed = await confirmAlert({
+      title: t(`alerts.${actionKey}Confirm`, { name: productName }),
+      text: '',
+      icon: 'question',
+      confirmButtonText: t(`alerts.${actionKey}`),
+      cancelButtonText: t('common.cancel'),
+    });
+    if (confirmed) {
       try {
         await api.put(`/admin/products/${id}`, { is_active: !currentStatus });
-        showToast(`Product ${action}d successfully`, 'success');
+        showToast(t(`alerts.${actionKey}Success`) || `Product ${actionKey}d successfully`, 'success');
         await fetchProducts(pagination.current_page);
       } catch (error) {
-        showToast(error.response?.data?.message || `Error ${action}ing product`, 'error');
+        showToast(error.response?.data?.message || t(`alerts.${actionKey}Error`), 'error');
       }
     }
   };

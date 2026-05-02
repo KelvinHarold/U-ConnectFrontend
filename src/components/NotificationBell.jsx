@@ -1,4 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useLanguage } from '../contexts/LanguageContext';
+import { confirmAlert } from '../utils/sweetAlertHelper';
 import { Bell, CheckCheck, ChevronRight, Clock, Eye, Trash2 } from 'lucide-react';
 import { useNotifications } from '../contexts/NotificationContext';
 
@@ -16,6 +18,7 @@ const shimmerStyle = `
 `;
 
 const NotificationBell = () => {
+    const { t } = useLanguage();
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef(null);
     const { 
@@ -69,7 +72,15 @@ const NotificationBell = () => {
     });
 
     const handleClearAll = async () => {
-        if (window.confirm('Delete all notifications?')) {
+        const confirmed = await confirmAlert({
+            title: t('alerts.deleteConfirm', { name: t('common.notifications') || 'notifications' }),
+            text: t('alerts.deleteConfirmText'),
+            icon: 'warning',
+            confirmButtonText: t('common.deleteAll'),
+            cancelButtonText: t('common.cancel'),
+            dangerMode: true,
+        });
+        if (confirmed) {
             await deleteAllNotifications();
         }
     };

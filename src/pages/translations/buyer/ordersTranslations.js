@@ -64,6 +64,9 @@ export const ordersTranslations = {
     // Confirmation Dialogs
     cancelConfirm: "Cancel order #{number}? This cannot be undone.",
     confirmDeliveryConfirm: "Confirm delivery for order #{number}?",
+    yesCancel: "Yes, cancel",
+    yesConfirm: "Yes, confirm",
+    no: "No",
     
     // Toast Messages
     ordersRefreshed: "Orders refreshed",
@@ -147,6 +150,9 @@ export const ordersTranslations = {
     // Confirmation Dialogs
     cancelConfirm: "Futa agizo #{number}? Hili haliwezi kutenduliwa.",
     confirmDeliveryConfirm: "Thibitisha uwasilishaji wa agizo #{number}?",
+    yesCancel: "Ndiyo, futa",
+    yesConfirm: "Ndiyo, thibitisha",
+    no: "Hapana",
     
     // Toast Messages
     ordersRefreshed: "Maagizo yamefunguliwa upya",

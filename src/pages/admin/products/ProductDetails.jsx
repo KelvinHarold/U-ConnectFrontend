@@ -4,6 +4,8 @@ import { useParams, Link } from "react-router-dom";
 import MainLayout from "../../../layouts/MainLayout";
 import api from "../../../api/axios";
 import { useToast } from "../../../contexts/ToastContext";
+import { useLanguage } from "../../../contexts/LanguageContext";
+import { confirmAlert } from '../../../utils/sweetAlertHelper';
 import { 
   ArrowLeft, 
   Package, 
@@ -62,6 +64,7 @@ const SkeletonDetailItem = () => (
 const ProductDetails = () => {
   const { id } = useParams();
   const { showToast } = useToast();
+  const { t } = useLanguage();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -81,7 +84,7 @@ const ProductDetails = () => {
       setProduct(response.data);
       setImageError(false);
     } catch (error) {
-      const errorMsg = error.response?.data?.message || "Product not found";
+      const errorMsg = error.response?.data?.message || t('common.alerts.failedToLoadProducts');
       setError(errorMsg);
       showToast(errorMsg, "error");
     } finally {
@@ -93,7 +96,7 @@ const ProductDetails = () => {
     setRefreshing(true);
     await fetchProduct();
     setRefreshing(false);
-    showToast('Product details refreshed', 'info');
+    showToast(t('common.alerts.refreshed'), 'info');
   };
 
   const formatPrice = (price) => `Tsh ${Number(price || 0).toLocaleString()}`;
@@ -101,24 +104,32 @@ const ProductDetails = () => {
   const getStockStatus = () => {
     if (!product) return null;
     if (product.quantity <= 0) {
-      return { label: 'Out of Stock', color: 'bg-rose-50 text-rose-700', icon: XCircle };
+      return { label: t('buyer.cart.outOfStock') || 'Out of Stock', color: 'bg-rose-50 text-rose-700', icon: XCircle };
     } else if (product.quantity <= (product.min_stock_alert || 5)) {
-      return { label: 'Low Stock', color: 'bg-amber-50 text-amber-700', icon: AlertTriangle };
+      return { label: t('seller.inventory.lowStock') || 'Low Stock', color: 'bg-amber-50 text-amber-700', icon: AlertTriangle };
     } else {
-      return { label: 'In Stock', color: 'bg-emerald-50 text-emerald-700', icon: CheckCircle };
+      return { label: t('buyer.cart.inStock') || 'In Stock', color: 'bg-emerald-50 text-emerald-700', icon: CheckCircle };
     }
   };
 
   const handleDelete = async () => {
-    if (window.confirm(`Delete "${product?.name}"? This cannot be undone.`)) {
+    const confirmed = await confirmAlert({
+      title: t('alerts.deleteConfirm', { name: product?.name }),
+      text: t('alerts.deleteConfirmText'),
+      icon: 'warning',
+      confirmButtonText: t('common.delete'),
+      cancelButtonText: t('common.cancel'),
+      dangerMode: true,
+    });
+    if (confirmed) {
       try {
         await api.delete(`/admin/products/${product.id}`);
-        showToast('Product deleted successfully', 'success');
+        showToast(t('alerts.deleteSuccess'), 'success');
         setTimeout(() => {
           window.location.href = '/admin/products';
         }, 1500);
       } catch (error) {
-        showToast(error.response?.data?.message || 'Error deleting product', 'error');
+        showToast(error.response?.data?.message || t('alerts.deleteError'), 'error');
       }
     }
   };
@@ -220,10 +231,10 @@ const ProductDetails = () => {
           <div className="max-w-7xl mx-auto">
             <div className="bg-white rounded-xl border border-red-100 p-12 text-center">
               <XCircle className="w-12 h-12 text-red-400 mx-auto mb-3" />
-              <h3 className="text-base font-medium text-gray-900 mb-1">Error Loading Product</h3>
-              <p className="text-sm text-gray-500 mb-4">{error || "Product not found"}</p>
+              <h3 className="text-base font-medium text-gray-900 mb-1">{t('buyer.cart.errorLoadingCart')}</h3>
+              <p className="text-sm text-gray-500 mb-4">{error || t('common.alerts.failedToLoadProducts')}</p>
               <Link to="/admin/products" className="inline-flex items-center gap-2 px-4 py-2 bg-[#5C352C] text-white rounded-lg hover:bg-[#956959] transition-colors text-sm">
-                <ArrowLeft className="w-4 h-4" /> Back to Products
+                <ArrowLeft className="w-4 h-4" /> {t('common.back')} {t('common.to')} {t('common.products')}
               </Link>
             </div>
           </div>
@@ -237,24 +248,24 @@ const ProductDetails = () => {
 
   const statCards = [
     {
-      title: "Product Price",
+      title: t('seller.products.price'),
       value: formatPrice(product.price),
       icon: DollarSign,
       color: "text-emerald-600",
       bg: "bg-emerald-50"
     },
     {
-      title: "Stock Quantity",
+      title: t('seller.products.quantity'),
       value: `${product.quantity} units`,
-      subValue: product.min_stock_alert ? `Alert at ${product.min_stock_alert}` : "No alert set",
+      subValue: product.min_stock_alert ? `${t('seller.inventory.alertAt')} ${product.min_stock_alert}` : t('seller.inventory.noAlertSet'),
       icon: ShoppingBag,
       color: "text-amber-600",
       bg: "bg-amber-50"
     },
     {
-      title: "Product Status",
-      value: product.is_active ? "Active" : "Inactive",
-      subValue: product.is_featured ? "Featured Product" : "Not Featured",
+      title: t('seller.products.status'),
+      value: product.is_active ? t('common.alerts.activate') : t('common.alerts.deactivate'),
+      subValue: product.is_featured ? t('seller.products.featured') : t('seller.products.notFeatured'),
       icon: Activity,
       color: "text-blue-600",
       bg: "bg-blue-50"
@@ -275,15 +286,15 @@ const ProductDetails = () => {
           <div className="mb-6">
             <Link to="/admin/products" className="inline-flex items-center gap-2 text-[#5C352C] hover:text-[#956959] transition-colors mb-2">
               <ChevronLeft className="w-4 h-4" />
-              <span className="text-sm">Back to Products</span>
+              <span className="text-sm">{t('common.back')} {t('common.to')} {t('common.products')}</span>
             </Link>
             <div className="flex items-center gap-3 mb-1">
               <div className="p-2 bg-[#5C352C]/10 rounded-xl">
                 <Package className="w-5 h-5 text-[#5C352C]" />
               </div>
-              <h1 className="text-xl font-semibold text-gray-900">Product Details</h1>
+              <h1 className="text-xl font-semibold text-gray-900">{t('seller.products.productDetails')}</h1>
             </div>
-            <p className="text-sm text-gray-500 ml-11">View and manage product information</p>
+            <p className="text-sm text-gray-500 ml-11">{t('common.view')} {t('common.and')} {t('common.manage')} {t('common.products')}</p>
           </div>
 
           {/* Stats Row */}
@@ -311,10 +322,10 @@ const ProductDetails = () => {
             <button
               onClick={handleRefresh}
               disabled={refreshing}
-              className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50 transition-colors text-sm"
+              className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-100 rounded-lg text-gray-600 hover:bg-gray-50 transition-colors text-sm"
             >
               <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
-              Refresh
+              {t('common.refresh')}
             </button>
           </div>
 
@@ -353,12 +364,12 @@ const ProductDetails = () => {
                       product.is_active ? 'bg-emerald-50 text-emerald-700' : 'bg-gray-50 text-gray-600'
                     }`}>
                       {product.is_active ? <CheckCircle className="w-3 h-3" /> : <XCircle className="w-3 h-3" />}
-                      {product.is_active ? 'Active' : 'Inactive'}
+                      {product.is_active ? t('common.alerts.activate') : t('common.alerts.deactivate')}
                     </span>
                     {product.is_featured && (
                       <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-50 text-yellow-700">
                         <Star className="w-3 h-3" />
-                        Featured
+                        {t('seller.products.featured')}
                       </span>
                     )}
                     <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${stockStatus.color}`}>
@@ -381,19 +392,19 @@ const ProductDetails = () => {
               <div className="px-6 py-4 border-b border-gray-100">
                 <h3 className="text-base font-semibold text-gray-900 flex items-center gap-2">
                   <Package className="w-5 h-5 text-[#5C352C]" />
-                  Product Information
+                  {t('seller.products.productInformation')}
                 </h3>
               </div>
               <div className="p-6 space-y-4">
-                <DetailItem icon={Tag} label="Product Name" value={product.name} />
-                <DetailItem icon={DollarSign} label="Price" value={formatPrice(product.price)} highlight />
-                <DetailItem icon={ShoppingBag} label="Stock Quantity" value={`${product.quantity} units`} />
+                <DetailItem icon={Tag} label={t('seller.products.name')} value={product.name} />
+                <DetailItem icon={DollarSign} label={t('seller.products.price')} value={formatPrice(product.price)} highlight />
+                <DetailItem icon={ShoppingBag} label={t('seller.products.quantity')} value={`${product.quantity} units`} />
                 {product.min_stock_alert && (
-                  <DetailItem icon={AlertTriangle} label="Min Stock Alert" value={`${product.min_stock_alert} units`} />
+                  <DetailItem icon={AlertTriangle} label={t('seller.inventory.lowStockAlert')} value={`${product.min_stock_alert} units`} />
                 )}
-                <DetailItem icon={Calendar} label="Created" value={new Date(product.created_at).toLocaleDateString()} />
-                <DetailItem icon={Clock} label="Last Updated" value={new Date(product.updated_at).toLocaleDateString()} />
-                <DetailItem icon={Info} label="Product ID" value={`#${product.id}`} />
+                <DetailItem icon={Calendar} label={t('common.announcements.publishedOn')} value={new Date(product.created_at).toLocaleDateString()} />
+                <DetailItem icon={Clock} label={t('common.footer.copyright').split(' ')[0]} value={new Date(product.updated_at).toLocaleDateString()} />
+                <DetailItem icon={Info} label={t('common.announcements.administrator')} value={`#${product.id}`} />
               </div>
             </div>
 
@@ -402,21 +413,21 @@ const ProductDetails = () => {
               <div className="px-6 py-4 border-b border-gray-100">
                 <h3 className="text-base font-semibold text-gray-900 flex items-center gap-2">
                   <Store className="w-5 h-5 text-[#5C352C]" />
-                  Seller Information
+                  {t('seller.orders.sellerInfo')}
                 </h3>
               </div>
               <div className="p-6 space-y-4">
-                <DetailItem icon={User} label="Seller Name" value={product.seller?.name || 'N/A'} />
-                <DetailItem icon={Tag} label="Category" value={product.category?.name || 'Uncategorized'} />
+                <DetailItem icon={User} label={t('common.announcements.administrator')} value={product.seller?.name || 'N/A'} />
+                <DetailItem icon={Tag} label={t('common.categories')} value={product.category?.name || 'Uncategorized'} />
                 {product.seller?.email && (
-                  <DetailItem icon={Mail} label="Seller Email" value={product.seller.email} />
+                  <DetailItem icon={Mail} label="Email" value={product.seller.email} />
                 )}
                 {product.seller?.phone && (
-                  <DetailItem icon={Phone} label="Seller Phone" value={product.seller.phone} />
+                  <DetailItem icon={Phone} label={t('buyer.orders.phone')} value={product.seller.phone} />
                 )}
                 <div className="pt-2">
                   <Link to={`/admin/users/${product.seller?.id}`} className="text-sm text-[#5C352C] hover:text-[#956959] font-medium inline-flex items-center gap-1">
-                    View Seller Profile
+                    {t('common.view')} {t('common.announcements.administrator')} {t('common.profile')}
                     <ArrowLeft className="w-3 h-3 rotate-180" />
                   </Link>
                 </div>
@@ -430,7 +441,7 @@ const ProductDetails = () => {
               <div className="px-6 py-4 border-b border-gray-100">
                 <h3 className="text-base font-semibold text-gray-900 flex items-center gap-2">
                   <Info className="w-5 h-5 text-[#5C352C]" />
-                  Product Description
+                  {t('seller.products.description')}
                 </h3>
               </div>
               <div className="p-6">
@@ -444,7 +455,7 @@ const ProductDetails = () => {
             <Link to={`/admin/products/${product.id}/edit`}>
               <button className="flex items-center justify-center gap-2 px-5 py-2.5 bg-[#5C352C] text-white rounded-lg hover:bg-[#956959] transition-colors font-medium text-sm w-full sm:w-auto">
                 <Edit className="w-4 h-4" />
-                Edit Product
+                {t('common.edit')} {t('common.products')}
               </button>
             </Link>
             <button
@@ -452,7 +463,7 @@ const ProductDetails = () => {
               className="flex items-center justify-center gap-2 px-5 py-2.5 bg-rose-600 text-white rounded-lg hover:bg-rose-700 transition-colors font-medium text-sm w-full sm:w-auto"
             >
               <Trash2 className="w-4 h-4" />
-              Delete Product
+              {t('common.delete')} {t('common.products')}
             </button>
           </div>
         </div>

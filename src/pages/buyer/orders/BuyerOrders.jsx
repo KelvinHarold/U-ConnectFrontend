@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import MainLayout from "../../../layouts/MainLayout";
 import api from "../../../api/axios";
 import { useToast } from "../../../contexts/ToastContext";
+import { confirmAlert } from "../../../utils/sweetAlertHelper";
 import { useLanguage } from "../../../contexts/LanguageContext";
 import { 
   ShoppingBag, 
@@ -143,7 +144,15 @@ const BuyerOrders = () => {
   };
 
   const cancelOrder = async (orderId, orderNumber) => {
-    if (window.confirm(t('buyer.orders.cancelConfirm', { number: orderNumber }))) {
+    const confirmed = await confirmAlert({
+      title: t('buyer.orders.cancelConfirm', { number: orderNumber }),
+      text: '',
+      icon: 'warning',
+      confirmButtonText: t('buyer.orders.yesCancel'),
+      cancelButtonText: t('buyer.orders.no'),
+      dangerMode: true,
+    });
+    if (confirmed) {
       setCancellingOrder(orderId);
       try {
         await api.post(`/buyer/orders/${orderId}/cancel`);
@@ -158,7 +167,14 @@ const BuyerOrders = () => {
   };
 
   const confirmDelivery = async (orderId, orderNumber) => {
-    if (window.confirm(t('buyer.orders.confirmDeliveryConfirm', { number: orderNumber }))) {
+    const confirmed = await confirmAlert({
+      title: t('buyer.orders.confirmDeliveryConfirm', { number: orderNumber }),
+      text: '',
+      icon: 'question',
+      confirmButtonText: t('buyer.orders.yesConfirm'),
+      cancelButtonText: t('buyer.orders.no'),
+    });
+    if (confirmed) {
       setConfirmingOrder(orderId);
       try {
         await api.post(`/buyer/orders/${orderId}/confirm-delivery`);
@@ -308,7 +324,7 @@ const BuyerOrders = () => {
           </div>
 
           {/* Stats Row - responsive grid */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4 mb-4 md:mb-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2 md:gap-4 mb-4 md:mb-6">
             <div className="bg-white rounded-xl border border-gray-100 p-3">
               <p className="text-xl md:text-2xl font-bold text-gray-900">{statusCounts.total}</p>
               <p className="text-xs text-gray-500">{t('buyer.orders.totalOrders')}</p>

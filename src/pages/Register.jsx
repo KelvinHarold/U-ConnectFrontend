@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useLanguage } from "../contexts/LanguageContext";
 import api from "../api/axios";
+import { successAlert } from '../utils/sweetAlertHelper';
 import { 
   UserIcon, 
   EnvelopeIcon, 
@@ -44,7 +45,7 @@ const Register = () => {
 
     try {
       await api.post("/register", form);
-      alert(t('register.registrationSuccess'));
+      await successAlert(t('register.registrationSuccess'));
       navigate("/login");
     } catch (err) {
       if (err.response?.status === 422) {

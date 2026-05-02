@@ -1,5 +1,6 @@
 // src/components/Header.jsx
 import React, { useContext, useState, useRef, useEffect } from "react";
+import { confirmAlert } from '../utils/sweetAlertHelper';
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { AuthContext } from "../contexts/AuthContext";
 import { useLanguage } from "../contexts/LanguageContext";
@@ -47,8 +48,15 @@ const Header = ({ toggleSidebar, isMobile }) => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const handleLogout = () => {
-    if (window.confirm(t('header.logoutConfirm'))) {
+  const handleLogout = async () => {
+    const confirmed = await confirmAlert({
+      title: t('header.logoutConfirm'),
+      text: '',
+      icon: 'question',
+      confirmButtonText: t('header.logout'),
+      cancelButtonText: t('common.cancel'),
+    });
+    if (confirmed) {
       logout();
       navigate("/");
     }
@@ -137,12 +145,12 @@ const Header = ({ toggleSidebar, isMobile }) => {
                   <Menu className="w-5 h-5" />
                 </button>
               )}
-             <div className="flex items-center gap-2">
+             {/* <div className="flex items-center gap-2">
   <img src="/U-Connect Logo.png" alt="Logo" className="w-7 h-7" />
   <span className="font-semibold text-gray-800 text-sm hidden sm:inline">
     U-Connect
   </span>
-</div>
+</div> */}
             </div>
 
             {/* Center Section - Date & Time (Desktop only) */}

@@ -5,6 +5,7 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import MainLayout from "../../../layouts/MainLayout";
 import api from "../../../api/axios";
 import { useToast } from "../../../contexts/ToastContext";
+import { confirmAlert } from '../../../utils/sweetAlertHelper';
 import { useLanguage } from "../../../contexts/LanguageContext";
 import { 
   ArrowLeft, 
@@ -154,7 +155,15 @@ const EditProduct = () => {
   };
 
   const removeCurrentImage = async () => {
-    if (window.confirm(t('seller.editProduct.confirmRemoveImage'))) {
+    const confirmed = await confirmAlert({
+      title: t('seller.editProduct.confirmRemoveImage'),
+      text: '',
+      icon: 'warning',
+      confirmButtonText: t('seller.editProduct.yesRemove'),
+      cancelButtonText: t('common.cancel'),
+      dangerMode: true,
+    });
+    if (confirmed) {
       try {
         await api.put(`/seller/products/${id}`, {
           ...formData,

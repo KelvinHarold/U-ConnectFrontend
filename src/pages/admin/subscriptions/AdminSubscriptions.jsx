@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import MainLayout from '../../../layouts/MainLayout';
 import api from '../../../api/axios';
 import { useToast } from '../../../contexts/ToastContext';
+import { useLanguage } from '../../../contexts/LanguageContext';
+import { confirmAlert } from '../../../utils/sweetAlertHelper';
 import { 
   ShieldCheck, 
   CheckCircle, 
@@ -57,6 +59,7 @@ const SettingsFormSkeleton = () => (
 
 const AdminSubscriptions = () => {
   const { showToast } = useToast();
+  const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState('requests'); // requests, all, seller-status, settings
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -138,7 +141,19 @@ const AdminSubscriptions = () => {
   };
 
   const handleAction = async (id, action) => {
-    if (!window.confirm(`${action === 'approve' ? 'Approve' : 'Reject'} this subscription request?`)) return;
+    const confirmed = await confirmAlert({
+      title: action === 'approve' 
+        ? t('alerts.approveConfirm', { name: 'this' }) || 'Approve this subscription request?'
+        : t('alerts.rejectConfirm', { name: 'this' }) || 'Reject this subscription request?',
+      text: '',
+      icon: action === 'approve' ? 'question' : 'warning',
+      confirmButtonText: action === 'approve' 
+        ? t('common.alerts.approveConfirm')
+        : t('common.alerts.rejectConfirm'),
+      cancelButtonText: t('common.cancel'),
+      dangerMode: action === 'reject',
+    });
+    if (!confirmed) return;
     
     setActionLoading(id);
     try {

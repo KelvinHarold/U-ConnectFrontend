@@ -59,7 +59,9 @@ export const sellerCategoryProductsTranslations = {
     lastPage: "Last page",
     
     // Delete Confirmation
-    deleteConfirm: `Delete "{name}"? This cannot be undone.`,
+    deleteConfirm: 'Delete "{name}"? This cannot be undone.',
+    yesDelete: "Yes, delete",
+    cancel: "Cancel",
     deleteSuccess: "Product deleted successfully",
     deleteError: "Error deleting product",
     
@@ -130,7 +132,9 @@ export const sellerCategoryProductsTranslations = {
     lastPage: "Ukurasa wa mwisho",
     
     // Delete Confirmation
-    deleteConfirm: `Futa "{name}"? Hii haiwezi kutenduliwa.`,
+    deleteConfirm: 'Futa "{name}"? Hii haiwezi kutenduliwa.',
+    yesDelete: "Ndiyo, futa",
+    cancel: "Ghairi",
     deleteSuccess: "Bidhaa imefutwa kikamilifu",
     deleteError: "Hitilafu katika kufuta bidhaa",
     

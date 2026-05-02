@@ -3,6 +3,8 @@ import React, { useState, useEffect, useCallback, useRef } from "react";
 import MainLayout from "../../../layouts/MainLayout";
 import api from "../../../api/axios";
 import { useToast } from "../../../contexts/ToastContext";
+import { useLanguage } from "../../../contexts/LanguageContext";
+import { confirmAlert, passwordResetPrompt } from '../../../utils/sweetAlertHelper';
 import { 
   Search, Edit, Trash2, Power, Key, Eye, RefreshCw, Users, 
   Filter, ChevronDown, UserCheck, UserX, Shield, 
@@ -90,6 +92,7 @@ const SkeletonUserCard = () => (
 // ==================== MAIN COMPONENT ====================
 const UserManagement = () => {
   const { showToast } = useToast();
+  const { t } = useLanguage();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -147,8 +150,8 @@ const UserManagement = () => {
       }
     } catch (error) {
       console.error('Error fetching users:', error);
-      setError(error.response?.data?.message || 'Failed to load users');
-      showToast(error.response?.data?.message || 'Failed to load users', 'error');
+      setError(error.response?.data?.message || t('common.error'));
+      showToast(error.response?.data?.message || t('common.error'), 'error');
     } finally {
       setLoading(false);
     }
@@ -158,53 +161,72 @@ const UserManagement = () => {
     setRefreshing(true);
     await fetchUsers(pagination.current_page);
     setRefreshing(false);
-    showToast('Users refreshed', 'info');
+    showToast(t('alerts.refreshed'), 'info');
   };
 
   const handleToggleStatus = async (id, currentStatus, userName) => {
-    const action = currentStatus ? 'deactivate' : 'activate';
-    if (window.confirm(`${action.charAt(0).toUpperCase() + action.slice(1)} "${userName}"?`)) {
+    const actionKey = currentStatus ? 'deactivate' : 'activate';
+    const confirmed = await confirmAlert({
+      title: t(`alerts.${actionKey}Confirm`, { name: userName }),
+      text: '',
+      icon: 'question',
+      confirmButtonText: t(`alerts.${actionKey}`),
+      cancelButtonText: t('common.cancel'),
+    });
+    if (confirmed) {
       try {
         await api.patch(`/admin/users/${id}/toggle-status`);
-        showToast(`${userName} ${action}d successfully`, 'success');
+        showToast(t(`alerts.${actionKey}Success`, { name: userName }), 'success');
         await fetchUsers(pagination.current_page);
       } catch (error) {
-        showToast(error.response?.data?.message || `Error ${action}ing user`, 'error');
+        showToast(error.response?.data?.message || t(`alerts.${actionKey}Error`), 'error');
       }
     }
   };
 
   const handleDelete = async (id, userName) => {
-    if (window.confirm(`Delete "${userName}"? This cannot be undone.`)) {
+    const confirmed = await confirmAlert({
+      title: t('alerts.deleteConfirm', { name: userName }),
+      text: t('alerts.deleteConfirmText'),
+      icon: 'warning',
+      confirmButtonText: t('common.delete'),
+      cancelButtonText: t('common.cancel'),
+      dangerMode: true,
+    });
+    if (confirmed) {
       try {
         await api.delete(`/admin/users/${id}`);
-        showToast(`${userName} deleted successfully`, 'success');
+        showToast(t('alerts.deleteSuccess', { name: userName }), 'success');
         await fetchUsers(pagination.current_page);
       } catch (error) {
-        showToast(error.response?.data?.message || 'Error deleting user', 'error');
+        showToast(error.response?.data?.message || t('alerts.deleteError'), 'error');
       }
     }
   };
 
   const handleResetPassword = async (id, userName) => {
-    const newPassword = prompt(`Enter new password for ${userName} (min 8 characters):`);
-    if (newPassword && newPassword.length >= 8) {
-      const confirmPassword = prompt('Confirm new password:');
-      if (newPassword === confirmPassword) {
-        try {
-          await api.post(`/admin/users/${id}/reset-password`, {
-            password: newPassword,
-            password_confirmation: confirmPassword
-          });
-          showToast(`Password reset for ${userName}`, 'success');
-        } catch (error) {
-          showToast('Error resetting password', 'error');
-        }
-      } else {
-        showToast('Passwords do not match', 'error');
+    const result = await passwordResetPrompt(userName, {
+      title: t('alerts.resetPassword'),
+      text: t('alerts.enterNewPassword'),
+      inputPlaceholder: t('alerts.confirmNewPassword'),
+      nextButton: t('alerts.next'),
+      cancelButton: t('common.cancel'),
+      passwordRequired: t('alerts.passwordRequired'),
+      passwordMinLength: t('alerts.passwordMinLength'),
+      confirmTitle: t('alerts.confirmNewPassword'),
+      confirmText: t('alerts.reenterPassword'),
+      confirmPlaceholder: t('alerts.confirmNewPassword'),
+      resetButton: t('alerts.resetPassword'),
+      passwordMismatch: t('alerts.passwordMismatch'),
+      pleaseConfirm: t('alerts.pleaseConfirm'),
+    });
+    if (result) {
+      try {
+        await api.post(`/admin/users/${id}/reset-password`, result);
+        showToast(t('alerts.passwordChangeSuccess'), 'success');
+      } catch (error) {
+        showToast(t('alerts.error'), 'error');
       }
-    } else if (newPassword) {
-      showToast('Password must be at least 8 characters', 'error');
     }
   };
 
@@ -277,7 +299,7 @@ const UserManagement = () => {
     setRoleFilter("all");
     setStatusFilter("all");
     setShowFilters(false);
-    showToast('Filters cleared', 'info');
+    showToast(t('common.clearFilters'), 'info');
   };
 
   const hasActiveFilters = search || roleFilter !== 'all' || statusFilter !== 'all';
