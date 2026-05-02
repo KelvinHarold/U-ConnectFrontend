@@ -189,7 +189,6 @@ const Products = () => {
   });
   
   const [search, setSearch] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("");
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
   const [sortBy, setSortBy] = useState("latest");
@@ -259,7 +258,7 @@ const Products = () => {
         clearTimeout(filterTimeoutRef.current);
       }
     };
-  }, [selectedCategory, minPrice, maxPrice, sortBy]);
+  }, [minPrice, maxPrice, sortBy]);
 
   const fetchCategories = async () => {
     try {
@@ -284,7 +283,6 @@ const Products = () => {
       const params = { 
         page,
         ...(search && { search }),
-        ...(selectedCategory && { category_id: selectedCategory }),
         ...(minPrice && { min_price: minPrice }),
         ...(maxPrice && { max_price: maxPrice }),
         ...(sortBy && { sort_by: sortBy })
@@ -298,7 +296,7 @@ const Products = () => {
         } else {
           setProducts(response.data.data);
           // Auto scroll to top on mobile when filters are applied
-          if (isMobile && (selectedCategory || minPrice || maxPrice || search)) {
+          if (isMobile && (minPrice || maxPrice || search)) {
             window.scrollTo({ top: 0, behavior: 'smooth' });
           }
         }
@@ -345,7 +343,6 @@ const Products = () => {
   };
 
   const clearFilters = () => {
-    setSelectedCategory("");
     setMinPrice("");
     setMaxPrice("");
     setSortBy("latest");
@@ -354,7 +351,7 @@ const Products = () => {
     showToast(t('buyer.products.filtersCleared'), 'info');
   };
 
-  const hasActiveFilters = selectedCategory || minPrice || maxPrice || search;
+  const hasActiveFilters = minPrice || maxPrice || search;
 
   const handleImageError = (productId) => {
     setImageErrors(prev => ({ ...prev, [productId]: true }));
@@ -494,28 +491,6 @@ const Products = () => {
                 )}
                 
                 <div className="space-y-4">
-                  <div>
-                    <label className="block text-xs sm:text-sm font-bold text-gray-700 mb-1.5 sm:mb-2">
-                      {t('buyer.products.category')}
-                    </label>
-                    <select
-                      value={selectedCategory}
-                      onChange={(e) => setSelectedCategory(e.target.value)}
-                      className="w-full px-3 sm:px-4 py-2 sm:py-2.5 border-2 border-gray-200 rounded-lg sm:rounded-xl focus:outline-none focus:border-[#5C352C] text-xs sm:text-sm bg-gray-50 font-medium"
-                    >
-                      <option value="">{t('buyer.products.allCategories')}</option>
-                      {categories && categories.length > 0 ? (
-                        categories.map(category => (
-                          <option key={category.id} value={category.id}>
-                            {category.name} ({category.products_count || 0})
-                          </option>
-                        ))
-                      ) : (
-                        <option disabled>{t('buyer.products.loadingCategories')}</option>
-                      )}
-                    </select>
-                  </div>
-                  
                   <div className="grid grid-cols-2 gap-3">
                     <div>
                       <label className="block text-xs sm:text-sm font-bold text-gray-700 mb-1.5 sm:mb-2">

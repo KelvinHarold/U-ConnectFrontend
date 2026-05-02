@@ -61,7 +61,6 @@ const SellerCategories = () => {
   const [stats, setStats] = useState({ total_categories: 0, total_products: 0 });
   const [searchTerm, setSearchTerm] = useState("");
   const [showSearch, setShowSearch] = useState(false);
-  const [viewMode, setViewMode] = useState("grid");
   
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
@@ -197,7 +196,6 @@ const SellerCategories = () => {
 
   // Get grid columns based on screen size
   const getGridColumns = () => {
-    if (viewMode === "list") return "grid-cols-1";
     if (isSmallMobile) return "grid-cols-2";
     if (isMobile) return "grid-cols-2";
     return "grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6";
@@ -285,30 +283,6 @@ const SellerCategories = () => {
                 )}
                 
                 <div className="flex gap-2">
-                  {/* View Mode Toggle - Responsive */}
-                  <div className="border-2 border-gray-200 rounded-lg sm:rounded-xl overflow-hidden flex bg-gray-50">
-                    <button
-                      onClick={() => setViewMode("grid")}
-                      className={`p-2 sm:p-2.5 px-3 sm:px-4 transition-all focus:outline-none focus:ring-2 focus:ring-[#5C352C] ${
-                        viewMode === "grid" ? "bg-gradient-to-r from-[#5C352C] to-[#8B5E4F] text-white" : "text-gray-600 hover:bg-gray-100"
-                      }`}
-                      aria-label={t('seller.categories.gridView')}
-                      aria-pressed={viewMode === "grid"}
-                    >
-                      <Grid className="w-3.5 h-3.5 sm:w-4 sm:h-4" aria-hidden="true" />
-                    </button>
-                    <button
-                      onClick={() => setViewMode("list")}
-                      className={`p-2 sm:p-2.5 px-3 sm:px-4 transition-all focus:outline-none focus:ring-2 focus:ring-[#5C352C] ${
-                        viewMode === "list" ? "bg-gradient-to-r from-[#5C352C] to-[#8B5E4F] text-white" : "text-gray-600 hover:bg-gray-100"
-                      }`}
-                      aria-label={t('seller.categories.listView')}
-                      aria-pressed={viewMode === "list"}
-                    >
-                      <List className="w-3.5 h-3.5 sm:w-4 sm:h-4" aria-hidden="true" />
-                    </button>
-                  </div>
-                  
                   <button
                     ref={refreshButtonRef}
                     onClick={refreshCategories}
@@ -516,18 +490,6 @@ const SellerCategories = () => {
                   </button>
                 </nav>
               )}
-
-              {/* Enhanced Showing results info - Responsive */}
-              <div 
-                className="mt-3 sm:mt-4 text-center text-[10px] sm:text-sm text-gray-500 bg-white px-2 sm:px-3 py-1 sm:py-2 rounded-lg inline-block mx-auto shadow-sm"
-                role="status"
-                aria-live="polite"
-              >
-                <span className="hidden xs:inline">{t('seller.categories.showing')}</span>
-                <span className="font-semibold text-[#5C352C]">{categories.length}</span> <span className="hidden xs:inline">{t('seller.categories.of')}</span>
-                <span className="font-semibold">{total}</span> <span className="hidden xs:inline">{total === 1 ? t('seller.categories.category') : t('seller.categories.categories')}</span>
-                {searchTerm && ` "${searchTerm}"`}
-              </div>
             </>
           )}
         </div>

@@ -56,7 +56,7 @@ const OrderDetails = () => {
   const [error, setError] = useState(null);
   const [selectedStatus, setSelectedStatus] = useState("");
   const [copied, setCopied] = useState(false);
-  const [whatsappLoading, setWhatsappLoading] = useState(false);
+  const [receiptLoading, setReceiptLoading] = useState(false);
   const [imageErrors, setImageErrors] = useState({});
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
 
@@ -115,20 +115,15 @@ const OrderDetails = () => {
     }
   };
 
-  const handleWhatsAppNotification = async () => {
-    setWhatsappLoading(true);
+  const handleSendReceipt = async () => {
+    setReceiptLoading(true);
     try {
-      const response = await api.post(`/seller/orders/${id}/whatsapp`);
-      if (response.data.whatsapp_urls) {
-        window.open(response.data.whatsapp_urls.app, '_blank');
-        showToast(t('seller.orderDetails.openingWhatsApp'), 'info');
-      } else {
-        showToast(t('seller.orderDetails.noPhoneNumber'), 'error');
-      }
+      await api.post(`/seller/orders/${id}/receipt`);
+      showToast(t('seller.orderDetails.receiptSent') || 'Receipt sent successfully to buyer email', 'success');
     } catch (error) {
-      showToast(t('seller.orderDetails.errorSendingNotification'), 'error');
+      showToast(t('seller.orderDetails.errorSendingReceipt') || 'Failed to send receipt', 'error');
     } finally {
-      setWhatsappLoading(false);
+      setReceiptLoading(false);
     }
   };
 
@@ -297,14 +292,16 @@ const OrderDetails = () => {
               <ArrowLeft className="w-4 h-4" />
               {t('seller.orderDetails.backToOrders')}
             </Link>
-            <button 
-              onClick={handleWhatsAppNotification} 
-              disabled={whatsappLoading}
-              className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-emerald-600 bg-emerald-50 rounded-lg hover:bg-emerald-100 transition-colors"
-            >
-              {whatsappLoading ? <RefreshCw className="w-4 h-4 animate-spin" /> : <MessageCircle className="w-4 h-4" />}
-              {t('seller.orderDetails.whatsapp')}
-            </button>
+            {order.status === 'delivered' && (
+              <button 
+                onClick={handleSendReceipt} 
+                disabled={receiptLoading}
+                className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
+              >
+                {receiptLoading ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Mail className="w-4 h-4" />}
+                {t('seller.orderDetails.sendReceipt') || 'Send Receipt'}
+              </button>
+            )}
           </div>
 
           {/* Order Header */}

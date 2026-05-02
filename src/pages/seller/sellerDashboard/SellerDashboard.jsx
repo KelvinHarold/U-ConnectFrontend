@@ -56,54 +56,54 @@ const shimmerStyle = `
 
 // ==================== SKELETON LOADERS ====================
 const SkeletonStatCard = () => (
-  <div className="bg-white rounded-xl border border-gray-100 p-4 overflow-hidden">
+  <div className="bg-white rounded-xl border border-gray-100 p-3 sm:p-4 overflow-hidden">
     <div className="flex items-start justify-between">
-      <div className="space-y-2">
-        <div className="h-3 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 bg-[length:200%_100%] animate-shimmer rounded w-20"></div>
-        <div className="h-7 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 bg-[length:200%_100%] animate-shimmer rounded w-28"></div>
-        <div className="h-2 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 bg-[length:200%_100%] animate-shimmer rounded w-16"></div>
+      <div className="space-y-1 sm:space-y-2">
+        <div className="h-2.5 sm:h-3 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 bg-[length:200%_100%] animate-shimmer rounded w-16 sm:w-20"></div>
+        <div className="h-5 sm:h-7 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 bg-[length:200%_100%] animate-shimmer rounded w-20 sm:w-28"></div>
+        <div className="h-1.5 sm:h-2 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 bg-[length:200%_100%] animate-shimmer rounded w-12 sm:w-16"></div>
       </div>
-      <div className="w-10 h-10 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 bg-[length:200%_100%] animate-shimmer rounded-xl"></div>
+      <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 bg-[length:200%_100%] animate-shimmer rounded-lg sm:rounded-xl"></div>
     </div>
   </div>
 );
 
 const SkeletonChart = () => (
-  <div className="bg-white rounded-xl border border-gray-100 p-4 overflow-hidden">
-    <div className="flex justify-between mb-4">
-      <div className="h-4 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 bg-[length:200%_100%] animate-shimmer rounded w-28"></div>
-      <div className="w-4 h-4 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 bg-[length:200%_100%] animate-shimmer rounded"></div>
+  <div className="bg-white rounded-xl border border-gray-100 p-3 sm:p-4 overflow-hidden">
+    <div className="flex justify-between mb-3 sm:mb-4">
+      <div className="h-3 sm:h-4 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 bg-[length:200%_100%] animate-shimmer rounded w-20 sm:w-28"></div>
+      <div className="w-3 h-3 sm:w-4 sm:h-4 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 bg-[length:200%_100%] animate-shimmer rounded"></div>
     </div>
-    <div className="h-[240px] bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 bg-[length:200%_100%] animate-shimmer rounded-xl"></div>
+    <div className="h-[180px] sm:h-[240px] bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 bg-[length:200%_100%] animate-shimmer rounded-lg sm:rounded-xl"></div>
   </div>
 );
 
 const SkeletonProductRow = () => (
-  <div className="p-4 flex flex-col md:flex-row md:items-center justify-between gap-4 overflow-hidden">
-    <div className="flex items-center gap-3 flex-1">
-      <div className="w-12 h-12 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 bg-[length:200%_100%] animate-shimmer rounded-xl"></div>
-      <div className="flex-1 space-y-2">
-        <div className="h-4 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 bg-[length:200%_100%] animate-shimmer rounded w-32"></div>
-        <div className="h-3 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 bg-[length:200%_100%] animate-shimmer rounded w-24"></div>
+  <div className="p-3 sm:p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 overflow-hidden">
+    <div className="flex items-center gap-2 sm:gap-3 flex-1">
+      <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 bg-[length:200%_100%] animate-shimmer rounded-lg sm:rounded-xl"></div>
+      <div className="flex-1 space-y-1.5 sm:space-y-2">
+        <div className="h-3 sm:h-4 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 bg-[length:200%_100%] animate-shimmer rounded w-24 sm:w-32"></div>
+        <div className="h-2 sm:h-3 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 bg-[length:200%_100%] animate-shimmer rounded w-20 sm:w-24"></div>
       </div>
     </div>
-    <div className="text-right space-y-2">
-      <div className="h-3 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 bg-[length:200%_100%] animate-shimmer rounded w-20 ml-auto"></div>
-      <div className="h-5 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 bg-[length:200%_100%] animate-shimmer rounded w-24 ml-auto"></div>
+    <div className="text-left sm:text-right space-y-1.5 sm:space-y-2">
+      <div className="h-2 sm:h-3 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 bg-[length:200%_100%] animate-shimmer rounded w-16 sm:w-20 ml-0 sm:ml-auto"></div>
+      <div className="h-4 sm:h-5 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 bg-[length:200%_100%] animate-shimmer rounded w-20 sm:w-24 ml-0 sm:ml-auto"></div>
     </div>
   </div>
 );
 
 const SkeletonOrderRow = () => (
-  <div className="flex items-center gap-4 p-4 border-b border-gray-100 overflow-hidden">
-    <div className="h-4 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 bg-[length:200%_100%] animate-shimmer rounded w-20"></div>
-    <div className="flex-1">
-      <div className="h-4 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 bg-[length:200%_100%] animate-shimmer rounded w-28"></div>
+  <div className="flex flex-wrap sm:flex-nowrap items-center gap-2 sm:gap-4 p-3 sm:p-4 border-b border-gray-100 overflow-hidden">
+    <div className="h-3 sm:h-4 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 bg-[length:200%_100%] animate-shimmer rounded w-16 sm:w-20"></div>
+    <div className="flex-1 min-w-[100px]">
+      <div className="h-3 sm:h-4 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 bg-[length:200%_100%] animate-shimmer rounded w-20 sm:w-28"></div>
     </div>
-    <div className="w-16 h-8 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 bg-[length:200%_100%] animate-shimmer rounded-lg"></div>
-    <div className="h-6 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 bg-[length:200%_100%] animate-shimmer rounded-full w-20"></div>
-    <div className="h-4 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 bg-[length:200%_100%] animate-shimmer rounded w-24"></div>
-    <div className="w-8 h-8 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 bg-[length:200%_100%] animate-shimmer rounded-lg"></div>
+    <div className="w-12 sm:w-16 h-6 sm:h-8 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 bg-[length:200%_100%] animate-shimmer rounded-lg"></div>
+    <div className="h-5 sm:h-6 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 bg-[length:200%_100%] animate-shimmer rounded-full w-16 sm:w-20"></div>
+    <div className="h-3 sm:h-4 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 bg-[length:200%_100%] animate-shimmer rounded w-20 sm:w-24"></div>
+    <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 bg-[length:200%_100%] animate-shimmer rounded-lg"></div>
   </div>
 );
 
@@ -195,31 +195,31 @@ const SellerDashboard = () => {
   if (loading) {
     return (
       <MainLayout>
-        <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 md:p-8">
+        <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-3 sm:p-4 md:p-6 lg:p-8">
           <div className="max-w-7xl mx-auto">
-            <div className="mb-6">
-              <div className="h-7 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 bg-[length:200%_100%] animate-shimmer rounded w-40 mb-2"></div>
-              <div className="h-4 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 bg-[length:200%_100%] animate-shimmer rounded w-64"></div>
+            <div className="mb-4 sm:mb-6">
+              <div className="h-5 sm:h-7 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 bg-[length:200%_100%] animate-shimmer rounded w-32 sm:w-40 mb-1 sm:mb-2"></div>
+              <div className="h-3 sm:h-4 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 bg-[length:200%_100%] animate-shimmer rounded w-48 sm:w-64"></div>
             </div>
-            <div className="h-28 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 bg-[length:200%_100%] animate-shimmer rounded-xl mb-6"></div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <div className="h-20 sm:h-28 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 bg-[length:200%_100%] animate-shimmer rounded-xl mb-4 sm:mb-6"></div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-4 sm:mb-6">
               {[1, 2, 3, 4].map(i => <SkeletonStatCard key={i} />)}
             </div>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-6 mb-4 sm:mb-6">
               <SkeletonChart />
               <SkeletonChart />
             </div>
-            <div className="bg-white rounded-xl border border-gray-100 overflow-hidden mb-6">
-              <div className="p-4 border-b border-gray-100">
-                <div className="h-5 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 bg-[length:200%_100%] animate-shimmer rounded w-32"></div>
+            <div className="bg-white rounded-xl border border-gray-100 overflow-hidden mb-4 sm:mb-6">
+              <div className="p-3 sm:p-4 border-b border-gray-100">
+                <div className="h-4 sm:h-5 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 bg-[length:200%_100%] animate-shimmer rounded w-24 sm:w-32"></div>
               </div>
               <div className="divide-y divide-gray-100">
                 {[1, 2, 3].map(i => <SkeletonProductRow key={i} />)}
               </div>
             </div>
             <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
-              <div className="p-4 border-b border-gray-100">
-                <div className="h-5 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 bg-[length:200%_100%] animate-shimmer rounded w-28"></div>
+              <div className="p-3 sm:p-4 border-b border-gray-100">
+                <div className="h-4 sm:h-5 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 bg-[length:200%_100%] animate-shimmer rounded w-20 sm:w-28"></div>
               </div>
               <div className="divide-y divide-gray-100">
                 {[1, 2, 3, 4, 5].map(i => <SkeletonOrderRow key={i} />)}
@@ -234,14 +234,14 @@ const SellerDashboard = () => {
   if (error) {
     return (
       <MainLayout>
-        <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 md:p-8">
-          <div className="max-w-md mx-auto bg-white rounded-xl border border-gray-100 p-8 text-center">
-            <AlertCircle className="w-12 h-12 text-red-400 mx-auto mb-3" />
-            <h3 className="text-base font-semibold text-gray-900 mb-1">{t('seller.dashboard.errorLoading')}</h3>
-            <p className="text-sm text-gray-500 mb-4">{error}</p>
+        <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-3 sm:p-4 md:p-6 lg:p-8">
+          <div className="max-w-md mx-auto bg-white rounded-xl border border-gray-100 p-6 sm:p-8 text-center">
+            <AlertCircle className="w-10 h-10 sm:w-12 sm:h-12 text-red-400 mx-auto mb-2 sm:mb-3" />
+            <h3 className="text-sm sm:text-base font-semibold text-gray-900 mb-1">{t('seller.dashboard.errorLoading')}</h3>
+            <p className="text-xs sm:text-sm text-gray-500 mb-3 sm:mb-4">{error}</p>
             <button 
               onClick={fetchDashboardData} 
-              className="px-4 py-2 bg-[#5C352C] text-white rounded-lg text-sm hover:bg-[#7A4B3E] transition-colors"
+              className="px-3 sm:px-4 py-1.5 sm:py-2 bg-[#5C352C] text-white rounded-lg text-xs sm:text-sm hover:bg-[#7A4B3E] transition-colors"
             >
               {t('seller.dashboard.tryAgain')}
             </button>
@@ -301,62 +301,62 @@ const SellerDashboard = () => {
   return (
     <MainLayout>
       <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50">
-        <div className="p-4 md:p-8">
+        <div className="p-3 sm:p-4 md:p-6 lg:p-8">
           <div className="max-w-7xl mx-auto">
           
-            {/* Header - responsive like ProductDetails */}
-            <div className="mb-6">
-              <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-[#5C352C] to-[#8B5E4F] bg-clip-text text-transparent">
+            {/* Header - responsive */}
+            <div className="mb-4 sm:mb-6">
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold bg-gradient-to-r from-[#5C352C] to-[#8B5E4F] bg-clip-text text-transparent">
                 {t('seller.dashboard.title')}
               </h1>
-              <p className="text-gray-500 text-sm mt-1">{t('seller.dashboard.subtitle')}</p>
+              <p className="text-xs sm:text-sm text-gray-500 mt-0.5 sm:mt-1">{t('seller.dashboard.subtitle')}</p>
             </div>
 
             {/* Welcome Banner - responsive */}
-            <div className="bg-gradient-to-r from-[#5C352C] to-[#7A4B3E] rounded-2xl p-6 mb-6 shadow-lg">
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="bg-gradient-to-r from-[#5C352C] to-[#7A4B3E] rounded-xl sm:rounded-2xl p-4 sm:p-6 mb-4 sm:mb-6 shadow-lg">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
                 <div>
-                  <h2 className="text-xl font-semibold text-white mb-1">{t('seller.dashboard.welcomeBack')}</h2>
-                  <p className="text-white/80 text-sm">{t('seller.dashboard.welcomeMessage')}</p>
+                  <h2 className="text-base sm:text-lg md:text-xl font-semibold text-white mb-0.5 sm:mb-1">{t('seller.dashboard.welcomeBack')}</h2>
+                  <p className="text-white/80 text-xs sm:text-sm">{t('seller.dashboard.welcomeMessage')}</p>
                 </div>
                 <button 
                   onClick={fetchDashboardData}
                   disabled={refreshing}
-                  className="px-4 py-2 bg-white/10 backdrop-blur-sm rounded-xl text-sm text-white hover:bg-white/20 transition-all duration-200 flex items-center gap-2 font-medium self-start md:self-auto"
+                  className="px-3 sm:px-4 py-1.5 sm:py-2 bg-white/10 backdrop-blur-sm rounded-lg sm:rounded-xl text-xs sm:text-sm text-white hover:bg-white/20 transition-all duration-200 flex items-center gap-1.5 sm:gap-2 font-medium self-start sm:self-auto"
                 >
-                  <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
-                  {t('seller.dashboard.refresh')}
+                  <RefreshCw className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${refreshing ? 'animate-spin' : ''}`} />
+                  <span className="hidden xs:inline">{t('seller.dashboard.refresh')}</span>
                 </button>
               </div>
             </div>
 
-            {/* Stats Cards - responsive grid like ProductDetails */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            {/* Stats Cards - responsive grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-4 sm:mb-6">
               {statCards.map((card, i) => (
-                <div key={i} className="bg-white rounded-2xl border border-gray-100 p-5 hover:shadow-lg transition-all duration-200 hover:-translate-y-0.5">
+                <div key={i} className="bg-white rounded-xl sm:rounded-2xl border-2 border-gray-100 p-3 sm:p-4 md:p-5 hover:shadow-lg transition-all duration-200 hover:-translate-y-0.5">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
-                      <p className="text-xs font-medium text-gray-500 mb-1">{card.title}</p>
-                      <h3 className="text-xl font-bold text-gray-900">{card.value}</h3>
+                      <p className="text-[10px] sm:text-xs font-medium text-gray-500 mb-0.5 sm:mb-1">{card.title}</p>
+                      <h3 className="text-base sm:text-lg md:text-xl font-bold text-gray-900">{card.value}</h3>
                       {card.subValue && (
-                        <p className="text-[10px] text-gray-400 mt-1.5">{card.subValue}</p>
+                        <p className="text-[8px] sm:text-[10px] text-gray-400 mt-1 sm:mt-1.5">{card.subValue}</p>
                       )}
                       {card.change && (
-                        <div className="flex items-center gap-1 mt-2">
+                        <div className="flex items-center gap-0.5 sm:gap-1 mt-1 sm:mt-2">
                           {card.trend === 'up' ? (
-                            <ArrowUp className="w-3 h-3 text-emerald-500" />
+                            <ArrowUp className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-emerald-500" />
                           ) : (
-                            <ArrowDown className="w-3 h-3 text-red-500" />
+                            <ArrowDown className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-red-500" />
                           )}
-                          <span className={`text-[10px] font-medium ${card.trend === 'up' ? 'text-emerald-600' : 'text-red-600'}`}>
+                          <span className={`text-[8px] sm:text-[10px] font-medium ${card.trend === 'up' ? 'text-emerald-600' : 'text-red-600'}`}>
                             {card.change}
                           </span>
-                          <span className="text-[10px] text-gray-400 ml-1">{t('seller.dashboard.vsLastMonth')}</span>
+                          <span className="text-[7px] sm:text-[10px] text-gray-400 ml-0.5 sm:ml-1 hidden xs:inline">{t('seller.dashboard.vsLastMonth')}</span>
                         </div>
                       )}
                     </div>
-                    <div className={`${card.bg} ${card.color} p-3 rounded-xl`}>
-                      <card.icon className="w-5 h-5" />
+                    <div className={`${card.bg} ${card.color} p-1.5 sm:p-2 md:p-3 rounded-lg sm:rounded-xl`}>
+                      <card.icon className="w-4 h-4 sm:w-5 sm:h-5" />
                     </div>
                   </div>
                 </div>
@@ -364,26 +364,27 @@ const SellerDashboard = () => {
             </div>
 
             {/* Charts Section - responsive */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-6 mb-4 sm:mb-6">
               {/* Monthly Sales Chart */}
-              <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-5">
+              <div className="bg-white rounded-xl sm:rounded-2xl border-2 border-gray-100 p-3 sm:p-4 md:p-5 shadow-sm">
+                <div className="flex flex-col xs:flex-row xs:items-center justify-between gap-1 xs:gap-2 mb-3 sm:mb-5">
                   <div>
-                    <h3 className="text-base font-semibold text-gray-900">{t('seller.dashboard.monthlySales')}</h3>
-                    <p className="text-xs text-gray-500 mt-0.5">{t('seller.dashboard.last12Months')}</p>
+                    <h3 className="text-sm sm:text-base font-semibold text-gray-900">{t('seller.dashboard.monthlySales')}</h3>
+                    <p className="text-[10px] sm:text-xs text-gray-500 mt-0.5">{t('seller.dashboard.last12Months')}</p>
                   </div>
-                  <TrendingUp className="w-5 h-5 text-gray-400" />
+                  <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400" />
                 </div>
-                <div className="h-[280px]">
+                <div className="h-[200px] sm:h-[240px] md:h-[280px]">
                   {monthly_sales && monthly_sales.length > 0 ? (
                     <ResponsiveContainer width="100%" height="100%">
-                      <BarChart data={monthly_sales} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                      <BarChart data={monthly_sales} margin={{ top: 5, right: 5, left: 0, bottom: 0 }}>
                         <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#F3F4F6" />
                         <XAxis 
                           dataKey="month_name" 
                           axisLine={false} 
                           tickLine={false} 
                           tick={{ fill: '#9CA3AF', fontSize: isSmallMobile ? 8 : isMobile ? 9 : 11 }} 
+                          interval={isSmallMobile ? 1 : 0}
                         />
                         <YAxis 
                           axisLine={false} 
@@ -395,14 +396,14 @@ const SellerDashboard = () => {
                           formatter={(value) => [`Tsh ${value.toLocaleString()}`, t('seller.dashboard.revenue')]} 
                           cursor={{ fill: '#F3F4F6' }}
                         />
-                        <Bar dataKey="revenue" fill="#5C352C" radius={[6, 6, 0, 0]} />
+                        <Bar dataKey="revenue" fill="#5C352C" radius={[4, 4, 0, 0]} />
                       </BarChart>
                     </ResponsiveContainer>
                   ) : (
                     <div className="h-full flex items-center justify-center text-gray-400">
                       <div className="text-center">
-                        <Package className="w-12 h-12 mx-auto mb-3 opacity-30" />
-                        <p className="text-sm">{t('seller.dashboard.noSalesData')}</p>
+                        <Package className="w-8 h-8 sm:w-12 sm:h-12 mx-auto mb-2 sm:mb-3 opacity-30" />
+                        <p className="text-xs sm:text-sm">{t('seller.dashboard.noSalesData')}</p>
                       </div>
                     </div>
                   )}
@@ -410,20 +411,20 @@ const SellerDashboard = () => {
               </div>
 
               {/* Order Distribution Pie Chart */}
-              <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm">
-                <h3 className="text-base font-semibold text-gray-900 mb-5">{t('seller.dashboard.orderStatus')}</h3>
-                <div className="h-[240px] relative">
+              <div className="bg-white rounded-xl sm:rounded-2xl border-2 border-gray-100 p-3 sm:p-4 md:p-5 shadow-sm">
+                <h3 className="text-sm sm:text-base font-semibold text-gray-900 mb-3 sm:mb-5">{t('seller.dashboard.orderStatus')}</h3>
+                <div className="h-[180px] sm:h-[200px] md:h-[240px] relative">
                   {pieChartData.length > 0 ? (
                     <ResponsiveContainer width="100%" height="100%">
                       <PieChart>
                         <Pie
                           data={pieChartData}
-                          innerRadius={isMobile ? 40 : 60}
-                          outerRadius={isMobile ? 70 : 90}
+                          innerRadius={isMobile ? 35 : 50}
+                          outerRadius={isMobile ? 60 : 80}
                           dataKey="value"
                           stroke="white"
                           strokeWidth={2}
-                          label={({ name, percent }) => isMobile ? `${(percent * 100).toFixed(0)}%` : `${name} ${(percent * 100).toFixed(0)}%`}
+                          label={({ percent }) => isSmallMobile ? `${(percent * 100).toFixed(0)}%` : `${(percent * 100).toFixed(0)}%`}
                           labelLine={false}
                         >
                           {pieChartData.map((entry, index) => (
@@ -436,24 +437,24 @@ const SellerDashboard = () => {
                   ) : (
                     <div className="h-full flex items-center justify-center text-gray-400">
                       <div className="text-center">
-                        <ShoppingBag className="w-12 h-12 mx-auto mb-3 opacity-30" />
-                        <p className="text-sm">{t('seller.dashboard.noOrderData')}</p>
+                        <ShoppingBag className="w-8 h-8 sm:w-12 sm:h-12 mx-auto mb-2 sm:mb-3 opacity-30" />
+                        <p className="text-xs sm:text-sm">{t('seller.dashboard.noOrderData')}</p>
                       </div>
                     </div>
                   )}
                   <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                    <span className="text-2xl font-bold text-gray-900">{stats?.total_orders || 0}</span>
-                    <span className="text-xs text-gray-500">{t('seller.dashboard.totalOrders')}</span>
+                    <span className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900">{stats?.total_orders || 0}</span>
+                    <span className="text-[8px] sm:text-[10px] md:text-xs text-gray-500">{t('seller.dashboard.totalOrders')}</span>
                   </div>
                 </div>
-                <div className="mt-6 grid grid-cols-2 gap-3">
+                <div className="mt-3 sm:mt-4 md:mt-6 grid grid-cols-2 gap-1.5 sm:gap-2 md:gap-3">
                   {pieChartData.map((item, idx) => (
-                    <div key={idx} className="flex items-center justify-between text-xs py-1.5 px-2 bg-gray-50 rounded-lg">
-                      <div className="flex items-center gap-2">
-                        <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: item.color }}></div>
-                        <span className="text-gray-600 text-xs md:text-sm">{item.name}</span>
+                    <div key={idx} className="flex items-center justify-between text-xs py-1 sm:py-1.5 px-1.5 sm:px-2 bg-gray-50 rounded-lg">
+                      <div className="flex items-center gap-1 sm:gap-2">
+                        <div className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full" style={{ backgroundColor: item.color }}></div>
+                        <span className="text-[9px] sm:text-xs md:text-sm text-gray-600 truncate">{item.name}</span>
                       </div>
-                      <span className="font-semibold text-gray-900">{item.value}</span>
+                      <span className="font-semibold text-gray-900 text-[9px] sm:text-xs">{item.value}</span>
                     </div>
                   ))}
                 </div>
@@ -461,15 +462,15 @@ const SellerDashboard = () => {
             </div>
 
             {/* Top Products Section - responsive */}
-            <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm mb-6">
-              <div className="p-5 border-b border-gray-100 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
+            <div className="bg-white rounded-xl sm:rounded-2xl border-2 border-gray-100 overflow-hidden shadow-sm mb-4 sm:mb-6">
+              <div className="p-3 sm:p-4 md:p-5 border-b border-gray-100 flex flex-col xs:flex-row xs:justify-between xs:items-center gap-2">
                 <div>
-                  <h3 className="text-base font-semibold text-gray-900">{t('seller.dashboard.topProducts')}</h3>
-                  <p className="text-xs text-gray-500 mt-0.5">{t('seller.dashboard.bestSellingItems')}</p>
+                  <h3 className="text-sm sm:text-base font-semibold text-gray-900">{t('seller.dashboard.topProducts')}</h3>
+                  <p className="text-[10px] sm:text-xs text-gray-500 mt-0.5">{t('seller.dashboard.bestSellingItems')}</p>
                 </div>
                 <Link 
                   to="/seller/products" 
-                  className="text-sm text-[#5C352C] font-medium hover:text-[#7A4B3E] transition-colors flex items-center gap-1"
+                  className="text-xs sm:text-sm text-[#5C352C] font-medium hover:text-[#7A4B3E] transition-colors flex items-center gap-1"
                 >
                   {t('seller.dashboard.viewAll')}
                   <span aria-hidden="true">→</span>
@@ -477,10 +478,10 @@ const SellerDashboard = () => {
               </div>
               <div className="divide-y divide-gray-100">
                 {top_products?.slice(0, 5).map((product, idx) => (
-                  <div key={idx} className="p-5 hover:bg-gray-50 transition-colors">
-                    <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+                  <div key={idx} className="p-3 sm:p-4 md:p-5 hover:bg-gray-50 transition-colors">
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
                       <div className="relative flex-shrink-0 self-start sm:self-auto">
-                        <div className="w-14 h-14 bg-gray-100 rounded-xl overflow-hidden">
+                        <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 bg-gray-100 rounded-lg sm:rounded-xl overflow-hidden">
                           {product.image && !imageErrors[product.id] ? (
                             <img 
                               src={product.image} 
@@ -490,42 +491,42 @@ const SellerDashboard = () => {
                               loading="lazy"
                             />
                           ) : (
-                            <Package className="w-6 h-6 text-gray-400 m-4" />
+                            <Package className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-gray-400 m-3 sm:m-3.5 md:m-4" />
                           )}
                         </div>
-                        <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-gradient-to-r from-[#5C352C] to-[#7A4B3E] text-white text-[10px] font-bold flex items-center justify-center shadow-md">
+                        <div className="absolute -top-1 -right-1 sm:-top-2 sm:-right-2 w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 rounded-full bg-gradient-to-r from-[#5C352C] to-[#7A4B3E] text-white text-[8px] sm:text-[9px] md:text-[10px] font-bold flex items-center justify-center shadow-md">
                           {idx + 1}
                         </div>
                       </div>
                       <div className="flex-1 min-w-0">
                         <Link to={`/seller/products/${product.id}`}>
-                          <h4 className="text-sm font-semibold text-gray-900 hover:text-[#5C352C] transition-colors truncate">
+                          <h4 className="text-xs sm:text-sm font-semibold text-gray-900 hover:text-[#5C352C] transition-colors truncate">
                             {product.name}
                           </h4>
                         </Link>
-                        <div className="flex flex-wrap items-center gap-3 mt-1.5">
-                          <p className="text-sm font-bold text-[#5C352C]">{formatPrice(product.price)}</p>
-                          <div className="flex items-center gap-1">
-                            <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-                            <span className="text-xs text-gray-600">{product.avg_rating?.toFixed(1) || '0.0'}</span>
+                        <div className="flex flex-wrap items-center gap-2 sm:gap-3 mt-1 sm:mt-1.5">
+                          <p className="text-xs sm:text-sm font-bold text-[#5C352C]">{formatPrice(product.price)}</p>
+                          <div className="flex items-center gap-0.5 sm:gap-1">
+                            <Star className="w-3 h-3 sm:w-3.5 sm:h-3.5 fill-amber-400 text-amber-400" />
+                            <span className="text-[10px] sm:text-xs text-gray-600">{product.avg_rating?.toFixed(1) || '0.0'}</span>
                           </div>
-                          <span className="text-xs text-gray-400">•</span>
-                          <p className="text-xs text-gray-500">{t('seller.dashboard.sold')}: {product.sold_count || 0}</p>
+                          <span className="text-[10px] sm:text-xs text-gray-400 hidden xs:inline">•</span>
+                          <p className="text-[9px] sm:text-xs text-gray-500">{t('seller.dashboard.sold')}: {product.sold_count || 0}</p>
                         </div>
                       </div>
                       <div className="text-left sm:text-right flex-shrink-0">
-                        <p className="text-sm font-bold text-gray-900">{formatPrice(product.revenue || 0)}</p>
-                        <p className="text-xs text-gray-400 mt-0.5">{product.order_count || 0} {t('seller.dashboard.orders')}</p>
+                        <p className="text-xs sm:text-sm font-bold text-gray-900">{formatPrice(product.revenue || 0)}</p>
+                        <p className="text-[9px] sm:text-xs text-gray-400 mt-0.5">{product.order_count || 0} {t('seller.dashboard.orders')}</p>
                       </div>
                     </div>
                   </div>
                 ))}
                 {(!top_products || top_products.length === 0) && (
-                  <div className="p-12 text-center">
-                    <Package className="w-16 h-16 text-gray-300 mx-auto mb-3" />
-                    <p className="text-base text-gray-500">{t('seller.dashboard.noProductsSold')}</p>
-                    <Link to="/seller/products/create">
-                      <button className="mt-4 px-4 py-2 bg-[#5C352C] text-white rounded-lg text-sm hover:bg-[#7A4B3E] transition-colors">
+                  <div className="p-8 sm:p-10 md:p-12 text-center">
+                    <Package className="w-12 h-12 sm:w-16 sm:h-16 text-gray-300 mx-auto mb-2 sm:mb-3" />
+                    <p className="text-sm sm:text-base text-gray-500">{t('seller.dashboard.noProductsSold')}</p>
+                    <Link to="/seller/products/add">
+                      <button className="mt-3 sm:mt-4 px-3 sm:px-4 py-1.5 sm:py-2 bg-[#5C352C] text-white rounded-lg text-xs sm:text-sm hover:bg-[#7A4B3E] transition-colors">
                         {t('seller.dashboard.addFirstProduct')}
                       </button>
                     </Link>
@@ -536,15 +537,15 @@ const SellerDashboard = () => {
 
             {/* Low Stock Alert Section - responsive */}
             {low_stock_products && low_stock_products.length > 0 && (
-              <div className="bg-gradient-to-r from-amber-50 to-amber-100 rounded-2xl border border-amber-200 overflow-hidden shadow-sm mb-6">
-                <div className="p-5 border-b border-amber-200">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                    <div className="flex items-center gap-2">
-                      <div className="p-1.5 bg-amber-200 rounded-lg">
-                        <AlertTriangle className="w-4 h-4 text-amber-700" />
+              <div className="bg-gradient-to-r from-amber-50 to-amber-100 rounded-xl sm:rounded-2xl border border-amber-200 overflow-hidden shadow-sm mb-4 sm:mb-6">
+                <div className="p-3 sm:p-4 md:p-5 border-b border-amber-200">
+                  <div className="flex flex-col xs:flex-row xs:items-center justify-between gap-2">
+                    <div className="flex items-center gap-1.5 sm:gap-2">
+                      <div className="p-1 sm:p-1.5 bg-amber-200 rounded-lg">
+                        <AlertTriangle className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-700" />
                       </div>
-                      <h3 className="text-base font-semibold text-amber-800">{t('seller.dashboard.lowStockAlert')}</h3>
-                      <span className="px-2 py-0.5 bg-amber-200 text-amber-800 text-xs font-bold rounded-full">
+                      <h3 className="text-sm sm:text-base font-semibold text-amber-800">{t('seller.dashboard.lowStockAlert')}</h3>
+                      <span className="px-1.5 sm:px-2 py-0.5 bg-amber-200 text-amber-800 text-[9px] sm:text-xs font-bold rounded-full">
                         {low_stock_products.length}
                       </span>
                     </div>
@@ -552,9 +553,9 @@ const SellerDashboard = () => {
                 </div>
                 <div className="divide-y divide-amber-200">
                   {low_stock_products.slice(0, 5).map((product, idx) => (
-                    <div key={idx} className="p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-amber-100/50 transition-colors">
-                      <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 bg-white rounded-xl overflow-hidden shadow-sm flex-shrink-0">
+                    <div key={idx} className="p-3 sm:p-4 md:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 hover:bg-amber-100/50 transition-colors">
+                      <div className="flex items-center gap-2 sm:gap-3 md:gap-4">
+                        <div className="w-10 h-10 sm:w-12 sm:h-12 bg-white rounded-lg sm:rounded-xl overflow-hidden shadow-sm flex-shrink-0">
                           {product.image && !imageErrors[product.id] ? (
                             <img 
                               src={product.image} 
@@ -564,17 +565,17 @@ const SellerDashboard = () => {
                               loading="lazy" 
                             />
                           ) : (
-                            <Package className="w-5 h-5 text-gray-400 m-3.5" />
+                            <Package className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 m-3 sm:m-3.5" />
                           )}
                         </div>
                         <div>
-                          <p className="text-sm font-semibold text-gray-900">{product.name}</p>
-                          <div className="flex flex-wrap items-center gap-2 mt-1">
-                            <p className="text-xs text-amber-700 font-medium">
+                          <p className="text-xs sm:text-sm font-semibold text-gray-900">{product.name}</p>
+                          <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 mt-0.5 sm:mt-1">
+                            <p className="text-[10px] sm:text-xs text-amber-700 font-medium">
                               {t('seller.dashboard.only')} {product.quantity} {t('seller.dashboard.unitsLeft')}
                             </p>
                             {product.quantity <= 5 && (
-                              <span className="px-1.5 py-0.5 bg-red-100 text-red-700 text-[9px] font-bold rounded-full">
+                              <span className="px-1 sm:px-1.5 py-0.5 bg-red-100 text-red-700 text-[7px] sm:text-[9px] font-bold rounded-full">
                                 {t('seller.dashboard.critical')}
                               </span>
                             )}
@@ -582,7 +583,7 @@ const SellerDashboard = () => {
                         </div>
                       </div>
                       <Link to={`/seller/products/${product.id}/edit`} className="self-start sm:self-auto">
-                        <button className="px-4 py-2 text-sm font-semibold text-amber-700 bg-white rounded-xl hover:bg-amber-100 transition-all duration-200 shadow-sm hover:shadow-md">
+                        <button className="px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-semibold text-amber-700 bg-white rounded-lg sm:rounded-xl hover:bg-amber-100 transition-all duration-200 shadow-sm hover:shadow-md">
                           {t('seller.dashboard.restock')}
                         </button>
                       </Link>
@@ -592,63 +593,63 @@ const SellerDashboard = () => {
               </div>
             )}
 
-            {/* Recent Orders Table - responsive with overflow */}
-            <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm">
-              <div className="p-5 border-b border-gray-100">
-                <h3 className="text-base font-semibold text-gray-900">{t('seller.dashboard.recentOrders')}</h3>
+            {/* Recent Orders Table - responsive */}
+            <div className="bg-white rounded-xl sm:rounded-2xl border-2 border-gray-100 overflow-hidden shadow-sm">
+              <div className="p-3 sm:p-4 md:p-5 border-b border-gray-100">
+                <h3 className="text-sm sm:text-base font-semibold text-gray-900">{t('seller.dashboard.recentOrders')}</h3>
               </div>
               <div className="overflow-x-auto">
-                <table className="w-full min-w-[800px]">
+                <table className="w-full min-w-[600px] sm:min-w-[700px] md:min-w-[800px]">
                   <thead className="bg-gray-50 border-b border-gray-100">
                     <tr>
-                      <th className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">{t('seller.dashboard.order')}</th>
-                      <th className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">{t('seller.dashboard.customer')}</th>
-                      <th className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">{t('seller.dashboard.date')}</th>
-                      <th className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">{t('seller.dashboard.status')}</th>
-                      <th className="px-5 py-3 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">{t('seller.dashboard.amount')}</th>
-                      <th className="px-5 py-3 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">{t('seller.dashboard.action')}</th>
+                      <th className="px-3 sm:px-5 py-2 sm:py-3 text-left text-[9px] sm:text-xs font-semibold text-gray-500 uppercase tracking-wider">{t('seller.dashboard.order')}</th>
+                      <th className="px-3 sm:px-5 py-2 sm:py-3 text-left text-[9px] sm:text-xs font-semibold text-gray-500 uppercase tracking-wider">{t('seller.dashboard.customer')}</th>
+                      <th className="px-3 sm:px-5 py-2 sm:py-3 text-left text-[9px] sm:text-xs font-semibold text-gray-500 uppercase tracking-wider">{t('seller.dashboard.date')}</th>
+                      <th className="px-3 sm:px-5 py-2 sm:py-3 text-left text-[9px] sm:text-xs font-semibold text-gray-500 uppercase tracking-wider">{t('seller.dashboard.status')}</th>
+                      <th className="px-3 sm:px-5 py-2 sm:py-3 text-right text-[9px] sm:text-xs font-semibold text-gray-500 uppercase tracking-wider">{t('seller.dashboard.amount')}</th>
+                      <th className="px-3 sm:px-5 py-2 sm:py-3 text-center text-[9px] sm:text-xs font-semibold text-gray-500 uppercase tracking-wider">{t('seller.dashboard.action')}</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-100">
                     {recent_orders?.slice(0, 10).map((order, idx) => (
                       <tr key={idx} className="hover:bg-gray-50 transition-colors">
-                        <td className="px-5 py-4 text-sm font-mono font-medium text-gray-900">#{order.order_number || order.id}</td>
-                        <td className="px-5 py-4">
+                        <td className="px-3 sm:px-5 py-3 sm:py-4 text-[10px] sm:text-sm font-mono font-medium text-gray-900">#{order.order_number || order.id}</td>
+                        <td className="px-3 sm:px-5 py-3 sm:py-4">
                           <div>
-                            <p className="text-sm font-medium text-gray-900">{order.buyer?.name || 'N/A'}</p>
-                            <p className="text-xs text-gray-500 mt-0.5 hidden sm:block">{order.buyer?.email || ''}</p>
+                            <p className="text-[10px] sm:text-sm font-medium text-gray-900">{order.buyer?.name || 'N/A'}</p>
+                            <p className="text-[8px] sm:text-xs text-gray-500 mt-0.5 hidden xs:block">{order.buyer?.email || ''}</p>
                           </div>
                         </td>
-                        <td className="px-5 py-4 text-sm text-gray-600">
+                        <td className="px-3 sm:px-5 py-3 sm:py-4 text-[9px] sm:text-sm text-gray-600">
                           {new Date(order.created_at).toLocaleDateString(language === 'sw' ? 'sw-TZ' : 'en-US', {
                             year: 'numeric',
                             month: 'short',
                             day: 'numeric'
                           })}
                         </td>
-                        <td className="px-5 py-4">
-                          <span className={`inline-flex px-2.5 py-1 rounded-full text-xs font-semibold ${getStatusStyle(order.status)}`}>
+                        <td className="px-3 sm:px-5 py-3 sm:py-4">
+                          <span className={`inline-flex px-1.5 sm:px-2.5 py-0.5 sm:py-1 rounded-full text-[8px] sm:text-xs font-semibold ${getStatusStyle(order.status)}`}>
                             {isSmallMobile ? getStatusLabel(order.status).substring(0, 6) : getStatusLabel(order.status)}
                           </span>
                         </td>
-                        <td className="px-5 py-4 text-right text-sm font-bold text-gray-900">{formatPrice(order.total)}</td>
-                        <td className="px-5 py-4 text-center">
+                        <td className="px-3 sm:px-5 py-3 sm:py-4 text-right text-[10px] sm:text-sm font-bold text-gray-900">{formatPrice(order.total)}</td>
+                        <td className="px-3 sm:px-5 py-3 sm:py-4 text-center">
                           <Link 
                             to={`/seller/orders/${order.id}`} 
-                            className="inline-flex items-center justify-center p-2 text-gray-400 hover:text-[#5C352C] hover:bg-gray-100 rounded-lg transition-all duration-200"
+                            className="inline-flex items-center justify-center p-1 sm:p-2 text-gray-400 hover:text-[#5C352C] hover:bg-gray-100 rounded-lg transition-all duration-200"
                             aria-label={t('seller.dashboard.viewOrder')}
                           >
-                            <Eye className="w-4 h-4" />
+                            <Eye className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                           </Link>
                         </td>
                       </tr>
                     ))}
                     {(!recent_orders || recent_orders.length === 0) && (
                       <tr>
-                        <td colSpan="6" className="px-5 py-12 text-center text-gray-400">
-                          <ShoppingBag className="w-16 h-16 mx-auto mb-3 opacity-30" />
-                          <p className="text-base text-gray-500">{t('seller.dashboard.noOrders')}</p>
-                          <p className="text-sm text-gray-400 mt-1">{t('seller.dashboard.noOrdersMessage')}</p>
+                        <td colSpan="6" className="px-3 sm:px-5 py-8 sm:py-10 md:py-12 text-center text-gray-400">
+                          <ShoppingBag className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-2 sm:mb-3 opacity-30" />
+                          <p className="text-sm sm:text-base text-gray-500">{t('seller.dashboard.noOrders')}</p>
+                          <p className="text-[10px] sm:text-xs text-gray-400 mt-1">{t('seller.dashboard.noOrdersMessage')}</p>
                         </td>
                       </tr>
                     )}

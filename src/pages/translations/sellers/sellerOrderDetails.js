@@ -4,7 +4,7 @@ export const sellerOrderDetailsTranslations = {
   en: {
     // Header
     backToOrders: "Back to Orders",
-    whatsapp: "WhatsApp",
+    sendReceipt: "Send Receipt",
     orderHash: "Order #",
     copyOrderId: "Copy order ID",
     orderIdCopied: "Order ID copied",
@@ -58,10 +58,8 @@ export const sellerOrderDetailsTranslations = {
     paid: "Paid",
     pending: "Pending",
     
-    // WhatsApp
-    openingWhatsApp: "Opening WhatsApp...",
-    noPhoneNumber: "No phone number registered",
-    errorSendingNotification: "Error sending notification",
+    receiptSent: "Receipt sent successfully to buyer email",
+    errorSendingReceipt: "Failed to send receipt",
     
     // Report
     reportIssue: "Report Issue",
@@ -77,7 +75,7 @@ export const sellerOrderDetailsTranslations = {
   sw: {
     // Header
     backToOrders: "Rudi kwa Maagizo",
-    whatsapp: "WhatsApp",
+    sendReceipt: "Tuma Risiti",
     orderHash: "Agizo #",
     copyOrderId: "Nakili kitambulisho cha agizo",
     orderIdCopied: "Kitambulisho cha agizo kimenakiliwa",
@@ -131,10 +129,8 @@ export const sellerOrderDetailsTranslations = {
     paid: "Imelipwa",
     pending: "Inasubiri",
     
-    // WhatsApp
-    openingWhatsApp: "Inafungua WhatsApp...",
-    noPhoneNumber: "Hakuna nambari ya simu iliyosajiliwa",
-    errorSendingNotification: "Hitilafu katika kutuma taarifa",
+    receiptSent: "Risiti imetumwa kwa barua pepe ya mteja",
+    errorSendingReceipt: "Imeshindwa kutuma risiti",
     
     // Report
     reportIssue: "Ripoti Tatizo",

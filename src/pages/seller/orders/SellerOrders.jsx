@@ -327,7 +327,7 @@ const SellerOrders = () => {
             </div>
 
             {/* Stats Cards - Responsive */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3 md:gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-4 gap-2 sm:gap-3 md:gap-4 mb-4 sm:mb-6">
               {statCards.map((card, i) => (
                 <div key={i} className="bg-white rounded-xl border-2 border-gray-100 p-3 sm:p-4 shadow-sm hover:shadow-md transition-shadow">
                   <div className="flex items-center justify-between">
