@@ -324,7 +324,7 @@ const BuyerOrders = () => {
           </div>
 
           {/* Stats Row - responsive grid */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4 mb-4 md:mb-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2 md:gap-4 mb-4 md:mb-6">
             <div className="bg-white rounded-xl border border-gray-100 p-3">
               <p className="text-xl md:text-2xl font-bold text-gray-900">{statusCounts.total}</p>
               <p className="text-xs text-gray-500">{t('buyer.orders.totalOrders')}</p>
